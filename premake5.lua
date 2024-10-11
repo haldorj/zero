@@ -17,6 +17,10 @@ IncludeDir["GLFW"] = "Zero/vendor/GLFW/include"
 IncludeDir["Glad"] = "Zero/vendor/Glad/include"
 IncludeDir["ImGui"] = "Zero/vendor/imgui"
 IncludeDir["glm"] = "Zero/vendor/glm"
+IncludeDir["Vulkan"] = "$(VULKAN_SDK)/include"
+IncludeDir["vkb"] = "Zero/vendor/vk-bootstrap"
+IncludeDir["VMA"] = "Zero/vendor/VMA"
+IncludeDir["stb"] = "Zero/vendor/stb_image"
 
 include "Zero/vendor/GLFW"
 include "Zero/vendor/Glad"
@@ -37,7 +41,11 @@ project "Zero"
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
-		"%{prj.name}/vendor/glm/glm/**.inl"
+		"%{prj.name}/vendor/glm/glm/**.inl",
+		"%{IncludeDir.VMA}/**.h",
+        "%{IncludeDir.VMA}/**.cpp",
+        "%{IncludeDir.vkb}/**.h",
+        "%{IncludeDir.vkb}/**.cpp",
 	}
 
 	defines
@@ -51,7 +59,11 @@ project "Zero"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.Vulkan}",
+		"%{IncludeDir.vkb}",
+		"%{IncludeDir.VMA}",
+		"%{IncludeDir.stb}"
 	}
 
 	links 
@@ -60,6 +72,7 @@ project "Zero"
 		"Glad",
 		"ImGui",
 		"opengl32.lib",
+		"$(VULKAN_SDK)/Lib/vulkan-1.lib",
 	}
 
 	filter "system:windows"
