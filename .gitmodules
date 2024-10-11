@@ -1,0 +1,9 @@
+[submodule "Zero/Vendor/GLFW"]
+	path = Zero/Vendor/GLFW
+	url = https://github.com/glfw/glfw
+[submodule "Zero/Vendor/glm"]
+	path = Zero/Vendor/glm
+	url = https://github.com/g-truc/glm
+[submodule "Zero/Vendor/imgui"]
+	path = Zero/Vendor/imgui
+	url = https://github.com/ocornut/imgui
