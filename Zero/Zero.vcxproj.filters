@@ -4,6 +4,9 @@
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\shared">
+      <UniqueIdentifier>{D3351079-BFED-51C6-28F5-2A2214CCECB6}</UniqueIdentifier>
+    </Filter>
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
     </Filter>
@@ -33,6 +36,30 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\shared\camera.h">
+      <Filter>src\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shared\vk_descriptors.h">
+      <Filter>src\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shared\vk_images.h">
+      <Filter>src\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shared\vk_initializers.h">
+      <Filter>src\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shared\vk_loader.h">
+      <Filter>src\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shared\vk_pipelines.h">
+      <Filter>src\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shared\vk_types.h">
+      <Filter>src\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vk_engine.h">
+      <Filter>src</Filter>
+    </ClInclude>
     <ClInclude Include="vendor\VMA\vk_mem_alloc.h">
       <Filter>vendor\VMA</Filter>
     </ClInclude>
@@ -1290,28 +1317,34 @@
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClInclude>
-    <ClInclude Include="src\vk_engine.h" />
-    <ClInclude Include="src\shared\camera.h" />
-    <ClInclude Include="src\shared\vk_descriptors.h" />
-    <ClInclude Include="src\shared\vk_images.h" />
-    <ClInclude Include="src\shared\vk_initializers.h" />
-    <ClInclude Include="src\shared\vk_loader.h" />
-    <ClInclude Include="src\shared\vk_pipelines.h" />
-    <ClInclude Include="src\shared\vk_types.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\shared\camera.cpp">
+      <Filter>src\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shared\vk_descriptors.cpp">
+      <Filter>src\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shared\vk_images.cpp">
+      <Filter>src\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shared\vk_initializers.cpp">
+      <Filter>src\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shared\vk_loader.cpp">
+      <Filter>src\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shared\vk_pipelines.cpp">
+      <Filter>src\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vk_engine.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClCompile>
-    <ClCompile Include="src\vk_engine.cpp" />
-    <ClCompile Include="src\shared\camera.cpp" />
-    <ClCompile Include="src\shared\vk_descriptors.cpp" />
-    <ClCompile Include="src\shared\vk_images.cpp" />
-    <ClCompile Include="src\shared\vk_initializers.cpp" />
-    <ClCompile Include="src\shared\vk_loader.cpp" />
-    <ClCompile Include="src\shared\vk_pipelines.cpp" />
   </ItemGroup>
 </Project>

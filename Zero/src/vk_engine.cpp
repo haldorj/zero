@@ -73,8 +73,7 @@ void VulkanEngine::init_vulkan()
     _debug_messenger = vkb_inst.debug_messenger;
 
     // Create the surface
-    if (glfwCreateWindowSurface(_instance, _window, nullptr, &_surface) != VK_SUCCESS)
-        throw std::runtime_error("failed to create window surface!");
+    VK_CHECK(glfwCreateWindowSurface(_instance, _window, nullptr, &_surface));
 
     //vulkan 1.3 features
     VkPhysicalDeviceVulkan13Features features{ .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES };
@@ -111,6 +110,10 @@ void VulkanEngine::init_vulkan()
     vkGetPhysicalDeviceProperties(_physicalDevice, &Properties);
     std::cout << "Chosen GPU: " << "\n";
     std::cout << "\t" << Properties.deviceName << "\n";
+
+    // use vkbootstrap to get a Graphics queue
+    _graphicsQueue = vkbDevice.get_queue(vkb::QueueType::graphics).value();
+    _graphicsQueueFamily = vkbDevice.get_queue_index(vkb::QueueType::graphics).value();
 }
 
 void VulkanEngine::init_swapchain()
@@ -120,7 +123,19 @@ void VulkanEngine::init_swapchain()
 
 void VulkanEngine::init_commands()
 {
-    
+    // Create a command pool for commands submitted to the graphics queue.
+    // We also want the pool to allow for resetting of individual command buffers
+    VkCommandPoolCreateInfo commandPoolInfo = vkinit::command_pool_create_info(_graphicsQueueFamily, VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
+
+    for (int i = 0; i < FRAME_OVERLAP; i++) {
+
+        VK_CHECK(vkCreateCommandPool(_device, &commandPoolInfo, nullptr, &_frames[i]._commandPool));
+
+        // allocate the default command buffer that we will use for rendering
+        VkCommandBufferAllocateInfo cmdAllocInfo = vkinit::command_buffer_allocate_info(_frames[i]._commandPool, 1);
+
+        VK_CHECK(vkAllocateCommandBuffers(_device, &cmdAllocInfo, &_frames[i]._mainCommandBuffer));
+    }
 }
 
 void VulkanEngine::init_sync_structures()
@@ -141,7 +156,7 @@ void VulkanEngine::create_swapchain(uint32_t width, uint32_t height)
     vkb::Swapchain vkbSwapchain = swapchainBuilder
         //.use_default_format_selection()
         .set_desired_format(VkSurfaceFormatKHR{ .format = _swapchainImageFormat, .colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR })
-        //use vsync present mode
+        // Use vsync present mode
         .set_desired_present_mode(VK_PRESENT_MODE_FIFO_KHR)
         .set_desired_extent(width, height)
         .add_image_usage_flags(VK_IMAGE_USAGE_TRANSFER_DST_BIT)
@@ -149,7 +164,7 @@ void VulkanEngine::create_swapchain(uint32_t width, uint32_t height)
         .value();
 
     _swapchainExtent = vkbSwapchain.extent;
-    //store swapchain and its related images
+    // Store swapchain and its related images
     _swapchain = vkbSwapchain.swapchain;
     _swapchainImages = vkbSwapchain.get_images().value();
     _swapchainImageViews = vkbSwapchain.get_image_views().value();
@@ -170,6 +185,12 @@ void VulkanEngine::cleanup()
 {
     // Components are deleted in the opposite order they were created
     if (_isInitialized) {
+        vkDeviceWaitIdle(_device);
+
+        for (int i = 0; i < FRAME_OVERLAP; i++) {
+            vkDestroyCommandPool(_device, _frames[i]._commandPool, nullptr);
+        }
+
         destroy_swapchain();
 
         vkDestroySurfaceKHR(_instance, _surface, nullptr);
