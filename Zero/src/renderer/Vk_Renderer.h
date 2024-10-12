@@ -4,6 +4,32 @@
 #include "core/core.h"
 #include <shared/vk_types.h>
 
+struct AllocatedImage {
+	VkImage image;
+	VkImageView imageView;
+	VmaAllocation allocation;
+	VkExtent3D imageExtent;
+	VkFormat imageFormat;
+};
+
+struct DeletionQueue
+{
+	std::deque<std::function<void()>> deletors;
+
+	void push_function(std::function<void()>&& function) {
+		deletors.push_back(function);
+	}
+
+	void flush() {
+		// reverse iterate the deletion queue to execute all the functions
+		for (auto it = deletors.rbegin(); it != deletors.rend(); it++) {
+			(*it)(); //call functors
+		}
+
+		deletors.clear();
+	}
+};
+
 struct FrameData {
 
 	VkCommandPool _commandPool;
@@ -11,6 +37,8 @@ struct FrameData {
 
 	VkSemaphore _swapchainSemaphore, _renderSemaphore;
 	VkFence _renderFence;
+
+	DeletionQueue _deletionQueue;
 };
 
 constexpr unsigned int FRAME_OVERLAP = 2;
@@ -22,6 +50,8 @@ public:
     void Shutdown() override;
 	void SetClearColor(glm::vec4 clearColor) override { _clearColor = clearColor; }
     void Draw() override;
+
+	void DrawBackground(VkCommandBuffer cmd);
 
 	FrameData _frames[FRAME_OVERLAP];
 
@@ -56,5 +86,11 @@ private:
 	std::vector<VkImage> _swapchainImages;
 	std::vector<VkImageView> _swapchainImageViews;
 	VkExtent2D _swapchainExtent;
+
+	DeletionQueue _mainDeletionQueue;
+	VmaAllocator _allocator;
+
+	AllocatedImage _drawImage;
+	VkExtent2D _drawExtent;
 };
 
