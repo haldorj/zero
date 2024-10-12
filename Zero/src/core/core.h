@@ -1,3 +1,3 @@
 #pragma once
 
-constexpr int WIDTH = 1600, HEIGHT = 900;
+constexpr int EXTENT_WIDTH = 1600, EXTENT_HEIGHT = 900;

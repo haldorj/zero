@@ -14,29 +14,29 @@ struct AllocatedImage {
 
 struct DeletionQueue
 {
-	std::deque<std::function<void()>> deletors;
+    std::deque<std::function<void()>> deletionFunctions;
 
-	void push_function(std::function<void()>&& function) {
-		deletors.push_back(function);
-	}
+    void push_function(std::function<void()>&& function) {
+        deletionFunctions.push_back(function);
+    }
 
-	void flush() {
-		// reverse iterate the deletion queue to execute all the functions
-		for (auto it = deletors.rbegin(); it != deletors.rend(); it++) {
-			(*it)(); //call functors
-		}
+    void flush() {
+        // reverse iterate the deletion queue to execute all the functions
+        for (auto it = deletionFunctions.rbegin(); it != deletionFunctions.rend(); it++) {
+            (*it)(); //call functors
+        }
 
-		deletors.clear();
-	}
+        deletionFunctions.clear();
+    }
 };
 
 struct FrameData {
 
-	VkCommandPool _commandPool;
-	VkCommandBuffer _mainCommandBuffer;
+	VkCommandPool _commandPool{};
+	VkCommandBuffer _mainCommandBuffer{};
 
-	VkSemaphore _swapchainSemaphore, _renderSemaphore;
-	VkFence _renderFence;
+	VkSemaphore _swapchainSemaphore{}, _renderSemaphore{};
+	VkFence _renderFence{};
 
 	DeletionQueue _deletionQueue;
 };
@@ -57,8 +57,8 @@ public:
 
 	FrameData& get_current_frame() { return _frames[_frameNumber % FRAME_OVERLAP]; };
 
-	VkQueue _graphicsQueue;
-	uint32_t _graphicsQueueFamily;
+	VkQueue _graphicsQueue{};
+	uint32_t _graphicsQueueFamily{};
 
 private:
 	void init_vulkan();
@@ -70,27 +70,27 @@ private:
 	void destroy_swapchain();
 
 	int _frameNumber{ 0 };
-	VkExtent2D _windowExtent{ WIDTH , HEIGHT };
+	VkExtent2D _windowExtent{ EXTENT_WIDTH , EXTENT_HEIGHT };
 
-	VkInstance _instance; // Vulkan API context, used to access drivers.
-	VkDebugUtilsMessengerEXT _debug_messenger; // Vulkan debug output handle
-	VkPhysicalDevice _physicalDevice; // A GPU. Used to query physical GPU details, like features, capabilities, memory size, etc.
-	VkDevice _device; // The ìlogicalî GPU context that you actually execute things on.
-	VkSurfaceKHR _surface; // Window surface.
+	VkInstance _instance{}; // Vulkan API context, used to access drivers.
+	VkDebugUtilsMessengerEXT _debug_messenger{}; // Vulkan debug output handle
+	VkPhysicalDevice _physicalDevice{}; // A GPU. Used to query physical GPU details, like features, capabilities, memory size, etc.
+	VkDevice _device{}; // The ‚Äúlogical‚Äù GPU context that you actually execute things on.
+	VkSurfaceKHR _surface{}; // Window surface.
 
-	VkSwapchainKHR _swapchain;
-	VkFormat _swapchainImageFormat;
+	VkSwapchainKHR _swapchain{};
+	VkFormat _swapchainImageFormat{};
 
-	glm::vec4 _clearColor;
+	glm::vec4 _clearColor{};
 
 	std::vector<VkImage> _swapchainImages;
 	std::vector<VkImageView> _swapchainImageViews;
-	VkExtent2D _swapchainExtent;
+	VkExtent2D _swapchainExtent{};
 
 	DeletionQueue _mainDeletionQueue;
-	VmaAllocator _allocator;
+	VmaAllocator _allocator{};
 
-	AllocatedImage _drawImage;
-	VkExtent2D _drawExtent;
+	AllocatedImage _drawImage{};
+	VkExtent2D _drawExtent{};
 };
 

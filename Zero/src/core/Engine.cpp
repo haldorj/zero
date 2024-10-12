@@ -1,15 +1,12 @@
 ﻿#include "Engine.h"
 #include "core/core.h"
 
-#include <shared/vk_initializers.h>
 #include <shared/vk_types.h>
 
 #include "VkBootstrap.h"
 
 #include <chrono>
 #include <thread>
-#include <iostream>
-#include <shared/vk_images.h>
 
 
 Engine* loadedEngine = nullptr;
@@ -23,7 +20,7 @@ void Engine::init()
     loadedEngine = this;
 
     // Choose renderer backend!
-    RendererType rendererType = RendererType::Vulkan;
+    const RendererType rendererType = RendererType::OpenGL;
 
     initGLFW(rendererType);
 
@@ -101,7 +98,7 @@ void Engine::initGLFW(RendererType rendererType)
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     }
     // Create a GLFW window
-    _window = glfwCreateWindow(WIDTH, HEIGHT, "ZeroEngine", nullptr, nullptr);
+    _window = glfwCreateWindow(EXTENT_WIDTH, EXTENT_HEIGHT, "ZeroEngine", nullptr, nullptr);
     if (!_window)
     {
         glfwTerminate();

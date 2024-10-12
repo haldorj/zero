@@ -4,6 +4,12 @@
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\core">
+      <UniqueIdentifier>{C55F2ECF-B12C-89DA-DA45-7782C671BE68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\renderer">
+      <UniqueIdentifier>{936D1A48-7FD0-A9EC-2856-E2A21498756F}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\shared">
       <UniqueIdentifier>{D3351079-BFED-51C6-28F5-2A2214CCECB6}</UniqueIdentifier>
     </Filter>
@@ -36,6 +42,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\core\Engine.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\core.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\OpenGLRenderer.h">
+      <Filter>src\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\Renderer.h">
+      <Filter>src\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\Vk_Renderer.h">
+      <Filter>src\renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\shared\camera.h">
       <Filter>src\shared</Filter>
     </ClInclude>
@@ -56,9 +77,6 @@
     </ClInclude>
     <ClInclude Include="src\shared\vk_types.h">
       <Filter>src\shared</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\Engine.h">
-      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="vendor\VMA\vk_mem_alloc.h">
       <Filter>vendor\VMA</Filter>
@@ -1317,14 +1335,19 @@
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\Renderer.h" />
-    <ClInclude Include="src\renderer\Vk_Renderer.h" />
-    <ClInclude Include="src\core\core.h" />
-    <ClInclude Include="src\renderer\OpenGLRenderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\core\Engine.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\OpenGLRenderer.cpp">
+      <Filter>src\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\Vk_Renderer.cpp">
+      <Filter>src\renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\shared\camera.cpp">
       <Filter>src\shared</Filter>
@@ -1344,13 +1367,8 @@
     <ClCompile Include="src\shared\vk_pipelines.cpp">
       <Filter>src\shared</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\Engine.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\Vk_Renderer.cpp" />
-    <ClCompile Include="src\renderer\OpenGLRenderer.cpp" />
   </ItemGroup>
 </Project>

@@ -3,16 +3,27 @@
 #include <glad/glad.h>
 #include <core/core.h>
 #include <core/Engine.h>
+#include <iostream>
 
 void OpenGLRenderer::Init()
 {
-	printf("ZeroEngine OpenGL \n");
+    std::cout << "ZeroEngine OpenGL \n";
 
-	glfwMakeContextCurrent(Engine::Get().GetWindow());
-	gladLoadGL();
-	glViewport(0, 0, WIDTH, HEIGHT);
+    glfwMakeContextCurrent(Engine::Get().GetWindow());
 
-	glfwSwapInterval(1); // vsync on
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+        return;
+    }
+
+    glViewport(0, 0, EXTENT_WIDTH, EXTENT_HEIGHT);
+
+    glfwSwapInterval(1); // vsync on
+
+    const GLubyte* renderer = glGetString(GL_RENDERER);
+    std::cout << "Chosen GPU: " << "\n";
+    std::cout << "\t" << renderer << "\n";
 }
 
 void OpenGLRenderer::Shutdown()

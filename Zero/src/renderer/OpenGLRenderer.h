@@ -9,11 +9,11 @@ public:
 
 	void Shutdown() override;
 
-	void SetClearColor(glm::vec4 clearColor) override { _clearColor = clearColor; };
+	void SetClearColor(glm::vec4 clearColor) override { _clearColor = clearColor; }
 
 	void Draw() override;
 
 private:
-	glm::vec4 _clearColor;
+	glm::vec4 _clearColor = {};
 };
 

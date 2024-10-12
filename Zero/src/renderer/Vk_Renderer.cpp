@@ -8,8 +8,8 @@
 #include "VkBootstrap.h"
 
 #include <chrono>
-#include <thread>
 #include <iostream>
+#include <thread>
 #include <shared/vk_images.h>
 
 #define VMA_IMPLEMENTATION
@@ -23,7 +23,7 @@ constexpr bool bUseValidationLayers = true;
 
 void Vk_Renderer::Init()
 {
-    printf("ZeroEngine Vulkan \n");
+    std::cout << "ZeroEngine Vulkan \n";
 
     init_vulkan();
     init_swapchain();
