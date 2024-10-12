@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\renderer\Renderer.h" />
     <ClInclude Include="src\shared\camera.h" />
     <ClInclude Include="src\shared\vk_descriptors.h" />
     <ClInclude Include="src\shared\vk_images.h" />
@@ -564,6 +565,7 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrap.h" />
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h" />
+    <ClInclude Include="src\renderer\Vk_Renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
@@ -575,6 +577,7 @@
     <ClCompile Include="src\shared\vk_pipelines.cpp" />
     <ClCompile Include="src\vk_engine.cpp" />
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp" />
+    <ClCompile Include="src\renderer\Vk_Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

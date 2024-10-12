@@ -1317,6 +1317,8 @@
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClInclude>
+    <ClInclude Include="src\renderer\Renderer.h" />
+    <ClInclude Include="src\renderer\Vk_Renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -1346,5 +1348,6 @@
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClCompile>
+    <ClCompile Include="src\renderer\Vk_Renderer.cpp" />
   </ItemGroup>
 </Project>
