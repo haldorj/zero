@@ -3,6 +3,7 @@
 #include <shared/vk_types.h>
 #include <GLFW/glfw3.h>
 #include "renderer/Vk_Renderer.h"
+#include "renderer/OpenGLRenderer.h"
 
 enum class RendererType {
 	OpenGL,
@@ -14,7 +15,7 @@ public:
 	static Renderer* CreateRenderer(RendererType type) {
 		switch (type) {
 		case RendererType::OpenGL:
-			// return new OpenGLRenderer();
+			return new OpenGLRenderer();
 		case RendererType::Vulkan:
 			return new Vk_Renderer();
 		default:
@@ -34,14 +35,17 @@ public:
 	//run main loop
 	void run();
 
+	void initGLFW(RendererType rendererType);
+
 	static Engine& Get();
 
 	GLFWwindow* GetWindow() const { return _window; }
-	
 
 private:
 	bool _isInitialized{ false };
 	bool stop_rendering{ false };
+
+	int32_t _frameNumber{ 0 };
 
 	GLFWwindow* _window;
 	Renderer* _renderer;

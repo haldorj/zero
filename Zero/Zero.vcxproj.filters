@@ -57,7 +57,7 @@
     <ClInclude Include="src\shared\vk_types.h">
       <Filter>src\shared</Filter>
     </ClInclude>
-    <ClInclude Include="src\vk_engine.h">
+    <ClInclude Include="src\core\Engine.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="vendor\VMA\vk_mem_alloc.h">
@@ -1319,6 +1319,8 @@
     </ClInclude>
     <ClInclude Include="src\renderer\Renderer.h" />
     <ClInclude Include="src\renderer\Vk_Renderer.h" />
+    <ClInclude Include="src\core\core.h" />
+    <ClInclude Include="src\renderer\OpenGLRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -1342,12 +1344,13 @@
     <ClCompile Include="src\shared\vk_pipelines.cpp">
       <Filter>src\shared</Filter>
     </ClCompile>
-    <ClCompile Include="src\vk_engine.cpp">
+    <ClCompile Include="src\core\Engine.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\Vk_Renderer.cpp" />
+    <ClCompile Include="src\renderer\OpenGLRenderer.cpp" />
   </ItemGroup>
 </Project>

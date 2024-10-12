@@ -1,6 +1,7 @@
 #pragma once
 
 #include "renderer.h"
+#include "core/core.h"
 #include <shared/vk_types.h>
 
 struct FrameData {
@@ -39,7 +40,7 @@ private:
 	void destroy_swapchain();
 
 	int _frameNumber{ 0 };
-	VkExtent2D _windowExtent{ 1700 , 900 };
+	VkExtent2D _windowExtent{ WIDTH , HEIGHT };
 
 	VkInstance _instance; // Vulkan API context, used to access drivers.
 	VkDebugUtilsMessengerEXT _debug_messenger; // Vulkan debug output handle

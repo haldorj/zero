@@ -1,7 +1,6 @@
 #include "Vk_Renderer.h"
 
-
-#include "vk_engine.h"
+#include "core/Engine.h"
 
 #include <shared/vk_initializers.h>
 #include <shared/vk_types.h>
@@ -21,6 +20,8 @@ constexpr bool bUseValidationLayers = true;
 
 void Vk_Renderer::Init()
 {
+    printf("ZeroEngine Vulkan \n");
+
     init_vulkan();
     init_swapchain();
     init_commands();
@@ -54,7 +55,7 @@ void Vk_Renderer::Shutdown()
 void Vk_Renderer::Draw()
 {
     // We use vkWaitForFences() to wait for the GPU to finish its work.
-// After we reset the fence.
+    // After we reset the fence.
     VK_CHECK(vkWaitForFences(_device, 1, &get_current_frame()._renderFence, true, 1000000000));
     VK_CHECK(vkResetFences(_device, 1, &get_current_frame()._renderFence));
 
