@@ -7,4 +7,4 @@ bin-int/
 *.user
 
 #Premake
-!vendor/bin/premake
+!vendor/bin
