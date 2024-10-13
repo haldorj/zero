@@ -3,6 +3,7 @@
 #include "renderer.h"
 #include "core/core.h"
 #include <shared/vk_types.h>
+#include <shared/vk_descriptors.h>
 
 struct AllocatedImage {
 	VkImage image;
@@ -30,8 +31,8 @@ struct DeletionQueue
     }
 };
 
-struct FrameData {
-
+struct FrameData 
+{
 	VkCommandPool _commandPool{};
 	VkCommandBuffer _mainCommandBuffer{};
 
@@ -52,6 +53,7 @@ public:
     void Draw() override;
 
 	void DrawBackground(VkCommandBuffer cmd);
+	void DrawGeometry(VkCommandBuffer cmd);
 
 	FrameData _frames[FRAME_OVERLAP];
 
@@ -60,11 +62,26 @@ public:
 	VkQueue _graphicsQueue{};
 	uint32_t _graphicsQueueFamily{};
 
+	DescriptorAllocator globalDescriptorAllocator;
+
+	VkDescriptorSet _drawImageDescriptors;
+	VkDescriptorSetLayout _drawImageDescriptorLayout;
+
+	VkPipeline _gradientPipeline;
+	VkPipelineLayout _gradientPipelineLayout;
+	
+	VkPipeline _plainPipeline;
+	VkPipelineLayout _plainPipelineLayout;
+
 private:
 	void init_vulkan();
 	void init_swapchain();
 	void init_commands();
 	void init_sync_structures();
+	void init_descriptors();
+	void init_pipelines();
+	void init_background_pipelines();
+	void init_plain_pipeline();
 
 	void create_swapchain(uint32_t width, uint32_t height);
 	void destroy_swapchain();
@@ -92,5 +109,7 @@ private:
 
 	AllocatedImage _drawImage{};
 	VkExtent2D _drawExtent{};
+
+
 };
 

@@ -20,7 +20,7 @@ void Engine::init()
     loadedEngine = this;
 
     // Choose renderer backend!
-    const RendererType rendererType = RendererType::OpenGL;
+    const RendererAPI rendererType = RendererAPI::Vulkan;
 
     initGLFW(rendererType);
 
@@ -74,7 +74,7 @@ void Engine::run()
     }
 }
 
-void Engine::initGLFW(RendererType rendererType)
+void Engine::initGLFW(RendererAPI rendererType)
 {
     // Initialize GLFW
     if (!glfwInit())
@@ -82,12 +82,12 @@ void Engine::initGLFW(RendererType rendererType)
         throw std::runtime_error("Failed to initialize GLFW");
     }
 
-    if (rendererType == RendererType::Vulkan)
+    if (rendererType == RendererAPI::Vulkan)
     {
         // Set GLFW to not create an OpenGL context
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     }
-    if (rendererType == RendererType::OpenGL)
+    if (rendererType == RendererAPI::OpenGL)
     {
         // Tell GLFW what version of OpenGL we are using 
         // In this case we are using OpenGL 4.6

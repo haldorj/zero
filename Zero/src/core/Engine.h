@@ -5,18 +5,18 @@
 #include "renderer/Vk_Renderer.h"
 #include "renderer/OpenGLRenderer.h"
 
-enum class RendererType {
+enum class RendererAPI {
 	OpenGL,
 	Vulkan
 };
 
 class RendererFactory {
 public:
-	static Renderer* CreateRenderer(RendererType type) {
+	static Renderer* CreateRenderer(RendererAPI type) {
 		switch (type) {
-		case RendererType::OpenGL:
+		case RendererAPI::OpenGL:
 			return new OpenGLRenderer();
-		case RendererType::Vulkan:
+		case RendererAPI::Vulkan:
 			return new Vk_Renderer();
 		default:
 			return nullptr;
@@ -35,7 +35,7 @@ public:
 	//run main loop
 	void run();
 
-	void initGLFW(RendererType rendererType);
+	void initGLFW(RendererAPI rendererType);
 
 	static Engine& Get();
 
