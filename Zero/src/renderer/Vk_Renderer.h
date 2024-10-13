@@ -80,12 +80,9 @@ public:
 
 	GPUMeshBuffers rectangle;
 
-
 	VkFence _immFence;
 	VkCommandBuffer _immCommandBuffer;
 	VkCommandPool _immCommandPool;
-
-
 
 private:
 	void init_vulkan();
@@ -132,7 +129,5 @@ private:
 
 	AllocatedImage _drawImage{};
 	VkExtent2D _drawExtent{};
-
-
 };
 

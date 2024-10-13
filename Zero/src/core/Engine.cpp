@@ -49,7 +49,7 @@ void Engine::draw()
 {
     float flash = std::abs(std::sin(_frameNumber / 240.f));
 
-    _renderer->SetClearColor({ 0, 0, flash, 1});
+    _renderer->SetClearColor({ 0, 0, flash * 0.5, 1});
     _renderer->Draw();
 
     _frameNumber++;

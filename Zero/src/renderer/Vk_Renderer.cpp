@@ -37,19 +37,19 @@ void Vk_Renderer::Init()
 }
 
 void Vk_Renderer::init_default_data() {
-    std::array<Vertex, 4> rect_vertices;
+    std::array<Vertex, 4> rect_vertices{};
 
     rect_vertices[0].position = { 0.5,-0.5, 0 };
     rect_vertices[1].position = { 0.5,0.5, 0 };
     rect_vertices[2].position = { -0.5,-0.5, 0 };
     rect_vertices[3].position = { -0.5,0.5, 0 };
 
-    rect_vertices[0].color = { 0,0, 0,1 };
-    rect_vertices[1].color = { 0.5,0.5,0.5 ,1 };
-    rect_vertices[2].color = { 1,0, 0,1 };
-    rect_vertices[3].color = { 0,1, 0,1 };
+    rect_vertices[0].color = { .2, .8, .2, 1 };
+    rect_vertices[1].color = { .8, .8, .2, 1 };
+    rect_vertices[2].color = { .8, .2, .2, 1 };
+    rect_vertices[3].color = { .2, .2, .8, 1 };
 
-    std::array<uint32_t, 6> rect_indices;
+    std::array<uint32_t, 6> rect_indices{};
 
     rect_indices[0] = 0;
     rect_indices[1] = 1;
@@ -66,7 +66,6 @@ void Vk_Renderer::init_default_data() {
         destroy_buffer(rectangle.indexBuffer);
         destroy_buffer(rectangle.vertexBuffer);
         });
-
 }
 
 void Vk_Renderer::Draw()
@@ -104,7 +103,7 @@ void Vk_Renderer::Draw()
     // The DrawBackground() function is called to clear the draw image with a specified clear color.
     DrawBackground(cmd);
 
-    vkutil::transition_image(cmd, _drawImage.image, VK_IMAGE_LAYOUT_GENERAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+   // vkutil::transition_image(cmd, _drawImage.image, VK_IMAGE_LAYOUT_GENERAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 
     DrawGeometry(cmd);
 
@@ -185,8 +184,6 @@ void Vk_Renderer::DrawGeometry(VkCommandBuffer cmd)
     VkRenderingInfo renderInfo = vkinit::rendering_info(_drawExtent, &colorAttachment, nullptr);
     vkCmdBeginRendering(cmd, &renderInfo);
 
-    vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, _plainPipeline);
-
     //set dynamic viewport and scissor
     VkViewport viewport = {};
     viewport.x = 0;
@@ -206,8 +203,9 @@ void Vk_Renderer::DrawGeometry(VkCommandBuffer cmd)
 
     vkCmdSetScissor(cmd, 0, 1, &scissor);
 
-    //launch a draw command to draw 3 vertices
-    vkCmdDraw(cmd, 3, 1, 0, 0);
+    // launch a draw command to draw 3 vertices
+    // vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, _plainPipeline);
+    // vkCmdDraw(cmd, 3, 1, 0, 0);
 
     vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, _texturedPipeline);
 
@@ -367,7 +365,6 @@ void Vk_Renderer::init_swapchain()
     // Create a VkImageViewCreateInfo structure rview_info to specify the format, image, and aspect (how the image will be viewed) for the drawImage.
     VkImageViewCreateInfo rview_info = vkinit::imageview_create_info(_drawImage.imageFormat, _drawImage.image, VK_IMAGE_ASPECT_COLOR_BIT);
 
-
     // Calls vkCreateImageView() to create an image view for the drawImage using the specified image view info.
     // The image view is stored in the _drawImage.imageView variable.
     VK_CHECK(vkCreateImageView(_device, &rview_info, nullptr, &_drawImage.imageView));
@@ -477,7 +474,7 @@ void Vk_Renderer::init_pipelines()
 {
     init_background_pipelines();
 
-    init_plain_pipeline();
+    // init_plain_pipeline();
     init_textured_pipeline();
 }
 
