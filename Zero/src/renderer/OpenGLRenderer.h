@@ -2,7 +2,7 @@
 
 #include "renderer/Renderer.h"
 
-class OpenGLRenderer : public Renderer
+class OpenGLRenderer : public RendererBase
 {
 public:
 	void Init() override;

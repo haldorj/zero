@@ -5,6 +5,7 @@
 "%VULKAN_SDK%\Bin\glslangValidator.exe" -V "shaders/sky.comp" -o "shaders/compiled/sky.comp.spv"
 "%VULKAN_SDK%\Bin\glslangValidator.exe" -V "shaders/plain_shader.vert" -o "shaders/compiled/plain_shader.vert.spv"
 "%VULKAN_SDK%\Bin\glslangValidator.exe" -V "shaders/plain_shader.frag" -o "shaders/compiled/plain_shader.frag.spv"
-
+"%VULKAN_SDK%\Bin\glslangValidator.exe" -V "shaders/textured.vert" -o "shaders/compiled/textured.vert.spv"
+"%VULKAN_SDK%\Bin\glslangValidator.exe" -V "shaders/textured.frag" -o "shaders/compiled/textured.frag.spv"
 
 pause

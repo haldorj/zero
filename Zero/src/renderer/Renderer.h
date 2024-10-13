@@ -3,9 +3,9 @@
 #include "glm/glm.hpp"
 
 // Renderer interface
-class Renderer {
+class RendererBase {
 public:
-	virtual ~Renderer() = default;
+	virtual ~RendererBase() = default;
 
 	virtual void Init() = 0;
 

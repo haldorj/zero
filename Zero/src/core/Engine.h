@@ -12,7 +12,7 @@ enum class RendererAPI {
 
 class RendererFactory {
 public:
-	static Renderer* CreateRenderer(RendererAPI type) {
+	static RendererBase* CreateRenderer(RendererAPI type) {
 		switch (type) {
 		case RendererAPI::OpenGL:
 			return new OpenGLRenderer();
@@ -48,5 +48,5 @@ private:
 	int32_t _frameNumber{ 0 };
 
 	GLFWwindow* _window;
-	Renderer* _renderer;
+	RendererBase* _renderer;
 };

@@ -44,15 +44,17 @@ struct FrameData
 
 constexpr unsigned int FRAME_OVERLAP = 2;
 
-class Vk_Renderer : public Renderer
+class Vk_Renderer : public RendererBase
 {
 public:
     void Init() override;
+	void init_default_data();
     void Shutdown() override;
 	void SetClearColor(glm::vec4 clearColor) override { _clearColor = clearColor; }
     void Draw() override;
 
 	void DrawBackground(VkCommandBuffer cmd);
+	void DrawComputeBackground(VkCommandBuffer cmd);
 	void DrawGeometry(VkCommandBuffer cmd);
 
 	FrameData _frames[FRAME_OVERLAP];
@@ -73,6 +75,18 @@ public:
 	VkPipeline _plainPipeline;
 	VkPipelineLayout _plainPipelineLayout;
 
+	VkPipelineLayout _texturedPipelineLayout;
+	VkPipeline _texturedPipeline;
+
+	GPUMeshBuffers rectangle;
+
+
+	VkFence _immFence;
+	VkCommandBuffer _immCommandBuffer;
+	VkCommandPool _immCommandPool;
+
+
+
 private:
 	void init_vulkan();
 	void init_swapchain();
@@ -80,11 +94,20 @@ private:
 	void init_sync_structures();
 	void init_descriptors();
 	void init_pipelines();
+
 	void init_background_pipelines();
 	void init_plain_pipeline();
+	void init_textured_pipeline();
 
 	void create_swapchain(uint32_t width, uint32_t height);
 	void destroy_swapchain();
+
+	GPUMeshBuffers uploadMesh(std::span<uint32_t> indices, std::span<Vertex> vertices);
+
+	AllocatedBuffer create_buffer(size_t allocSize, VkBufferUsageFlags usage, VmaMemoryUsage memoryUsage);
+	void destroy_buffer(const AllocatedBuffer& buffer);
+
+	void immediate_submit(std::function<void(VkCommandBuffer cmd)>&& function);
 
 	int _frameNumber{ 0 };
 	VkExtent2D _windowExtent{ EXTENT_WIDTH , EXTENT_HEIGHT };
