@@ -26,6 +26,10 @@ void OpenGLRenderer::Init()
     std::cout << "\t" << renderer << "\n";
 }
 
+void OpenGLRenderer::InitObject(std::span<uint32_t> indices, std::span<Vertex> vertices)
+{
+}
+
 void OpenGLRenderer::Shutdown()
 {
 

@@ -8,31 +8,57 @@
 #include <chrono>
 #include <thread>
 
+// Choose RendererAPI
+RendererAPI rendererType = RendererAPI::OpenGL;
 
 Engine* loadedEngine = nullptr;
-
 Engine& Engine::Get() { return *loadedEngine; }
 
-void Engine::init()
+void Engine::CreateRectangle()
+{
+    std::array<Vertex, 4> rect_vertices{};
+
+    rect_vertices[0].position = { 0.5,-0.5, 0 };
+    rect_vertices[1].position = { 0.5,0.5, 0 };
+    rect_vertices[2].position = { -0.5,-0.5, 0 };
+    rect_vertices[3].position = { -0.5,0.5, 0 };
+
+    rect_vertices[0].color = { .2, .8, .2, 1 };
+    rect_vertices[1].color = { .8, .8, .2, 1 };
+    rect_vertices[2].color = { .8, .2, .2, 1 };
+    rect_vertices[3].color = { .2, .2, .8, 1 };
+
+    std::array<uint32_t, 6> rect_indices{};
+
+    rect_indices[0] = 0;
+    rect_indices[1] = 1;
+    rect_indices[2] = 2;
+
+    rect_indices[3] = 2;
+    rect_indices[4] = 1;
+    rect_indices[5] = 3;
+
+    _renderer->InitObject(rect_indices, rect_vertices);
+}
+
+void Engine::Init()
 {
     // Only one engine initialization is allowed with the application.
     assert(loadedEngine == nullptr);
     loadedEngine = this;
 
-    // Choose renderer backend!
-    const RendererAPI rendererType = RendererAPI::Vulkan;
-
-    initGLFW(rendererType);
+    InitGLFW(rendererType);
 
     // Initialize the renderer
     _renderer = RendererFactory::CreateRenderer(rendererType);
     _renderer->Init();
+    CreateRectangle();
 
     // everything went fine
     _isInitialized = true;
 }
 
-void Engine::cleanup()
+void Engine::Cleanup()
 {
     if (_isInitialized)
     {
@@ -45,7 +71,7 @@ void Engine::cleanup()
     loadedEngine = nullptr;
 }
 
-void Engine::draw()
+void Engine::Draw()
 {
     float flash = std::abs(std::sin(_frameNumber / 240.f));
 
@@ -55,7 +81,7 @@ void Engine::draw()
     _frameNumber++;
 }
 
-void Engine::run()
+void Engine::Run()
 {
     // main loop
     while (!glfwWindowShouldClose(_window))
@@ -70,11 +96,11 @@ void Engine::run()
             continue;
         }
 
-        draw();
+        Draw();
     }
 }
 
-void Engine::initGLFW(RendererAPI rendererType)
+void Engine::InitGLFW(RendererAPI rendererType)
 {
     // Initialize GLFW
     if (!glfwInit())

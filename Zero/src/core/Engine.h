@@ -26,16 +26,17 @@ public:
 
 class Engine {
 public:
+	void CreateRectangle();
 	//initializes everything in the engine
-	void init();
+	void Init();
 	//shuts down the engine
-	void cleanup();
+	void Cleanup();
 	//draw loop
-	void draw();
+	void Draw();
 	//run main loop
-	void run();
+	void Run();
 
-	void initGLFW(RendererAPI rendererType);
+	void InitGLFW(RendererAPI rendererType);
 
 	static Engine& Get();
 

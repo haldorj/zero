@@ -7,9 +7,9 @@ int main(int argc, char* argv[])
 {
 	Engine engine;
 
-	engine.init();
-	engine.run();
-	engine.cleanup();
+	engine.Init();
+	engine.Run();
+	engine.Cleanup();
 
 	return 0;
 }
