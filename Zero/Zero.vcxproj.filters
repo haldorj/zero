@@ -1335,6 +1335,10 @@
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClInclude>
+    <ClInclude Include="src\renderer\OpenGL\OpenGLShader.h" />
+    <ClInclude Include="src\renderer\OpenGL\VAO.h" />
+    <ClInclude Include="src\renderer\OpenGL\VBO.h" />
+    <ClInclude Include="src\renderer\OpenGL\EBO.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\Engine.cpp">
@@ -1370,5 +1374,9 @@
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClCompile>
+    <ClCompile Include="src\renderer\OpenGL\OpenGLShader.cpp" />
+    <ClCompile Include="src\renderer\OpenGL\VAO.cpp" />
+    <ClCompile Include="src\renderer\OpenGL\VBO.cpp" />
+    <ClCompile Include="src\renderer\OpenGL\EBO.cpp" />
   </ItemGroup>
 </Project>

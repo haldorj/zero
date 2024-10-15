@@ -137,6 +137,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\renderer\OpenGL\EBO.h" />
+    <ClInclude Include="src\renderer\OpenGL\OpenGLShader.h" />
     <ClInclude Include="src\core\Engine.h" />
     <ClInclude Include="src\core\core.h" />
     <ClInclude Include="src\renderer\OpenGLRenderer.h" />
@@ -149,6 +151,8 @@
     <ClInclude Include="src\shared\vk_loader.h" />
     <ClInclude Include="src\shared\vk_pipelines.h" />
     <ClInclude Include="src\shared\vk_types.h" />
+    <ClInclude Include="src\renderer\OpenGL\VAO.h" />
+    <ClInclude Include="src\renderer\OpenGL\VBO.h" />
     <ClInclude Include="vendor\VMA\vk_mem_alloc.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
@@ -570,6 +574,8 @@
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\renderer\OpenGL\EBO.cpp" />
+    <ClCompile Include="src\renderer\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="src\core\Engine.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\renderer\OpenGLRenderer.cpp" />
@@ -580,6 +586,8 @@
     <ClCompile Include="src\shared\vk_initializers.cpp" />
     <ClCompile Include="src\shared\vk_loader.cpp" />
     <ClCompile Include="src\shared\vk_pipelines.cpp" />
+    <ClCompile Include="src\renderer\OpenGL\VAO.cpp" />
+    <ClCompile Include="src\renderer\OpenGL\VBO.cpp" />
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp" />
   </ItemGroup>
   <ItemGroup>

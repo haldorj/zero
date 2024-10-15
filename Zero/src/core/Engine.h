@@ -48,6 +48,6 @@ private:
 
 	int32_t _frameNumber{ 0 };
 
-	GLFWwindow* _window;
-	RendererBase* _renderer;
+	GLFWwindow* _window = nullptr;
+	RendererBase* _renderer = nullptr;
 };
