@@ -9,7 +9,7 @@
 #include <thread>
 
 // Choose RendererAPI
-RendererAPI rendererType = RendererAPI::OpenGL;
+RendererAPI rendererType = RendererAPI::Vulkan;
 
 Engine* loadedEngine = nullptr;
 Engine& Engine::Get() { return *loadedEngine; }
@@ -51,8 +51,20 @@ void Engine::Init()
 
     // Initialize the renderer
     _renderer = RendererFactory::CreateRenderer(rendererType);
-    _renderer->Init();
-    CreateRectangle();
+    
+    switch (rendererType)
+    {
+    case RendererAPI::OpenGL:
+        CreateRectangle();
+        _renderer->Init();
+        break;
+    case RendererAPI::Vulkan:
+        _renderer->Init();
+        CreateRectangle();
+        break;
+    default:
+        break;
+    }
 
     // everything went fine
     _isInitialized = true;

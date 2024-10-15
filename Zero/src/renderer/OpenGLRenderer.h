@@ -19,9 +19,10 @@ private:
 	void InitShaders();
 
 	glm::vec4 _clearColor = {};
-	OpenGLShader* shaderProgram;
-	VAO* VAO1;
-	VBO* VBO1;
-	EBO* EBO1;
+	std::unique_ptr<OpenGLShader> shaderProgram;
+	std::unique_ptr<VAO> VAO1;
+	std::unique_ptr<VBO> VBO1;
+	std::unique_ptr<EBO> EBO1;
+	GLuint uniID = 0;
 };
 

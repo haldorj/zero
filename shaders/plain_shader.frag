@@ -1,7 +1,13 @@
 #version 450
 
-layout (location = 0) out vec4 FragColor;
+// Input from vertex shader
+layout (location = 0) in vec3 inColor;
+
+// Output to the framebuffer
+layout (location = 0) out vec4 outFragColor;
+
 void main()
 {
-   FragColor = vec4(0.8f, 0.3f, 0.02f, 1.0f);
+   // Output the color with an alpha value of 1.0 (opaque)
+   outFragColor = vec4(inColor, 1.0f);
 }

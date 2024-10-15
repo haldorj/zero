@@ -21,7 +21,11 @@ public:
 	// Deletes the Shader Program
 	void Delete();
 
+	GLuint GetID() const { return ID; }
+
 private:
+	void compileErrors(unsigned int shader, const char* type);
+
 	// Reference ID of the Shader Program
 	GLuint ID;
 };

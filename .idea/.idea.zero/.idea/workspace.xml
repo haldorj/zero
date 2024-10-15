@@ -8,17 +8,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c1e6d020-1b85-454d-b55c-363ab39862b5" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.zero/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.zero/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Zero/Vendor/GLFW" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/Vendor/GLFW" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Zero/Vendor/imgui" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/Vendor/imgui" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/Zero.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/Zero.vcxproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/Zero.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/Zero.vcxproj.filters" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/core/Engine.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/core/Engine.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Zero/src/renderer/OpenGLRenderer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/OpenGLRenderer.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Zero/src/renderer/OpenGLRenderer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/OpenGLRenderer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shaders/compiled/plain_shader.frag.spv" beforeDir="false" afterPath="$PROJECT_DIR$/shaders/compiled/plain_shader.frag.spv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shaders/compiled/plain_shader.vert.spv" beforeDir="false" afterPath="$PROJECT_DIR$/shaders/compiled/plain_shader.vert.spv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shaders/plain_shader.frag" beforeDir="false" afterPath="$PROJECT_DIR$/shaders/plain_shader.frag" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shaders/plain_shader.vert" beforeDir="false" afterPath="$PROJECT_DIR$/shaders/plain_shader.vert" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,6 +23,10 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
@@ -159,7 +157,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1728964387067</updated>
-      <workItem from="1728964389261" duration="1277000" />
+      <workItem from="1728964389261" duration="1975000" />
     </task>
     <servers />
   </component>
