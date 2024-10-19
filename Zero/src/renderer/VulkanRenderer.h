@@ -15,6 +15,15 @@ struct AllocatedImage {
 	VkFormat ImageFormat;
 };
 
+struct GPUSceneData {
+	glm::mat4 view;
+	glm::mat4 proj;
+	glm::mat4 viewproj;
+	glm::vec4 ambientColor;
+	glm::vec4 sunlightDirection; // w for sun power
+	glm::vec4 sunlightColor;
+};
+
 struct DeletionQueue
 {
     std::deque<std::function<void()>> DeletionFunctions;
@@ -43,6 +52,7 @@ struct FrameData
 	VkFence RenderFence{};
 
 	DeletionQueue DeletionQueue;
+	DescriptorAllocatorGrowable FrameDescriptors;
 };
 
 constexpr unsigned int FRAME_OVERLAP = 2;
@@ -133,5 +143,9 @@ private:
 	VkFence m_ImmFence;
 	VkCommandBuffer m_ImmCommandBuffer;
 	VkCommandPool m_ImmCommandPool;
+
+	GPUSceneData sceneData;
+
+	VkDescriptorSetLayout m_GpuSceneDataDescriptorLayout;
 };
 
