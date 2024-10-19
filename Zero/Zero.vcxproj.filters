@@ -10,6 +10,9 @@
     <Filter Include="src\renderer">
       <UniqueIdentifier>{936D1A48-7FD0-A9EC-2856-E2A21498756F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\renderer\OpenGL">
+      <UniqueIdentifier>{67B3A77A-D314-8588-5C82-CB3AC8E2BB47}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\shared">
       <UniqueIdentifier>{D3351079-BFED-51C6-28F5-2A2214CCECB6}</UniqueIdentifier>
     </Filter>
@@ -48,13 +51,25 @@
     <ClInclude Include="src\core\core.h">
       <Filter>src\core</Filter>
     </ClInclude>
+    <ClInclude Include="src\renderer\OpenGL\EBO.h">
+      <Filter>src\renderer\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\OpenGL\OpenGLShader.h">
+      <Filter>src\renderer\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\OpenGL\VAO.h">
+      <Filter>src\renderer\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\OpenGL\VBO.h">
+      <Filter>src\renderer\OpenGL</Filter>
+    </ClInclude>
     <ClInclude Include="src\renderer\OpenGLRenderer.h">
       <Filter>src\renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\Renderer.h">
       <Filter>src\renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\Vk_Renderer.h">
+    <ClInclude Include="src\renderer\VulkanRenderer.h">
       <Filter>src\renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\shared\camera.h">
@@ -1335,10 +1350,6 @@
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\OpenGL\OpenGLShader.h" />
-    <ClInclude Include="src\renderer\OpenGL\VAO.h" />
-    <ClInclude Include="src\renderer\OpenGL\VBO.h" />
-    <ClInclude Include="src\renderer\OpenGL\EBO.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\Engine.cpp">
@@ -1347,10 +1358,22 @@
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\renderer\OpenGL\EBO.cpp">
+      <Filter>src\renderer\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\OpenGL\OpenGLShader.cpp">
+      <Filter>src\renderer\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\OpenGL\VAO.cpp">
+      <Filter>src\renderer\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\OpenGL\VBO.cpp">
+      <Filter>src\renderer\OpenGL</Filter>
+    </ClCompile>
     <ClCompile Include="src\renderer\OpenGLRenderer.cpp">
       <Filter>src\renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\Vk_Renderer.cpp">
+    <ClCompile Include="src\renderer\VulkanRenderer.cpp">
       <Filter>src\renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\shared\camera.cpp">
@@ -1374,9 +1397,5 @@
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\OpenGL\OpenGLShader.cpp" />
-    <ClCompile Include="src\renderer\OpenGL\VAO.cpp" />
-    <ClCompile Include="src\renderer\OpenGL\VBO.cpp" />
-    <ClCompile Include="src\renderer\OpenGL\EBO.cpp" />
   </ItemGroup>
 </Project>

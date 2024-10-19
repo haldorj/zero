@@ -2,7 +2,7 @@
 
 #include <shared/vk_types.h>
 #include <GLFW/glfw3.h>
-#include "renderer/Vk_Renderer.h"
+#include "renderer/VulkanRenderer.h"
 #include "renderer/OpenGLRenderer.h"
 
 enum class RendererAPI {
@@ -17,7 +17,7 @@ public:
 		case RendererAPI::OpenGL:
 			return new OpenGLRenderer();
 		case RendererAPI::Vulkan:
-			return new Vk_Renderer();
+			return new VulkanRenderer();
 		default:
 			return nullptr;
 		}
@@ -50,4 +50,5 @@ private:
 
 	GLFWwindow* _window = nullptr;
 	RendererBase* _renderer = nullptr;
+
 };
