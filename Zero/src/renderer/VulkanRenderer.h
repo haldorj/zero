@@ -1,10 +1,10 @@
 #pragma once
 
+#include <shared/vk_descriptors.h>
+#include <shared/vk_types.h>
 #include "renderer.h"
 #include "core/core.h"
 #include "glm/glm.hpp"
-#include <shared/vk_types.h>
-#include <shared/vk_descriptors.h>
 
 #include <ranges>
 
@@ -107,6 +107,8 @@ namespace Zero
         AllocatedImage CreateImage(VkExtent3D size, VkFormat format, VkImageUsageFlags usage, bool mipmapped = false);
         AllocatedImage CreateImage(void* data, VkExtent3D size, VkFormat format, VkImageUsageFlags usage,
                                    bool mipmapped = false);
+        AllocatedImage CreateImageFromFile(const std::string& filePath, VkFormat format, VkImageUsageFlags usage,
+                                           bool mipmapped);
         void DestroyImage(const AllocatedImage& image) const;
 
 
@@ -167,7 +169,8 @@ namespace Zero
         VkDescriptorSetLayout m_GpuSceneDataDescriptorLayout{};
 
         AllocatedImage m_ErrorCheckerboardImage;
-
+        AllocatedImage m_DogImage;
+        
         VkSampler m_DefaultSamplerLinear = nullptr;
         VkSampler m_DefaultSamplerNearest = nullptr;
 

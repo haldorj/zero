@@ -9,17 +9,19 @@
 
 #include <chrono>
 #include <iostream>
-#include <thread>
 #include <shared/vk_images.h>
 
 #define VMA_IMPLEMENTATION
-#include "vk_mem_alloc.h"
 #include <shared/vk_pipelines.h>
+#include "vk_mem_alloc.h"
 
 #include <GLFW/glfw3.h>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/transform.hpp>
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 
 namespace Zero
@@ -75,6 +77,9 @@ namespace Zero
         m_ErrorCheckerboardImage = CreateImage(pixels.data(), VkExtent3D{16, 16, 1}, VK_FORMAT_R8G8B8A8_UNORM,
                                                VK_IMAGE_USAGE_SAMPLED_BIT);
 
+        m_DogImage = CreateImageFromFile("../assets/images/image.png", VK_FORMAT_R8G8B8A8_UNORM,
+                                         VK_IMAGE_USAGE_SAMPLED_BIT, true);
+
         VkSamplerCreateInfo samplerCreateInfo = {.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO};
 
         samplerCreateInfo.magFilter = VK_FILTER_NEAREST;
@@ -92,6 +97,7 @@ namespace Zero
             vkDestroySampler(m_Device, m_DefaultSamplerLinear, nullptr);
 
             DestroyImage(m_ErrorCheckerboardImage);
+            DestroyImage(m_DogImage);
         });
     }
 
@@ -362,7 +368,7 @@ namespace Zero
         VkDescriptorSet imageSet = GetCurrentFrame().FrameDescriptors.Allocate(m_Device, m_SingleImageDescriptorLayout);
         {
             DescriptorWriter descriptorWriter;
-            descriptorWriter.WriteImage(0, m_ErrorCheckerboardImage.ImageView, m_DefaultSamplerNearest,
+            descriptorWriter.WriteImage(0, m_DogImage.ImageView, m_DefaultSamplerNearest,
                                         VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
                                         VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 
@@ -373,14 +379,15 @@ namespace Zero
                                 nullptr);
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        glm::mat4 view = glm::translate(glm::vec3{0, 0, -5});
+        glm::mat4 view = glm::translate(glm::vec3{0, 0, -2});
         // camera projection
         glm::mat4 projection = glm::perspective(glm::radians(70.f),
-                                                (float)m_DrawExtent.width / (float)m_DrawExtent.height, 10000.f, 0.1f);
-        projection[1][1] *= -1;
+                                                static_cast<float>(m_DrawExtent.width) / static_cast<float>(m_DrawExtent
+                                                    .height), 0.1f, 1000.f);
+        // projection[1][1] *= -1;
 
         GPUDrawPushConstants pushConstants;
-        pushConstants.WorldMatrix = glm::mat4{1};
+        pushConstants.WorldMatrix = projection * view;
         pushConstants.VertexBuffer = m_Rectangle.VertexBufferAddress;
 
         // vkCmdPushConstants(cmd, m_PlainPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants),
@@ -1134,6 +1141,74 @@ namespace Zero
         DestroyBuffer(uploadBuffer);
 
         return new_image;
+    }
+
+    // Function to load an image from a file using stb_image and create an AllocatedImage
+    AllocatedImage VulkanRenderer::CreateImageFromFile(const std::string& filePath, VkFormat format, VkImageUsageFlags usage, bool mipmapped)
+    {
+        // Load image data using stb_image
+        int texWidth, texHeight, texChannels;
+        stbi_uc* pixels = stbi_load(filePath.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+        if (!pixels)
+        {
+            throw std::runtime_error("Failed to load texture image!");
+        }
+
+        VkExtent3D imageExtent = {
+            static_cast<uint32_t>(texWidth),
+            static_cast<uint32_t>(texHeight),
+            1
+        };
+
+        // Calculate the size of the image data
+        VkDeviceSize imageSize = texWidth * texHeight * 4;
+
+        CreateImage(pixels, imageExtent, format, usage, mipmapped);
+
+        // Create a staging buffer
+        AllocatedBuffer stagingBuffer = CreateBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                                                     VMA_MEMORY_USAGE_CPU_ONLY);
+
+        // Copy image data to the staging buffer
+        void* data;
+        vmaMapMemory(m_Allocator, stagingBuffer.Allocation, &data);
+        memcpy(data, pixels, static_cast<size_t>(imageSize));
+        vmaUnmapMemory(m_Allocator, stagingBuffer.Allocation);
+
+        // Free the image data loaded by stb_image
+        stbi_image_free(pixels);
+
+        // Create the Vulkan image
+        AllocatedImage newImage = CreateImage(imageExtent, format, usage | VK_IMAGE_USAGE_TRANSFER_DST_BIT, mipmapped);
+
+        ImmediateSubmit([&](VkCommandBuffer cmd)
+        {
+            VkUtil::TransitionImage(cmd, newImage.Image, VK_IMAGE_LAYOUT_UNDEFINED,
+                                    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+
+            VkBufferImageCopy copyRegion = {};
+            copyRegion.bufferOffset = 0;
+            copyRegion.bufferRowLength = 0;
+            copyRegion.bufferImageHeight = 0;
+
+            copyRegion.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+            copyRegion.imageSubresource.mipLevel = 0;
+            copyRegion.imageSubresource.baseArrayLayer = 0;
+            copyRegion.imageSubresource.layerCount = 1;
+            copyRegion.imageExtent = imageExtent;
+
+            // copy the buffer into the image
+            vkCmdCopyBufferToImage(cmd, stagingBuffer.Buffer, newImage.Image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1,
+                                   &copyRegion);
+
+            VkUtil::TransitionImage(cmd, newImage.Image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                                    VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+        });
+
+        // Clean up the staging buffer
+        DestroyBuffer(stagingBuffer);
+
+        return newImage;
     }
 
     void VulkanRenderer::DestroyImage(const AllocatedImage& image) const

@@ -9,29 +9,8 @@
   <component name="ChangeListManager">
     <list default="true" id="c1e6d020-1b85-454d-b55c-363ab39862b5" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.zero/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.zero/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CompileShaders.bat" beforeDir="false" afterPath="$PROJECT_DIR$/CompileShaders.bat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/Zero.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/Zero.vcxproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/Camera.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/Camera.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/core/Engine.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/core/Application.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/core/Engine.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/core/Application.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/renderer/OpenGL/OpenGLShader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/OpenGL/OpenGLShader.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/renderer/OpenGL/OpenGLShader.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/OpenGL/OpenGLShader.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/renderer/OpenGLRenderer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/OpenGLRenderer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/renderer/OpenGLRenderer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/OpenGLRenderer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/renderer/Renderer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/Renderer.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Zero/src/renderer/VulkanRenderer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/VulkanRenderer.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Zero/src/renderer/VulkanRenderer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/VulkanRenderer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/shared/vk_images.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/shared/vk_images.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/shared/vk_images.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/shared/vk_images.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/shared/vk_pipelines.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/shared/vk_pipelines.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/shared/vk_pipelines.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/shared/vk_pipelines.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shaders/compiled/plain_shader.frag.spv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shaders/compiled/plain_shader.vert.spv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shaders/compiled/textured.frag.spv" beforeDir="false" afterPath="$PROJECT_DIR$/shaders/compiled/textured.frag.spv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shaders/textured - Copy.frag" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shaders/textured.frag" beforeDir="false" afterPath="$PROJECT_DIR$/shaders/textured.frag" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shaders/textured.vert" beforeDir="false" afterPath="$PROJECT_DIR$/shaders/textured.vert" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,6 +35,10 @@
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="cidr-memory-view://42" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Zero/Vendor/vk-bootstrap/VkBootstrapDispatch.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Zero/src/renderer/OpenGL/OpenGLShader.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Zero/src/renderer/OpenGL/OpenGLShader.h" root0="FORCE_HIGHLIGHTING" />
@@ -162,7 +145,7 @@
       <workItem from="1729296121142" duration="1449000" />
       <workItem from="1729301343695" duration="775000" />
       <workItem from="1729305489036" duration="1439000" />
-      <workItem from="1729388645057" duration="10733000" />
+      <workItem from="1729388645057" duration="12244000" />
     </task>
     <servers />
   </component>
