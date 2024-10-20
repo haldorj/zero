@@ -31,28 +31,28 @@
     } while (0)
 
 struct Vertex {
-    glm::vec3 position;
-    float uv_x;
-    glm::vec3 normal;
-    float uv_y;
-    glm::vec4 color;
+    glm::vec3 Position;
+    float UvX;
+    glm::vec3 Normal;
+    float UvY;
+    glm::vec4 Color;
 };
 
 struct AllocatedBuffer {
-    VkBuffer buffer;
-    VmaAllocation allocation;
-    VmaAllocationInfo info;
+    VkBuffer Buffer;
+    VmaAllocation Allocation;
+    VmaAllocationInfo Info;
 };
 
 // holds the resources needed for a mesh
 struct GPUMeshBuffers {
-    AllocatedBuffer indexBuffer;
-    AllocatedBuffer vertexBuffer;
-    VkDeviceAddress vertexBufferAddress;
+    AllocatedBuffer IndexBuffer;
+    AllocatedBuffer VertexBuffer;
+    VkDeviceAddress VertexBufferAddress;
 };
 
 // push constants for our mesh object draws
 struct GPUDrawPushConstants {
-    glm::mat4 worldMatrix;
-    VkDeviceAddress vertexBuffer;
+    glm::mat4 WorldMatrix;
+    VkDeviceAddress VertexBuffer;
 };

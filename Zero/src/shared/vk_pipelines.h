@@ -1,35 +1,35 @@
 ﻿#pragma once 
 #include <shared/vk_types.h>
 
-namespace vkutil {
-	bool load_shader_module(const char* filePath, VkDevice device, VkShaderModule* outShaderModule);
+namespace VkUtil {
+	bool LoadShaderModule(const char* filePath, VkDevice device, VkShaderModule* outShaderModule);
 };
 
 class PipelineBuilder {
 public:
-    std::vector<VkPipelineShaderStageCreateInfo> _shaderStages;
+    std::vector<VkPipelineShaderStageCreateInfo> ShaderStages;
 
-    VkPipelineInputAssemblyStateCreateInfo _inputAssembly;
-    VkPipelineRasterizationStateCreateInfo _rasterizer;
-    VkPipelineColorBlendAttachmentState _colorBlendAttachment;
-    VkPipelineMultisampleStateCreateInfo _multisampling;
-    VkPipelineLayout _pipelineLayout;
-    VkPipelineDepthStencilStateCreateInfo _depthStencil;
-    VkPipelineRenderingCreateInfo _renderInfo;
-    VkFormat _colorAttachmentformat;
+    VkPipelineInputAssemblyStateCreateInfo InputAssembly;
+    VkPipelineRasterizationStateCreateInfo Rasterizer;
+    VkPipelineColorBlendAttachmentState ColorBlendAttachment;
+    VkPipelineMultisampleStateCreateInfo Multisampling;
+    VkPipelineLayout PipelineLayout;
+    VkPipelineDepthStencilStateCreateInfo DepthStencil;
+    VkPipelineRenderingCreateInfo RenderInfo;
+    VkFormat ColorAttachmentFormat;
 
-    PipelineBuilder() { clear(); }
+    PipelineBuilder() { Clear(); }
 
-    void clear();
+    void Clear();
 
-    VkPipeline build_pipeline(VkDevice device);
-    void set_shaders(VkShaderModule vertexShader, VkShaderModule fragmentShader);
-    void set_input_topology(VkPrimitiveTopology topology);
-    void set_polygon_mode(VkPolygonMode mode);
-    void set_cull_mode(VkCullModeFlags cullMode, VkFrontFace frontFace);
-    void set_multisampling_none();
-    void disable_blending();
-    void set_color_attachment_format(VkFormat format);
-    void set_depth_format(VkFormat format);
-    void disable_depthtest();
+    VkPipeline BuildPipeline(VkDevice device) const;
+    void SetShaders(VkShaderModule vertexShader, VkShaderModule fragmentShader);
+    void SetInputTopology(VkPrimitiveTopology topology);
+    void SetPolygonMode(VkPolygonMode mode);
+    void SetCullMode(VkCullModeFlags cullMode, VkFrontFace frontFace);
+    void SetMultisamplingNone();
+    void DisableBlending();
+    void SetColorAttachmentFormat(VkFormat format);
+    void SetDepthFormat(VkFormat format);
+    void DisableDepthTest();
 };

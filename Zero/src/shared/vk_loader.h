@@ -5,19 +5,16 @@
 #include <filesystem>
 
 struct GeoSurface {
-    uint32_t startIndex;
-    uint32_t count;
+    uint32_t StartIndex;
+    uint32_t Count;
 };
 
 struct MeshAsset {
-    std::string name;
+    std::string Name;
 
-    std::vector<GeoSurface> surfaces;
-    GPUMeshBuffers meshBuffers;
+    std::vector<GeoSurface> Surfaces;
+    GPUMeshBuffers MeshBuffers;
 };
 
 //forward declaration
 class VulkanRenderer;
-
-
-std::optional<std::vector<std::shared_ptr<MeshAsset>>> loadGltfMeshes(VulkanRenderer* engine, std::filesystem::path filePath);

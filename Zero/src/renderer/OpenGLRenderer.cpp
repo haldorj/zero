@@ -35,12 +35,12 @@ void OpenGLRenderer::InitObject(std::span<uint32_t> indices, std::span<Vertex> v
 {
 	for (auto &vertex : vertices)
 	{
-		rectVertices.push_back((GLfloat)vertex.position.x); 
-		rectVertices.push_back((GLfloat)vertex.position.y);
-		rectVertices.push_back((GLfloat)vertex.position.z);
-		rectVertices.push_back((GLfloat)vertex.color.r);
-		rectVertices.push_back((GLfloat)vertex.color.g);
-		rectVertices.push_back((GLfloat)vertex.color.b);
+		rectVertices.push_back((GLfloat)vertex.Position.x); 
+		rectVertices.push_back((GLfloat)vertex.Position.y);
+		rectVertices.push_back((GLfloat)vertex.Position.z);
+		rectVertices.push_back((GLfloat)vertex.Color.r);
+		rectVertices.push_back((GLfloat)vertex.Color.g);
+		rectVertices.push_back((GLfloat)vertex.Color.b);
 	}
 	for (auto index : indices)
 	{
@@ -70,7 +70,7 @@ void OpenGLRenderer::Draw()
 	// Bind the VAO so OpenGL knows to use it
 	VAO1->Bind();
 	// Draw primitives, number of indices, datatype of indices, index of indices
-	glDrawElements(GL_TRIANGLES, rectIndeces.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(rectIndeces.size()), GL_UNSIGNED_INT, 0);
 	// Swap the back buffer with the front buffer
 	glfwSwapBuffers(Engine::Get().GetWindow());
 }

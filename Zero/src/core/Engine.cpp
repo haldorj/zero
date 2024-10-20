@@ -18,15 +18,15 @@ void Engine::CreateRectangle()
 {
     std::array<Vertex, 4> rect_vertices{};
 
-    rect_vertices[0].position = { 0.5,-0.5, 0 };
-    rect_vertices[1].position = { 0.5,0.5, 0 };
-    rect_vertices[2].position = { -0.5,-0.5, 0 };
-    rect_vertices[3].position = { -0.5,0.5, 0 };
+    rect_vertices[0].Position = { 0.5,-0.5, 0 };
+    rect_vertices[1].Position = { 0.5,0.5, 0 };
+    rect_vertices[2].Position = { -0.5,-0.5, 0 };
+    rect_vertices[3].Position = { -0.5,0.5, 0 };
 
-    rect_vertices[0].color = { .2, .8, .2, 1 };
-    rect_vertices[1].color = { .8, .8, .2, 1 };
-    rect_vertices[2].color = { .8, .2, .2, 1 };
-    rect_vertices[3].color = { .2, .2, .8, 1 };
+    rect_vertices[0].Color = { .2, .8, .2, 1 };
+    rect_vertices[1].Color = { .8, .8, .2, 1 };
+    rect_vertices[2].Color = { .8, .2, .2, 1 };
+    rect_vertices[3].Color = { .2, .2, .8, 1 };
 
     std::array<uint32_t, 6> rect_indices{};
 
