@@ -46,6 +46,8 @@ project "Zero"
         "%{IncludeDir.VMA}/**.cpp",
         "%{IncludeDir.vkb}/**.h",
         "%{IncludeDir.vkb}/**.cpp",
+		"%{prj.name}/vendor/stb_image/**.h",
+		"%{prj.name}/vendor/stb_image/**.cpp"
 	}
 
 	defines

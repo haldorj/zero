@@ -2,6 +2,7 @@
 #include <core/core.h>
 #include <core/Application.h>
 #include <iostream>
+#include <stb_image.h>
 
 std::vector<GLfloat> RectVertices;
 std::vector<GLuint> RectIndeces;
@@ -43,6 +44,8 @@ namespace Zero
 			RectVertices.push_back((GLfloat)vertex.Color.r);
 			RectVertices.push_back((GLfloat)vertex.Color.g);
 			RectVertices.push_back((GLfloat)vertex.Color.b);
+			RectVertices.push_back((GLfloat)vertex.UvX);
+			RectVertices.push_back((GLfloat)vertex.UvY);
 		}
 		for (auto index : indices)
 		{
@@ -57,6 +60,7 @@ namespace Zero
 		VBO1->Delete();
 		EBO1->Delete();
 		shaderProgram->Delete();
+		glDeleteTextures(1, &textureID);
 	}
 
 	void OpenGLRenderer::Draw()
@@ -69,6 +73,7 @@ namespace Zero
 		shaderProgram->Activate();
 		// Scale uniform. Must be called after the Shader Program has been activated.
 		glUniform1f(uniID, 1.f);
+		glBindTexture(GL_TEXTURE_2D, textureID);
 		// Bind the VAO so OpenGL knows to use it
 		VAO1->Bind();
 		// Draw primitives, number of indices, datatype of indices, index of indices
@@ -80,21 +85,11 @@ namespace Zero
 	void OpenGLRenderer::InitShaders()
 	{
 		// Create Shader object
-		shaderProgram = std::make_unique<OpenGLShader>("../shaders/plain_shader.vert", "../shaders/plain_shader.frag");
+		shaderProgram = std::make_unique<OpenGLShader>("../shaders/default.vert", "../shaders/default.frag");
 
 		// Generates Vertex Array Object and binds it
 		VAO1 = std::make_unique<VAO>();
 		VAO1->Bind();
-
-		for (const auto vertex : RectVertices)
-		{
-			std::cout << vertex << "   ";
-		}
-
-		for (const auto index : RectIndeces)
-		{
-			std::cout << "\n" << index << "  ";
-		};
 
 		// Generates Vertex Buffer Object and links it to vertices
 		VBO1 = std::make_unique<VBO>(RectVertices.data(), RectVertices.size() * sizeof(float));
@@ -102,14 +97,43 @@ namespace Zero
 		EBO1 = std::make_unique<EBO>(RectIndeces.data(), RectIndeces.size() * sizeof(GLuint));
 
 		// Links VBO attributes such as coordinates and colors to VAO
-		VAO1->LinkAttrib(*VBO1, 0, 3, GL_FLOAT, 6 * sizeof(float), (void*)0);
-		VAO1->LinkAttrib(*VBO1, 1, 3, GL_FLOAT, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+        VAO1->LinkAttrib(*VBO1, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0); // Vertex positions
+        VAO1->LinkAttrib(*VBO1, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float))); // Vertex colors
+        VAO1->LinkAttrib(*VBO1, 2, 2, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float))); // Texture coordinates
 		// Unbind all to prevent accidentally modifying them
 		VAO1->Unbind();
 		VBO1->Unbind();
 		EBO1->Unbind();
 
 		uniID = glGetUniformLocation(shaderProgram->GetID(), "scale");
+
+		int texWidth, texHeight, texChannels;
+		stbi_set_flip_vertically_on_load(true);
+		stbi_uc* pixels = stbi_load("../assets/images/cat.jpg", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+
+		if (!pixels)
+		{
+			std::cout << "Failed to load texture file" << std::endl;
+		}
+
+		glGenTextures(1, &textureID);
+		glBindTexture(GL_TEXTURE_2D, textureID);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		stbi_image_free(pixels);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		GLuint texUniID = glGetUniformLocation(shaderProgram->GetID(), "tex0");
+		shaderProgram->Activate();
+		glUniform1i(texUniID, 0);
 	}
 
 	// Checks if the different Shaders have compiled properly

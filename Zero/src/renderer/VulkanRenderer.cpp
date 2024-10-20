@@ -20,7 +20,6 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/transform.hpp>
 
-#define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
 
@@ -77,7 +76,7 @@ namespace Zero
         m_ErrorCheckerboardImage = CreateImage(pixels.data(), VkExtent3D{16, 16, 1}, VK_FORMAT_R8G8B8A8_UNORM,
                                                VK_IMAGE_USAGE_SAMPLED_BIT);
 
-        m_DogImage = CreateImageFromFile("../assets/images/image.png", VK_FORMAT_R8G8B8A8_UNORM,
+        m_DogImage = CreateImageFromFile("../assets/images/37323e0400f39bba4621e65a57250978.jpg", VK_FORMAT_R8G8B8A8_UNORM,
                                          VK_IMAGE_USAGE_SAMPLED_BIT, true);
 
         VkSamplerCreateInfo samplerCreateInfo = {.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO};
@@ -290,7 +289,7 @@ namespace Zero
 
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_PlainPipeline);
 
-        glm::mat4 view = glm::translate(glm::vec3{0, 0, -5});
+        glm::mat4 view = glm::translate(glm::vec3{0, 0, 0});
         // camera projection
         glm::mat4 projection = glm::perspective(glm::radians(70.f),
                                                 (float)m_DrawExtent.width / (float)m_DrawExtent.height, 0.1f, 10000.f);

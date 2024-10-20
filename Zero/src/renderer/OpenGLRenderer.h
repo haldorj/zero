@@ -26,6 +26,7 @@ namespace Zero
 		std::unique_ptr<VBO> VBO1;
 		std::unique_ptr<EBO> EBO1;
 		GLuint uniID = 0;
+		GLuint textureID;
 	};
 } // namespace Zero
 

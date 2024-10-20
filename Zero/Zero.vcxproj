@@ -570,6 +570,7 @@
     <ClInclude Include="vendor\glm\glm\vec3.hpp" />
     <ClInclude Include="vendor\glm\glm\vec4.hpp" />
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
+    <ClInclude Include="vendor\stb_image\stb_image.h" />
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrap.h" />
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h" />
   </ItemGroup>
@@ -588,6 +589,7 @@
     <ClCompile Include="src\shared\vk_initializers.cpp" />
     <ClCompile Include="src\shared\vk_loader.cpp" />
     <ClCompile Include="src\shared\vk_pipelines.cpp" />
+    <ClCompile Include="vendor\stb_image\stb_image.cpp" />
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp" />
   </ItemGroup>
   <ItemGroup>
