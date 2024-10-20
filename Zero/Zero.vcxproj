@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\renderer\OpenGL\OpenGLTexture.h" />
     <ClInclude Include="src\camera\Camera.h" />
     <ClInclude Include="src\core\Application.h" />
     <ClInclude Include="src\core\core.h" />
@@ -575,6 +576,7 @@
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\renderer\OpenGL\OpenGLTexture.cpp" />
     <ClCompile Include="src\camera\Camera.cpp" />
     <ClCompile Include="src\core\Application.cpp" />
     <ClCompile Include="src\main.cpp" />

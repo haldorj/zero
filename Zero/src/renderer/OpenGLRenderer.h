@@ -5,6 +5,7 @@
 #include "OpenGL/VAO.h"
 
 #include "renderer/Renderer.h"
+#include "renderer/OpenGL/OpenGLTexture.h"
 
 namespace Zero
 {
@@ -26,7 +27,8 @@ namespace Zero
 		std::unique_ptr<VBO> VBO1;
 		std::unique_ptr<EBO> EBO1;
 		GLuint uniID = 0;
-		GLuint textureID;
+		std::shared_ptr<OpenGLTexture> texture1;
+
 	};
 } // namespace Zero
 

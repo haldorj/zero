@@ -2,7 +2,6 @@
 #include <core/core.h>
 #include <core/Application.h>
 #include <iostream>
-#include <stb_image.h>
 
 std::vector<GLfloat> RectVertices;
 std::vector<GLuint> RectIndeces;
@@ -30,6 +29,9 @@ namespace Zero
 		std::cout << "\t" << renderer << "\n";
 
 		InitShaders();
+
+		texture1 = std::make_shared<OpenGLTexture>("../assets/images/cat.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+		texture1->texUnit(*shaderProgram, "tex0", 0);
 	}
 
 
@@ -60,7 +62,7 @@ namespace Zero
 		VBO1->Delete();
 		EBO1->Delete();
 		shaderProgram->Delete();
-		glDeleteTextures(1, &textureID);
+		texture1->Delete();
 	}
 
 	void OpenGLRenderer::Draw()
@@ -73,7 +75,8 @@ namespace Zero
 		shaderProgram->Activate();
 		// Scale uniform. Must be called after the Shader Program has been activated.
 		glUniform1f(uniID, 1.f);
-		glBindTexture(GL_TEXTURE_2D, textureID);
+		// Bind the texture so that it is used in the Shader Program
+		texture1->Bind();
 		// Bind the VAO so OpenGL knows to use it
 		VAO1->Bind();
 		// Draw primitives, number of indices, datatype of indices, index of indices
@@ -106,34 +109,6 @@ namespace Zero
 		EBO1->Unbind();
 
 		uniID = glGetUniformLocation(shaderProgram->GetID(), "scale");
-
-		int texWidth, texHeight, texChannels;
-		stbi_set_flip_vertically_on_load(true);
-		stbi_uc* pixels = stbi_load("../assets/images/cat.jpg", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
-
-		if (!pixels)
-		{
-			std::cout << "Failed to load texture file" << std::endl;
-		}
-
-		glGenTextures(1, &textureID);
-		glBindTexture(GL_TEXTURE_2D, textureID);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		stbi_image_free(pixels);
-		glBindTexture(GL_TEXTURE_2D, 0);
-
-		GLuint texUniID = glGetUniformLocation(shaderProgram->GetID(), "tex0");
-		shaderProgram->Activate();
-		glUniform1i(texUniID, 0);
 	}
 
 	// Checks if the different Shaders have compiled properly
