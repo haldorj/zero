@@ -1,7 +1,5 @@
-
-#include <shared/vk_types.h>
+#pragma once
 
 class Camera {
-public:
-
+    
 };

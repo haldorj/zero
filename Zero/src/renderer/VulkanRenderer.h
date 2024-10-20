@@ -2,156 +2,175 @@
 
 #include "renderer.h"
 #include "core/core.h"
+#include "glm/glm.hpp"
 #include <shared/vk_types.h>
 #include <shared/vk_descriptors.h>
 
 #include <ranges>
 
-struct AllocatedImage {
-	VkImage Image{};
-	VkImageView ImageView{};
-	VmaAllocation Allocation{};
-	VkExtent3D ImageExtent{};
-	VkFormat ImageFormat{};
-};
-
-struct GPUSceneData {
-	glm::mat4 view{};
-	glm::mat4 proj{};
-	glm::mat4 viewproj{};
-	glm::vec4 ambientColor{};
-	glm::vec4 sunlightDirection{}; // w for sun power
-	glm::vec4 sunlightColor{};
-};
-
-struct DeletionQueue
+namespace Zero
 {
-    std::deque<std::function<void()>> DeletionFunctions;
+    struct AllocatedImage
+    {
+        VkImage Image{};
+        VkImageView ImageView{};
+        VmaAllocation Allocation{};
+        VkExtent3D ImageExtent{};
+        VkFormat ImageFormat{};
+    };
 
-    void PushFunction(std::function<void()>&& function) {
-        DeletionFunctions.push_back(function);
-    }
+    struct GPUSceneData
+    {
+        glm::mat4 View{};
+        glm::mat4 Proj{};
+        glm::mat4 ViewProj{};
+        glm::vec4 AmbientColor{};
+        glm::vec4 SunlightDirection{}; // w for sun power
+        glm::vec4 SunlightColor{};
+    };
 
-    void Flush() {
-        // reverse iterate the deletion queue to execute all the functions
-        for (auto& deletionFunction : std::ranges::reverse_view(DeletionFunctions))
+    struct DeletionQueue
+    {
+        std::deque<std::function<void()>> DeletionFunctions;
+
+        void PushFunction(std::function<void()>&& function)
         {
-	        deletionFunction(); //call functors
+            DeletionFunctions.push_back(function);
         }
 
-        DeletionFunctions.clear();
-    }
-};
+        void Flush()
+        {
+            // reverse iterate the deletion queue to execute all the functions
+            for (auto& deletionFunction : std::ranges::reverse_view(DeletionFunctions))
+            {
+                deletionFunction(); //call functors
+            }
 
-struct FrameData 
-{
-	VkCommandPool CommandPool{};
-	VkCommandBuffer MainCommandBuffer{};
+            DeletionFunctions.clear();
+        }
+    };
 
-	VkSemaphore SwapchainSemaphore{}, RenderSemaphore{};
-	VkFence RenderFence{};
+    struct FrameData
+    {
+        VkCommandPool CommandPool{};
+        VkCommandBuffer MainCommandBuffer{};
 
-	DeletionQueue DeletionQueue;
-	DescriptorAllocatorGrowable FrameDescriptors;
-};
+        VkSemaphore SwapchainSemaphore{}, RenderSemaphore{};
+        VkFence RenderFence{};
 
-constexpr unsigned int FRAME_OVERLAP = 2;
+        DeletionQueue DeletionQueue;
+        DescriptorAllocatorGrowable FrameDescriptors;
+    };
 
-class VulkanRenderer : public RendererBase
-{
-public:
-    void Init() override;
-	void InitObject(std::span<uint32_t> indices, std::span<Vertex> vertices) override;
-    void Shutdown() override;
-	void SetClearColor(const glm::vec4 clearColor) override { m_ClearColor = clearColor; }
-    void Draw() override;
+    constexpr unsigned int FRAME_OVERLAP = 2;
 
-	void DrawBackground(VkCommandBuffer cmd);
-	void DrawComputeBackground(VkCommandBuffer cmd);
-	void DrawGeometry(VkCommandBuffer cmd);
+    class VulkanRenderer : public RendererBase
+    {
+    public:
+        void Init() override;
+        void InitObject(std::span<uint32_t> indices, std::span<Vertex> vertices) override;
+        void InitTextures();
+        void Shutdown() override;
+        void SetClearColor(const glm::vec4 clearColor) override { m_ClearColor = clearColor; }
+        void Draw() override;
 
-	GPUMeshBuffers UploadMesh(std::span<uint32_t> indices, std::span<Vertex> vertices);
+        void DrawBackground(VkCommandBuffer cmd);
+        void DrawComputeBackground(VkCommandBuffer cmd);
+        void DrawGeometry(VkCommandBuffer cmd);
+        void DrawGeometryTextured(VkCommandBuffer cmd);
 
-private:
-	void InitVulkan();
-	void InitSwapchain();
-	void InitCommands();
-	void InitSyncStructures();
-	void InitDescriptors();
-	void InitPipelines();
+        GPUMeshBuffers UploadMesh(std::span<uint32_t> indices, std::span<Vertex> vertices);
 
-	void InitBackgroundPipelines();
-	void InitPlainPipeline();
-	void InitTexturedPipeline();
+        FrameData& GetCurrentFrame() { return m_Frames[m_FrameNumber % FRAME_OVERLAP]; }
 
-	void CreateSwapchain(uint32_t width, uint32_t height);
-	void DestroySwapchain();
-	void ResizeSwapchain();
+    private:
+        void InitVulkan();
+        void InitSwapchain();
+        void InitCommands();
+        void InitSyncStructures();
+        void InitDescriptors();
+        void InitPipelines();
 
-	AllocatedBuffer CreateBuffer(size_t allocSize, VkBufferUsageFlags usage, VmaMemoryUsage memoryUsage);
-	void DestroyBuffer(const AllocatedBuffer& buffer);
+        void InitBackgroundPipelines();
+        void InitPlainPipeline();
+        void InitTexturedPipeline();
 
-	void ImmediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function);
+        void CreateSwapchain(uint32_t width, uint32_t height);
+        void DestroySwapchain() const;
+        void ResizeSwapchain();
+
+        AllocatedBuffer CreateBuffer(size_t allocSize, VkBufferUsageFlags usage, VmaMemoryUsage memoryUsage);
+        void DestroyBuffer(const AllocatedBuffer& buffer);
+
+        void ImmediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function);
+
+        AllocatedImage CreateImage(VkExtent3D size, VkFormat format, VkImageUsageFlags usage, bool mipmapped = false);
+        AllocatedImage CreateImage(void* data, VkExtent3D size, VkFormat format, VkImageUsageFlags usage,
+                                   bool mipmapped = false);
+        void DestroyImage(const AllocatedImage& image) const;
 
 
-	AllocatedImage create_image(VkExtent3D size, VkFormat format, VkImageUsageFlags usage, bool mipmapped = false);
-	AllocatedImage create_image(void* data, VkExtent3D size, VkFormat format, VkImageUsageFlags usage, bool mipmapped = false);
-	void destroy_image(const AllocatedImage& img);
+        int m_FrameNumber{0};
+        VkExtent2D m_WindowExtent{EXTENT_WIDTH, EXTENT_HEIGHT};
+
+        VkInstance m_Instance{}; // Vulkan API context, used to access drivers.
+        VkDebugUtilsMessengerEXT m_DebugMessenger{}; // Vulkan debug output handle
+        // A GPU. Used to query physical GPU details, like features, capabilities, memory size, etc.
+        VkPhysicalDevice m_PhysicalDevice{};
+        VkDevice m_Device{}; // The “logical” GPU context that you actually execute things on.
+        VkSurfaceKHR m_Surface{}; // Window surface.
+
+        VkSwapchainKHR m_Swapchain{};
+        VkFormat m_SwapchainImageFormat{};
+
+        glm::vec4 m_ClearColor{};
+
+        std::vector<VkImage> m_SwapchainImages;
+        std::vector<VkImageView> m_SwapchainImageViews;
+        VkExtent2D m_SwapchainExtent{};
+
+        DeletionQueue m_MainDeletionQueue;
+        VmaAllocator m_Allocator{};
+
+        AllocatedImage m_DrawImage{};
+        AllocatedImage m_DepthImage{};
+        VkExtent2D m_DrawExtent{};
+
+        FrameData m_Frames[FRAME_OVERLAP] = {};
 
 
-	int m_FrameNumber{ 0 };
-	VkExtent2D m_WindowExtent{ EXTENT_WIDTH , EXTENT_HEIGHT };
+        VkQueue m_GraphicsQueue{};
+        uint32_t m_GraphicsQueueFamily{};
 
-	VkInstance m_Instance{}; // Vulkan API context, used to access drivers.
-	VkDebugUtilsMessengerEXT m_DebugMessenger{}; // Vulkan debug output handle
-	VkPhysicalDevice m_PhysicalDevice{}; // A GPU. Used to query physical GPU details, like features, capabilities, memory size, etc.
-	VkDevice m_Device{}; // The “logical” GPU context that you actually execute things on.
-	VkSurfaceKHR m_Surface{}; // Window surface.
+        DescriptorAllocator m_GlobalDescriptorAllocator{};
 
-	VkSwapchainKHR m_Swapchain{};
-	VkFormat m_SwapchainImageFormat{};
+        VkDescriptorSet m_DrawImageDescriptors{};
+        VkDescriptorSetLayout m_DrawImageDescriptorLayout{};
 
-	glm::vec4 m_ClearColor{};
+        VkPipeline m_GradientPipeline{};
+        VkPipelineLayout m_GradientPipelineLayout{};
 
-	std::vector<VkImage> m_SwapchainImages;
-	std::vector<VkImageView> m_SwapchainImageViews;
-	VkExtent2D m_SwapchainExtent{};
+        VkPipelineLayout m_PlainPipelineLayout{};
+        VkPipeline m_PlainPipeline{};
 
-	DeletionQueue m_MainDeletionQueue;
-	VmaAllocator m_Allocator{};
+        VkPipelineLayout m_TexturedPipelineLayout{};
+        VkPipeline m_TexturedPipeline{};
 
-	AllocatedImage m_DrawImage{};
-	VkExtent2D m_DrawExtent{};
+        GPUMeshBuffers m_Rectangle{};
 
-	FrameData m_Frames[FRAME_OVERLAP];
+        VkFence m_ImmFence{};
+        VkCommandBuffer m_ImmCommandBuffer{};
+        VkCommandPool m_ImmCommandPool{};
 
-	FrameData& GetCurrentFrame() { return m_Frames[m_FrameNumber % FRAME_OVERLAP]; };
+        GPUSceneData m_SceneData{};
 
-	VkQueue m_GraphicsQueue{};
-	uint32_t m_GraphicsQueueFamily{};
+        VkDescriptorSetLayout m_GpuSceneDataDescriptorLayout{};
 
-	DescriptorAllocator m_GlobalDescriptorAllocator{};
+        AllocatedImage m_ErrorCheckerboardImage;
 
-	VkDescriptorSet m_DrawImageDescriptors{};
-	VkDescriptorSetLayout m_DrawImageDescriptorLayout{};
+        VkSampler m_DefaultSamplerLinear = nullptr;
+        VkSampler m_DefaultSamplerNearest = nullptr;
 
-	VkPipeline m_GradientPipeline{};
-	VkPipelineLayout m_GradientPipelineLayout{};
-	
-	VkPipeline m_PlainPipeline{};
-	VkPipelineLayout m_PlainPipelineLayout{};
-
-	VkPipelineLayout m_TexturedPipelineLayout{};
-	VkPipeline m_TexturedPipeline{};
-
-	GPUMeshBuffers m_Rectangle{};
-
-	VkFence m_ImmFence{};
-	VkCommandBuffer m_ImmCommandBuffer{};
-	VkCommandPool m_ImmCommandPool{};
-
-	GPUSceneData sceneData{};
-
-	VkDescriptorSetLayout m_GpuSceneDataDescriptorLayout{};
-};
-
+        VkDescriptorSetLayout m_SingleImageDescriptorLayout = nullptr;
+    };
+}

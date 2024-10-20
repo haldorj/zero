@@ -6,23 +6,27 @@
 
 #include "renderer/Renderer.h"
 
-class OpenGLRenderer : public RendererBase
+namespace Zero
 {
-public:
-	void Init() override;
-	void InitObject(std::span<uint32_t> indices, std::span<Vertex> vertices) override;
-	void Shutdown() override;
-	void SetClearColor(glm::vec4 clearColor) override { _clearColor = clearColor; }
-	void Draw() override;
+	class OpenGLRenderer : public RendererBase
+	{
+	public:
+		void Init() override;
+		void InitObject(std::span<uint32_t> indices, std::span<Vertex> vertices) override;
+		void Shutdown() override;
+		void SetClearColor(glm::vec4 clearColor) override { _clearColor = clearColor; }
+		void Draw() override;
 
-private:
-	void InitShaders();
+	private:
+		void InitShaders();
 
-	glm::vec4 _clearColor = {};
-	std::unique_ptr<OpenGLShader> shaderProgram;
-	std::unique_ptr<VAO> VAO1;
-	std::unique_ptr<VBO> VBO1;
-	std::unique_ptr<EBO> EBO1;
-	GLuint uniID = 0;
-};
+		glm::vec4 _clearColor = {};
+		std::unique_ptr<OpenGLShader> shaderProgram;
+		std::unique_ptr<VAO> VAO1;
+		std::unique_ptr<VBO> VBO1;
+		std::unique_ptr<EBO> EBO1;
+		GLuint uniID = 0;
+	};
+} // namespace Zero
+
 

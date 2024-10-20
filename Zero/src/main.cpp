@@ -1,15 +1,12 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include <core/Application.h>
 
-#include <core/Engine.h>
-
-int main(int argc, char* argv[])
+int main()
 {
-	Engine engine;
+	Zero::Application application;
 
-	engine.Init();
-	engine.Run();
-	engine.Cleanup();
+	application.Init();
+	application.Run();
+	application.Cleanup();
 
 	return 0;
 }

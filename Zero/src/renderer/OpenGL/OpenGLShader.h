@@ -7,25 +7,28 @@
 #include<iostream>
 #include<cerrno>
 
-std::string get_file_contents(const char* filename);
-
-class OpenGLShader
+namespace Zero
 {
-public:
-	// Constructor that build the Shader Program from 2 different shaders
-	OpenGLShader() = default;
-	OpenGLShader(const char* vertexFile, const char* fragmentFile);
+	std::string GetFileContents(const char* filename);
 
-	// Activates the Shader Program
-	void Activate();
-	// Deletes the Shader Program
-	void Delete();
+	class OpenGLShader
+	{
+	public:
+		// Constructor that build the Shader Program from 2 different shaders
+		OpenGLShader() = default;
+		OpenGLShader(const char* vertexFile, const char* fragmentFile);
 
-	GLuint GetID() const { return ID; }
+		// Activates the Shader Program
+		void Activate();
+		// Deletes the Shader Program
+		void Delete();
 
-private:
-	void compileErrors(unsigned int shader, const char* type);
+		GLuint GetID() const { return ID; }
 
-	// Reference ID of the Shader Program
-	GLuint ID;
-};
+	private:
+		void compileErrors(unsigned int shader, const char* type);
+
+		// Reference ID of the Shader Program
+		GLuint ID;
+	};
+}
