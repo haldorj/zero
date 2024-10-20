@@ -490,7 +490,10 @@ void VulkanRenderer::InitDescriptors()
         m_GlobalDescriptorAllocator.destroy_pool(m_Device);
 
         vkDestroyDescriptorSetLayout(m_Device, m_DrawImageDescriptorLayout, nullptr);
+        vkDestroyDescriptorSetLayout(m_Device, m_GpuSceneDataDescriptorLayout, nullptr);
     });
+
+
 
     for (int i = 0; i < FRAME_OVERLAP; i++) {
         // create a descriptor pool

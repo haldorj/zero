@@ -8,20 +8,20 @@
 #include <ranges>
 
 struct AllocatedImage {
-	VkImage Image;
-	VkImageView ImageView;
-	VmaAllocation Allocation;
-	VkExtent3D ImageExtent;
-	VkFormat ImageFormat;
+	VkImage Image{};
+	VkImageView ImageView{};
+	VmaAllocation Allocation{};
+	VkExtent3D ImageExtent{};
+	VkFormat ImageFormat{};
 };
 
 struct GPUSceneData {
-	glm::mat4 view;
-	glm::mat4 proj;
-	glm::mat4 viewproj;
-	glm::vec4 ambientColor;
-	glm::vec4 sunlightDirection; // w for sun power
-	glm::vec4 sunlightColor;
+	glm::mat4 view{};
+	glm::mat4 proj{};
+	glm::mat4 viewproj{};
+	glm::vec4 ambientColor{};
+	glm::vec4 sunlightDirection{}; // w for sun power
+	glm::vec4 sunlightColor{};
 };
 
 struct DeletionQueue
@@ -93,6 +93,12 @@ private:
 
 	void ImmediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function);
 
+
+	AllocatedImage create_image(VkExtent3D size, VkFormat format, VkImageUsageFlags usage, bool mipmapped = false);
+	AllocatedImage create_image(void* data, VkExtent3D size, VkFormat format, VkImageUsageFlags usage, bool mipmapped = false);
+	void destroy_image(const AllocatedImage& img);
+
+
 	int m_FrameNumber{ 0 };
 	VkExtent2D m_WindowExtent{ EXTENT_WIDTH , EXTENT_HEIGHT };
 
@@ -124,28 +130,28 @@ private:
 	VkQueue m_GraphicsQueue{};
 	uint32_t m_GraphicsQueueFamily{};
 
-	DescriptorAllocator m_GlobalDescriptorAllocator;
+	DescriptorAllocator m_GlobalDescriptorAllocator{};
 
-	VkDescriptorSet m_DrawImageDescriptors;
-	VkDescriptorSetLayout m_DrawImageDescriptorLayout;
+	VkDescriptorSet m_DrawImageDescriptors{};
+	VkDescriptorSetLayout m_DrawImageDescriptorLayout{};
 
-	VkPipeline m_GradientPipeline;
-	VkPipelineLayout m_GradientPipelineLayout;
+	VkPipeline m_GradientPipeline{};
+	VkPipelineLayout m_GradientPipelineLayout{};
 	
-	VkPipeline m_PlainPipeline;
-	VkPipelineLayout m_PlainPipelineLayout;
+	VkPipeline m_PlainPipeline{};
+	VkPipelineLayout m_PlainPipelineLayout{};
 
-	VkPipelineLayout m_TexturedPipelineLayout;
-	VkPipeline m_TexturedPipeline;
+	VkPipelineLayout m_TexturedPipelineLayout{};
+	VkPipeline m_TexturedPipeline{};
 
-	GPUMeshBuffers m_Rectangle;
+	GPUMeshBuffers m_Rectangle{};
 
-	VkFence m_ImmFence;
-	VkCommandBuffer m_ImmCommandBuffer;
-	VkCommandPool m_ImmCommandPool;
+	VkFence m_ImmFence{};
+	VkCommandBuffer m_ImmCommandBuffer{};
+	VkCommandPool m_ImmCommandPool{};
 
-	GPUSceneData sceneData;
+	GPUSceneData sceneData{};
 
-	VkDescriptorSetLayout m_GpuSceneDataDescriptorLayout;
+	VkDescriptorSetLayout m_GpuSceneDataDescriptorLayout{};
 };
 

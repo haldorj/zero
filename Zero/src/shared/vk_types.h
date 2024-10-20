@@ -25,7 +25,7 @@
     do {                                                                \
         VkResult err = x;                                               \
         if (err) {                                                      \
-            printf ("Detected Vulkan error: {}", string_VkResult(err)); \
+            printf ("Detected Vulkan error: %s", string_VkResult(err)); \
             abort();                                                    \
         }                                                               \
     } while (0)
