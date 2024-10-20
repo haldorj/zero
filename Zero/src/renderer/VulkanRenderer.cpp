@@ -76,7 +76,7 @@ namespace Zero
         m_ErrorCheckerboardImage = CreateImage(pixels.data(), VkExtent3D{16, 16, 1}, VK_FORMAT_R8G8B8A8_UNORM,
                                                VK_IMAGE_USAGE_SAMPLED_BIT);
 
-        m_DogImage = CreateImageFromFile("../assets/images/37323e0400f39bba4621e65a57250978.jpg", VK_FORMAT_R8G8B8A8_UNORM,
+        m_DogImage = CreateImageFromFile("../assets/images/brick.png", VK_FORMAT_R8G8B8A8_UNORM,
                                          VK_IMAGE_USAGE_SAMPLED_BIT, true);
 
         VkSamplerCreateInfo samplerCreateInfo = {.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO};
@@ -289,7 +289,7 @@ namespace Zero
 
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_PlainPipeline);
 
-        glm::mat4 view = glm::translate(glm::vec3{0, 0, 0});
+        glm::mat4 view = Application::Get().GetMainCamera().GetViewMatrix();
         // camera projection
         glm::mat4 projection = glm::perspective(glm::radians(70.f),
                                                 (float)m_DrawExtent.width / (float)m_DrawExtent.height, 0.1f, 10000.f);
@@ -378,7 +378,7 @@ namespace Zero
                                 nullptr);
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        glm::mat4 view = glm::translate(glm::vec3{0, 0, -2});
+        glm::mat4 view = glm::translate(glm::vec3{0, 0, -3});
         // camera projection
         glm::mat4 projection = glm::perspective(glm::radians(70.f),
                                                 static_cast<float>(m_DrawExtent.width) / static_cast<float>(m_DrawExtent

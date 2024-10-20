@@ -11,7 +11,7 @@
 namespace Zero
 {
     // Choose RendererAPI
-    RendererAPI RendererType = RendererAPI::OpenGL;
+    RendererAPI RendererType = RendererAPI::Vulkan;
 
     Application* LoadedEngine = nullptr;
     Application& Application::Get() { return *LoadedEngine; }
@@ -47,6 +47,42 @@ namespace Zero
         m_Renderer->InitObject(rectIndices, rectVertices);
     }
 
+    void Application::CreatePyramid() const
+    {
+        std::array<Vertex, 5> pyramidVertices{};
+        pyramidVertices[0].Position = {-0.5, 0.0, 0.5};
+        pyramidVertices[0].UvX = 0; pyramidVertices[0].UvY = 0;
+        pyramidVertices[0].Color = {0.83f, 0.70f, 0.44f, 1.0f};
+
+        pyramidVertices[1].Position = {-0.5, 0.0, -0.5};
+        pyramidVertices[1].UvX = 5.0f; pyramidVertices[1].UvY = 0;
+        pyramidVertices[1].Color = {0.83f, 0.70f, 0.44f, 1.0f};
+
+        pyramidVertices[2].Position = {0.5, 0.0, -0.5};
+        pyramidVertices[2].UvX = 0; pyramidVertices[2].UvY = 0;
+        pyramidVertices[2].Color = {0.83f, 0.70f, 0.44f, 1.0f};
+
+        pyramidVertices[3].Position = {0.5, 0.0, 0.5};
+        pyramidVertices[3].UvX = 5.0f; pyramidVertices[3].UvY = 0;
+        pyramidVertices[3].Color = {0.83f, 0.70f, 0.44f, 1.0f};
+
+        pyramidVertices[4].Position = {0.0, 0.8, 0.0};
+        pyramidVertices[4].UvX = 2.5f; pyramidVertices[4].UvY = 5.0f;
+        pyramidVertices[4].Color = {0.92f, 0.86f, 0.76f, 1.0f};
+
+        std::array<uint32_t, 18> indices =
+        {
+            0, 1, 2,
+            0, 2, 3,
+            0, 1, 4,
+            1, 2, 4,
+            2, 3, 4,
+            3, 0, 4
+        };
+
+        m_Renderer->InitObject(indices, pyramidVertices);
+    }
+
     void Application::Init()
     {
         // Only one engine initialization is allowed with the application.
@@ -61,7 +97,7 @@ namespace Zero
         switch (RendererType)
         {
         case RendererAPI::OpenGL:
-            CreateRectangle();
+            CreatePyramid();
             m_Renderer->Init();
             break;
         case RendererAPI::Vulkan:

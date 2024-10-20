@@ -38,6 +38,7 @@ namespace Zero
     {
     public:
         void CreateRectangle() const;
+        void CreatePyramid() const;
         //initializes everything in the engine
         void Init();
         //shuts down the engine

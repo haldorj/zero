@@ -2,6 +2,9 @@
 #include <core/core.h>
 #include <core/Application.h>
 #include <iostream>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 std::vector<GLfloat> RectVertices;
 std::vector<GLuint> RectIndeces;
@@ -30,8 +33,11 @@ namespace Zero
 
 		InitShaders();
 
-		texture1 = std::make_shared<OpenGLTexture>("../assets/images/cat.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-		texture1->texUnit(*shaderProgram, "tex0", 0);
+		texture1 = std::make_shared<OpenGLTexture>("../assets/images/brick.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+		texture1->TexUnit(*shaderProgram, "tex0", 0);
+
+		// Enable depth testing for 3D
+		glEnable(GL_DEPTH_TEST);
 	}
 
 
@@ -65,14 +71,41 @@ namespace Zero
 		texture1->Delete();
 	}
 
+	float rotation = 0.0f;
+	double lastTime = glfwGetTime();
+
 	void OpenGLRenderer::Draw()
 	{
 		// Specify the color of the background
 		glClearColor(_clearColor.r, _clearColor.g, _clearColor.b, _clearColor.a);
 		// Clean the back buffer and assign the new color to it
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// Tell OpenGL which Shader Program we want to use
 		shaderProgram->Activate();
+
+		double currentTime = glfwGetTime();
+
+		if (currentTime - lastTime >= 1/60)
+		{
+			rotation += 0.5f;
+			lastTime = currentTime;
+		}
+
+		glm::mat4 model = glm::mat4(1.0f);
+		glm::mat4 view = glm::mat4(1.0f);
+		glm::mat4 projection = glm::mat4(1.0f);
+
+		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
+		view = glm::translate(view, glm::vec3(0.0f, -0.5f, -3.0f));
+		projection = glm::perspective(glm::radians(70.0f), (float)EXTENT_WIDTH / (float)EXTENT_HEIGHT, 0.1f, 100.0f);
+
+		int modelLoc = glGetUniformLocation(shaderProgram->GetID(), "model");
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		int viewLoc = glGetUniformLocation(shaderProgram->GetID(), "view");
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+		int projLoc = glGetUniformLocation(shaderProgram->GetID(), "projection");
+		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
 		// Scale uniform. Must be called after the Shader Program has been activated.
 		glUniform1f(uniID, 1.f);
 		// Bind the texture so that it is used in the Shader Program
