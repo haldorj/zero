@@ -384,7 +384,7 @@ namespace Zero
         glm::mat4 projection = glm::perspective(glm::radians(70.f),
                                                 static_cast<float>(m_DrawExtent.width) / static_cast<float>(m_DrawExtent
                                                     .height), 0.1f, 1000.f);
-        // projection[1][1] *= -1;
+        //projection[1][1] *= -1;
 
         GPUDrawPushConstants pushConstants;
         pushConstants.WorldMatrix = projection * view;
@@ -425,8 +425,8 @@ namespace Zero
         DestroySwapchain();
 
         vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
-        vkDestroyDevice(m_Device, nullptr);
 
+        vkDestroyDevice(m_Device, nullptr);
         vkb::destroy_debug_utils_messenger(m_Instance, m_DebugMessenger);
         vkDestroyInstance(m_Instance, nullptr);
     }
@@ -1163,11 +1163,17 @@ namespace Zero
         // Calculate the size of the image data
         VkDeviceSize imageSize = texWidth * texHeight * 4;
 
-        CreateImage(pixels, imageExtent, format, usage, mipmapped);
-
         // Create a staging buffer
-        AllocatedBuffer stagingBuffer = CreateBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                                                     VMA_MEMORY_USAGE_CPU_ONLY);
+        AllocatedBuffer stagingBuffer;
+        try
+        {
+            stagingBuffer = CreateBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_MEMORY_USAGE_CPU_ONLY);
+        }
+        catch (const std::exception& e)
+        {
+            stbi_image_free(pixels);  // Free image data in case of failure
+            throw;  // Rethrow the exception
+        }
 
         // Copy image data to the staging buffer
         void* data;
@@ -1179,12 +1185,21 @@ namespace Zero
         stbi_image_free(pixels);
 
         // Create the Vulkan image
-        AllocatedImage newImage = CreateImage(imageExtent, format, usage | VK_IMAGE_USAGE_TRANSFER_DST_BIT, mipmapped);
+        AllocatedImage newImage;
+        try
+        {
+            newImage = CreateImage(imageExtent, format, usage | VK_IMAGE_USAGE_TRANSFER_DST_BIT, mipmapped);
+        }
+        catch (const std::exception& e)
+        {
+            DestroyBuffer(stagingBuffer);  // Clean up staging buffer on failure
+            throw;  // Rethrow the exception
+        }
 
         ImmediateSubmit([&](VkCommandBuffer cmd)
         {
             VkUtil::TransitionImage(cmd, newImage.Image, VK_IMAGE_LAYOUT_UNDEFINED,
-                                    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
             VkBufferImageCopy copyRegion = {};
             copyRegion.bufferOffset = 0;
@@ -1197,12 +1212,12 @@ namespace Zero
             copyRegion.imageSubresource.layerCount = 1;
             copyRegion.imageExtent = imageExtent;
 
-            // copy the buffer into the image
+            // Copy the buffer into the image
             vkCmdCopyBufferToImage(cmd, stagingBuffer.Buffer, newImage.Image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1,
-                                   &copyRegion);
+                &copyRegion);
 
             VkUtil::TransitionImage(cmd, newImage.Image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                                    VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
         });
 
         // Clean up the staging buffer
@@ -1210,6 +1225,7 @@ namespace Zero
 
         return newImage;
     }
+
 
     void VulkanRenderer::DestroyImage(const AllocatedImage& image) const
     {

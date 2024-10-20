@@ -4,6 +4,9 @@
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\camera">
+      <UniqueIdentifier>{255F4553-1117-87A0-7A1E-60FC66F52191}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\core">
       <UniqueIdentifier>{C55F2ECF-B12C-89DA-DA45-7782C671BE68}</UniqueIdentifier>
     </Filter>
@@ -45,7 +48,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\core\Engine.h">
+    <ClInclude Include="src\camera\Camera.h">
+      <Filter>src\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\Application.h">
       <Filter>src\core</Filter>
     </ClInclude>
     <ClInclude Include="src\core\core.h">
@@ -71,9 +77,6 @@
     </ClInclude>
     <ClInclude Include="src\renderer\VulkanRenderer.h">
       <Filter>src\renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\shared\camera.h">
-      <Filter>src\shared</Filter>
     </ClInclude>
     <ClInclude Include="src\shared\vk_descriptors.h">
       <Filter>src\shared</Filter>
@@ -1352,7 +1355,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\core\Engine.cpp">
+    <ClCompile Include="src\camera\Camera.cpp">
+      <Filter>src\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\Application.cpp">
       <Filter>src\core</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
@@ -1375,9 +1381,6 @@
     </ClCompile>
     <ClCompile Include="src\renderer\VulkanRenderer.cpp">
       <Filter>src\renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\shared\camera.cpp">
-      <Filter>src\shared</Filter>
     </ClCompile>
     <ClCompile Include="src\shared\vk_descriptors.cpp">
       <Filter>src\shared</Filter>

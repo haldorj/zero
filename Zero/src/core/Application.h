@@ -2,6 +2,8 @@
 
 #include <shared/vk_types.h>
 #include <GLFW/glfw3.h>
+
+#include "camera/Camera.h"
 #include "renderer/VulkanRenderer.h"
 #include "renderer/OpenGLRenderer.h"
 
@@ -49,11 +51,14 @@ namespace Zero
 
         static Application& Get();
 
-        [[nodiscard]] GLFWwindow* GetWindow() const { return m_Window; }
+        GLFWwindow* GetWindow() const { return m_Window; }
+        Camera& GetMainCamera() { return m_MainCamera; }
 
     private:
+        Camera m_MainCamera{};
+        
         bool m_IsInitialized{false};
-        bool m_Stop_Rendering{false};
+        bool m_StopRendering{false};
 
         int32_t m_FrameCount{0};
 

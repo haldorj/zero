@@ -111,7 +111,8 @@ namespace Zero
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 continue;
             }
-
+            m_MainCamera.ProcessInput(m_Window, 0.02f);
+            m_MainCamera.Update();
             Draw();
         }
     }
