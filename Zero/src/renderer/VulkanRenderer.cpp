@@ -21,6 +21,7 @@
 #include <glm/gtx/transform.hpp>
 
 #include <stb_image.h>
+#include <glm/gtx/quaternion.hpp>
 
 
 namespace Zero
@@ -236,6 +237,9 @@ namespace Zero
                       static_cast<uint32_t>(std::ceil(m_DrawExtent.height / 16.0)), 1);
     }
 
+    float rrotation = 0.0f;
+    double rlastTime = glfwGetTime();
+
     void VulkanRenderer::DrawGeometry(VkCommandBuffer cmd)
     {
         //begin a render pass  connected to our draw image
@@ -293,6 +297,7 @@ namespace Zero
         // camera projection
         glm::mat4 projection = glm::perspective(glm::radians(70.f),
                                                 (float)m_DrawExtent.width / (float)m_DrawExtent.height, 0.1f, 10000.f);
+
         projection[1][1] *= -1;
 
         GPUDrawPushConstants pushConstants;
@@ -377,16 +382,25 @@ namespace Zero
         vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TexturedPipelineLayout, 0, 1, &imageSet, 0,
                                 nullptr);
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        float currentTime = glfwGetTime();
+        if (currentTime - rlastTime >= 1 / 60)
+        {
+            rrotation += 0.5f;
+            rlastTime = currentTime;
+        }
 
-        glm::mat4 view = glm::translate(glm::vec3{0, 0, -3});
+        glm::mat4 model = glm::rotate(model, glm::radians(rrotation), glm::vec3(0.0f, 0.0f, 1.0f));
+
+        glm::mat4 view = Application::Get().GetMainCamera().GetViewMatrix();
         // camera projection
         glm::mat4 projection = glm::perspective(glm::radians(70.f),
                                                 static_cast<float>(m_DrawExtent.width) / static_cast<float>(m_DrawExtent
-                                                    .height), 0.1f, 1000.f);
-        //projection[1][1] *= -1;
+                                                    .height), 0.1f, 10000.f);
+        projection[1][1] *= -1;
 
         GPUDrawPushConstants pushConstants;
-        pushConstants.WorldMatrix = projection * view;
+        pushConstants.WorldMatrix = projection * view; //* model;
         pushConstants.VertexBuffer = m_Rectangle.VertexBufferAddress;
 
         // vkCmdPushConstants(cmd, m_PlainPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants),
@@ -801,7 +815,7 @@ namespace Zero
         //no blending
         pipelineBuilder.DisableBlending();
 
-        pipelineBuilder.EnableDepthTest(true, VK_COMPARE_OP_GREATER_OR_EQUAL);
+        pipelineBuilder.EnableDepthTest(true, VK_COMPARE_OP_LESS_OR_EQUAL);
 
         //connect the image format we will draw into, from draw image
         pipelineBuilder.SetColorAttachmentFormat(m_DrawImage.ImageFormat);
@@ -873,7 +887,7 @@ namespace Zero
         //pipelineBuilder.disable_blending();
         pipelineBuilder.DisableBlending();
         //no depth testing
-        pipelineBuilder.EnableDepthTest(true, VK_COMPARE_OP_GREATER_OR_EQUAL);
+        pipelineBuilder.EnableDepthTest(true, VK_COMPARE_OP_LESS);
 
         //connect the image format we will draw into, from draw image
         pipelineBuilder.SetColorAttachmentFormat(m_DrawImage.ImageFormat);

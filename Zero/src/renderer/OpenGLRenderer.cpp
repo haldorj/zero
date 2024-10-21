@@ -96,7 +96,7 @@ namespace Zero
 		glm::mat4 projection = glm::mat4(1.0f);
 
 		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
-		view = glm::translate(view, glm::vec3(0.0f, -0.5f, -3.0f));
+		view = Application::Get().GetMainCamera().GetViewMatrix();
 		projection = glm::perspective(glm::radians(70.0f), (float)EXTENT_WIDTH / (float)EXTENT_HEIGHT, 0.1f, 100.0f);
 
 		int modelLoc = glGetUniformLocation(shaderProgram->GetID(), "model");

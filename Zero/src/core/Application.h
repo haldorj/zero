@@ -65,5 +65,7 @@ namespace Zero
 
         GLFWwindow* m_Window = nullptr;
         RendererBase* m_Renderer = nullptr;
+
+
     };
 } // namespace Zero

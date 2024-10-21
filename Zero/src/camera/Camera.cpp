@@ -65,8 +65,8 @@ namespace Zero
         lastMouseY = mouseY;
 
         // Calculate the new rotation for the GameObject
-        m_Pitch = static_cast<float>(deltaTime * (deltaY * m_RotationSpeed));
-        m_Yaw = static_cast<float>(deltaTime * (deltaX * m_RotationSpeed));
+        m_Pitch -= static_cast<float>(deltaTime * (deltaY * m_RotationSpeed));
+        m_Yaw += static_cast<float>(deltaTime * (deltaX * m_RotationSpeed));
     }
     
     glm::mat4 Camera::GetViewMatrix()
