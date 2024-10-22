@@ -19,12 +19,12 @@ namespace Zero
         // vertical rotation
         float m_Pitch{0.f};
         // horizontal rotation
-        float m_Yaw{0.f};
+        float m_Yaw{180.f};
 
         glm::vec3 m_Velocity = {};
         glm::vec3 m_Position = {};
 
-        float m_MovementSpeed = 6.f;
-        float m_RotationSpeed = 1.f;
+        float m_MovementSpeed = 3.f;
+        float m_RotationSpeed = 0.5f;
     };
 } // namespace Zero

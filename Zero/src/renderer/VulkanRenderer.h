@@ -19,16 +19,6 @@ namespace Zero
         VkFormat ImageFormat{};
     };
 
-    struct GPUSceneData
-    {
-        glm::mat4 View{};
-        glm::mat4 Proj{};
-        glm::mat4 ViewProj{};
-        glm::vec4 AmbientColor{};
-        glm::vec4 SunlightDirection{}; // w for sun power
-        glm::vec4 SunlightColor{};
-    };
-
     struct DeletionQueue
     {
         std::deque<std::function<void()>> DeletionFunctions;
@@ -75,7 +65,6 @@ namespace Zero
         void Draw() override;
 
         void DrawBackground(VkCommandBuffer cmd);
-        void DrawComputeBackground(VkCommandBuffer cmd);
         void DrawGeometry(VkCommandBuffer cmd);
         void DrawGeometryTextured(VkCommandBuffer cmd);
 
@@ -91,7 +80,6 @@ namespace Zero
         void InitDescriptors();
         void InitPipelines();
 
-        void InitBackgroundPipelines();
         void InitPlainPipeline();
         void InitTexturedPipeline();
 
@@ -149,9 +137,6 @@ namespace Zero
         VkDescriptorSet m_DrawImageDescriptors{};
         VkDescriptorSetLayout m_DrawImageDescriptorLayout{};
 
-        VkPipeline m_GradientPipeline{};
-        VkPipelineLayout m_GradientPipelineLayout{};
-
         VkPipelineLayout m_PlainPipelineLayout{};
         VkPipeline m_PlainPipeline{};
 
@@ -163,8 +148,6 @@ namespace Zero
         VkFence m_ImmFence{};
         VkCommandBuffer m_ImmCommandBuffer{};
         VkCommandPool m_ImmCommandPool{};
-
-        GPUSceneData m_SceneData{};
 
         VkDescriptorSetLayout m_GpuSceneDataDescriptorLayout{};
 

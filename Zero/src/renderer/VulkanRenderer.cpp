@@ -222,20 +222,6 @@ namespace Zero
         vkCmdClearColorImage(cmd, m_DrawImage.Image, VK_IMAGE_LAYOUT_GENERAL, &clearValue, 1, &clearRange);
     }
 
-    void VulkanRenderer::DrawComputeBackground(VkCommandBuffer cmd)
-    {
-        // Bind the gradient drawing compute pipeline
-        vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_COMPUTE, m_GradientPipeline);
-
-        // Bind the descriptor set containing the draw image for the compute pipeline
-        vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_COMPUTE, m_GradientPipelineLayout, 0, 1,
-                                &m_DrawImageDescriptors, 0, nullptr);
-
-        // Execute the compute pipeline dispatch. We are using 16x16 workgroup size so we need to divide by it
-        vkCmdDispatch(cmd, static_cast<uint32_t>(std::ceil(m_DrawExtent.width / 16.0)),
-                      static_cast<uint32_t>(std::ceil(m_DrawExtent.height / 16.0)), 1);
-    }
-
     float rrotation = 0.0f;
     double rlastTime = glfwGetTime();
 
@@ -268,27 +254,10 @@ namespace Zero
 
         vkCmdSetScissor(cmd, 0, 1, &scissor);
 
-        //allocate a new uniform buffer for the scene data
-        AllocatedBuffer gpuSceneDataBuffer = CreateBuffer(sizeof(GPUSceneData), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-                                                          VMA_MEMORY_USAGE_CPU_TO_GPU);
-
-        //add it to the deletion queue of this frame so it gets deleted once its been used
-        GetCurrentFrame().DeletionQueue.PushFunction([=, this]()
-        {
-            DestroyBuffer(gpuSceneDataBuffer);
-        });
-
-        //write the buffer
-        GPUSceneData* sceneUniformData = (GPUSceneData*)gpuSceneDataBuffer.Allocation->GetMappedData();
-        *sceneUniformData = m_SceneData;
 
         //create a descriptor set that binds that buffer and update it
         VkDescriptorSet globalDescriptor = GetCurrentFrame().FrameDescriptors.Allocate(
             m_Device, m_GpuSceneDataDescriptorLayout);
-
-        DescriptorWriter writer;
-        writer.WriteBuffer(0, gpuSceneDataBuffer.Buffer, sizeof(GPUSceneData), 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
-        writer.UpdateSet(m_Device, globalDescriptor);
 
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_PlainPipeline);
 
@@ -342,28 +311,6 @@ namespace Zero
 
         vkCmdSetScissor(cmd, 0, 1, &scissor);
 
-        //allocate a new uniform buffer for the scene data
-        AllocatedBuffer gpuSceneDataBuffer = CreateBuffer(sizeof(GPUSceneData), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-                                                          VMA_MEMORY_USAGE_CPU_TO_GPU);
-
-        //add it to the deletion queue of this frame so it gets deleted once its been used
-        GetCurrentFrame().DeletionQueue.PushFunction([=, this]()
-        {
-            DestroyBuffer(gpuSceneDataBuffer);
-        });
-
-        //write the buffer
-        //GPUSceneData* sceneUniformData = (GPUSceneData*)gpuSceneDataBuffer.Allocation->GetMappedData();
-        //*sceneUniformData = m_SceneData;
-
-        ////create a descriptor set that binds that buffer and update it
-        //VkDescriptorSet globalDescriptor = GetCurrentFrame().FrameDescriptors.Allocate(
-        //    m_Device, m_GpuSceneDataDescriptorLayout);
-
-        //DescriptorWriter writer;
-        //writer.WriteBuffer(0, gpuSceneDataBuffer.Buffer, sizeof(GPUSceneData), 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
-        //writer.UpdateSet(m_Device, globalDescriptor);
-
         // TEXTURES /////////////////////////////////////////////////////////////////////////////////////////////////
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TexturedPipeline);
 
@@ -390,7 +337,7 @@ namespace Zero
 
         glm::mat4 model = glm::rotate(glm::mat4{ 1.f }, glm::radians(rrotation), glm::vec3(0.0f, 1.0f, 0.0f));
 
-        glm::mat4 view = glm::translate(glm::vec3{ 0,-0.5,-2 });
+        glm::mat4 view = Application::Get().GetMainCamera().GetViewMatrix();
         // camera projection
         glm::mat4 projection = glm::perspective(glm::radians(70.f),
                                                 static_cast<float>(m_DrawExtent.width) / static_cast<float>(m_DrawExtent
@@ -715,52 +662,8 @@ namespace Zero
 
     void VulkanRenderer::InitPipelines()
     {
-        InitBackgroundPipelines();
         // InitPlainPipeline();
         InitTexturedPipeline();
-    }
-
-    void VulkanRenderer::InitBackgroundPipelines()
-    {
-        VkPipelineLayoutCreateInfo computeLayout{};
-        computeLayout.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-        computeLayout.pNext = nullptr;
-        computeLayout.pSetLayouts = &m_DrawImageDescriptorLayout;
-        computeLayout.setLayoutCount = 1;
-
-        VK_CHECK(vkCreatePipelineLayout(m_Device, &computeLayout, nullptr, &m_GradientPipelineLayout));
-
-        VkShaderModule computeDrawShader;
-        if (!VkUtil::LoadShaderModule("../shaders/compiled/gradient.comp.spv", m_Device, &computeDrawShader))
-        {
-            std::cout << "Error when building the compute shader \n";
-        }
-
-        VkPipelineShaderStageCreateInfo stageinfo{};
-        stageinfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-        stageinfo.pNext = nullptr;
-        stageinfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-        stageinfo.module = computeDrawShader;
-        stageinfo.pName = "main";
-
-        VkComputePipelineCreateInfo computePipelineCreateInfo{};
-        computePipelineCreateInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
-        computePipelineCreateInfo.pNext = nullptr;
-        computePipelineCreateInfo.layout = m_GradientPipelineLayout;
-        computePipelineCreateInfo.stage = stageinfo;
-
-        VK_CHECK(
-            vkCreateComputePipelines(m_Device, VK_NULL_HANDLE, 1, &computePipelineCreateInfo, nullptr, &
-                m_GradientPipeline))
-        ;
-
-        vkDestroyShaderModule(m_Device, computeDrawShader, nullptr);
-
-        m_MainDeletionQueue.PushFunction([&]()
-        {
-            vkDestroyPipelineLayout(m_Device, m_GradientPipelineLayout, nullptr);
-            vkDestroyPipeline(m_Device, m_GradientPipeline, nullptr);
-        });
     }
 
     void VulkanRenderer::InitPlainPipeline()
