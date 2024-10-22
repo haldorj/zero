@@ -1363,6 +1363,7 @@
       <Filter>vendor\vk-bootstrap</Filter>
     </ClInclude>
     <ClInclude Include="vk_texture.h" />
+    <ClInclude Include="src\shared\VulkanBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\camera\Camera.cpp">
@@ -1417,5 +1418,6 @@
       <Filter>vendor\vk-bootstrap</Filter>
     </ClCompile>
     <ClCompile Include="vk_texture.cpp" />
+    <ClCompile Include="src\shared\VulkanBuffer.cpp" />
   </ItemGroup>
 </Project>

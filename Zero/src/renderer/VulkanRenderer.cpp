@@ -22,6 +22,7 @@
 
 #include <stb_image.h>
 #include <glm/gtx/quaternion.hpp>
+#include <shared/VulkanBuffer.h>
 
 
 namespace Zero
@@ -54,8 +55,8 @@ namespace Zero
         //delete the rectangle data on engine shutdown
         m_MainDeletionQueue.PushFunction([&]()
         {
-            DestroyBuffer(m_Rectangle.IndexBuffer);
-            DestroyBuffer(m_Rectangle.VertexBuffer);
+            VulkanBufferManager::DestroyBuffer(m_Allocator, m_Rectangle.IndexBuffer);
+            VulkanBufferManager::DestroyBuffer(m_Allocator, m_Rectangle.VertexBuffer);
         });
 
         InitTextures();
@@ -253,11 +254,6 @@ namespace Zero
         scissor.extent.height = m_DrawExtent.height;
 
         vkCmdSetScissor(cmd, 0, 1, &scissor);
-
-
-        //create a descriptor set that binds that buffer and update it
-        VkDescriptorSet globalDescriptor = GetCurrentFrame().FrameDescriptors.Allocate(
-            m_Device, m_GpuSceneDataDescriptorLayout);
 
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_PlainPipeline);
 
@@ -609,13 +605,6 @@ namespace Zero
 
         {
             DescriptorLayoutBuilder builder;
-            builder.AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
-            m_GpuSceneDataDescriptorLayout = builder.Build(
-                m_Device, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
-        }
-
-        {
-            DescriptorLayoutBuilder builder;
             builder.AddBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
             m_SingleImageDescriptorLayout = builder.Build(m_Device, VK_SHADER_STAGE_FRAGMENT_BIT);
         }
@@ -635,7 +624,6 @@ namespace Zero
             m_GlobalDescriptorAllocator.DestroyPool(m_Device);
 
             vkDestroyDescriptorSetLayout(m_Device, m_DrawImageDescriptorLayout, nullptr);
-            vkDestroyDescriptorSetLayout(m_Device, m_GpuSceneDataDescriptorLayout, nullptr);
             vkDestroyDescriptorSetLayout(m_Device, m_SingleImageDescriptorLayout, nullptr);
         });
 
@@ -876,7 +864,7 @@ namespace Zero
         GPUMeshBuffers newSurface;
 
         //create vertex buffer
-        newSurface.VertexBuffer = CreateBuffer(vertexBufferSize,
+        newSurface.VertexBuffer = VulkanBufferManager::CreateBuffer(m_Allocator, vertexBufferSize,
                                                VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT |
                                                VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT,
                                                VMA_MEMORY_USAGE_GPU_ONLY);
@@ -888,11 +876,11 @@ namespace Zero
         newSurface.VertexBufferAddress = vkGetBufferDeviceAddress(m_Device, &deviceAdressInfo);
 
         //create index buffer
-        newSurface.IndexBuffer = CreateBuffer(indexBufferSize,
+        newSurface.IndexBuffer = VulkanBufferManager::CreateBuffer(m_Allocator, indexBufferSize,
                                               VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                                               VMA_MEMORY_USAGE_GPU_ONLY);
 
-        AllocatedBuffer staging = CreateBuffer(vertexBufferSize + indexBufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+        AllocatedBuffer staging = VulkanBufferManager::CreateBuffer(m_Allocator, vertexBufferSize + indexBufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                VMA_MEMORY_USAGE_CPU_ONLY);
 
         void* data = staging.Allocation->GetMappedData();
@@ -919,36 +907,9 @@ namespace Zero
             vkCmdCopyBuffer(cmd, staging.Buffer, newSurface.IndexBuffer.Buffer, 1, &indexCopy);
         });
 
-        DestroyBuffer(staging);
+        VulkanBufferManager::DestroyBuffer(m_Allocator, staging);
 
         return newSurface;
-    }
-
-
-    AllocatedBuffer VulkanRenderer::CreateBuffer(size_t allocSize, VkBufferUsageFlags usage, VmaMemoryUsage memoryUsage)
-    {
-        // allocate buffer
-        VkBufferCreateInfo bufferInfo = {.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO};
-        bufferInfo.pNext = nullptr;
-        bufferInfo.size = allocSize;
-
-        bufferInfo.usage = usage;
-
-        VmaAllocationCreateInfo vmaallocInfo = {};
-        vmaallocInfo.usage = memoryUsage;
-        vmaallocInfo.flags = VMA_ALLOCATION_CREATE_MAPPED_BIT;
-        AllocatedBuffer newBuffer;
-
-        // allocate the buffer
-        VK_CHECK(vmaCreateBuffer(m_Allocator, &bufferInfo, &vmaallocInfo, &newBuffer.Buffer, &newBuffer.Allocation,
-            &newBuffer.Info));
-
-        return newBuffer;
-    }
-
-    void VulkanRenderer::DestroyBuffer(const AllocatedBuffer& buffer)
-    {
-        vmaDestroyBuffer(m_Allocator, buffer.Buffer, buffer.Allocation);
     }
 
     void VulkanRenderer::ImmediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function)
@@ -1019,7 +980,7 @@ namespace Zero
                                                bool mipmapped)
     {
         const uint32_t dataSize = size.depth * size.width * size.height * 4;
-        AllocatedBuffer uploadBuffer = CreateBuffer(dataSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+        AllocatedBuffer uploadBuffer = VulkanBufferManager::CreateBuffer(m_Allocator, dataSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                     VMA_MEMORY_USAGE_CPU_TO_GPU);
 
         memcpy(uploadBuffer.Info.pMappedData, data, dataSize);
@@ -1052,7 +1013,7 @@ namespace Zero
                                     VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
         });
 
-        DestroyBuffer(uploadBuffer);
+        VulkanBufferManager::DestroyBuffer(m_Allocator, uploadBuffer);
 
         return new_image;
     }
@@ -1081,7 +1042,7 @@ namespace Zero
         AllocatedBuffer stagingBuffer;
         try
         {
-            stagingBuffer = CreateBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_MEMORY_USAGE_CPU_ONLY);
+            stagingBuffer = VulkanBufferManager::CreateBuffer(m_Allocator, imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_MEMORY_USAGE_CPU_ONLY);
         }
         catch (const std::exception& e)
         {
@@ -1106,7 +1067,7 @@ namespace Zero
         }
         catch (const std::exception& e)
         {
-            DestroyBuffer(stagingBuffer);  // Clean up staging buffer on failure
+            VulkanBufferManager::DestroyBuffer(m_Allocator, stagingBuffer);  // Clean up staging buffer on failure
             throw;  // Rethrow the exception
         }
 
@@ -1135,7 +1096,7 @@ namespace Zero
         });
 
         // Clean up the staging buffer
-        DestroyBuffer(stagingBuffer);
+        VulkanBufferManager::DestroyBuffer(m_Allocator, stagingBuffer);
 
         return newImage;
     }

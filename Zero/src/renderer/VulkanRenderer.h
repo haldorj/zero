@@ -87,9 +87,6 @@ namespace Zero
         void DestroySwapchain() const;
         void ResizeSwapchain();
 
-        AllocatedBuffer CreateBuffer(size_t allocSize, VkBufferUsageFlags usage, VmaMemoryUsage memoryUsage);
-        void DestroyBuffer(const AllocatedBuffer& buffer);
-
         void ImmediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function);
 
         AllocatedImage CreateImage(VkExtent3D size, VkFormat format, VkImageUsageFlags usage, bool mipmapped = false);
@@ -128,7 +125,6 @@ namespace Zero
 
         FrameData m_Frames[FRAME_OVERLAP] = {};
 
-
         VkQueue m_GraphicsQueue{};
         uint32_t m_GraphicsQueueFamily{};
 
@@ -148,8 +144,6 @@ namespace Zero
         VkFence m_ImmFence{};
         VkCommandBuffer m_ImmCommandBuffer{};
         VkCommandPool m_ImmCommandPool{};
-
-        VkDescriptorSetLayout m_GpuSceneDataDescriptorLayout{};
 
         AllocatedImage m_ErrorCheckerboardImage;
         AllocatedImage m_DogImage;
