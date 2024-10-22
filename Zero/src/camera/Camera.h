@@ -12,6 +12,9 @@ namespace Zero
         glm::mat4 GetViewMatrix();
         glm::mat4 GetRotationMatrix();
 
+        glm::vec3 GetPosition() const { return m_Position; }
+        void SetPosition(const glm::vec3& position) { m_Position = position; }
+
     private:
         // vertical rotation
         float m_Pitch{0.f};

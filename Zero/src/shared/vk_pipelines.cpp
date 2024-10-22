@@ -221,7 +221,7 @@ void PipelineBuilder::DisableDepthTest()
 
 void PipelineBuilder::EnableDepthTest(bool depthWriteEnable, VkCompareOp op)
 {
-    DepthStencil.depthTestEnable = VK_FALSE;
+    DepthStencil.depthTestEnable = VK_TRUE;
     DepthStencil.depthWriteEnable = depthWriteEnable;
     DepthStencil.depthCompareOp = op;
     DepthStencil.depthBoundsTestEnable = VK_FALSE;

@@ -145,15 +145,14 @@ namespace Zero
 
         // The main draw image is transitioned into the general layout using vkutil::transition_image().This allows writing into the image.
         VkUtil::TransitionImage(cmd, m_DrawImage.Image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL);
-        VkUtil::TransitionImage(cmd, m_DepthImage.Image, VK_IMAGE_LAYOUT_UNDEFINED,
-                                VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL);
 
         // The DrawBackground() function is called to clear the draw image with a specified clear color.
         DrawBackground(cmd);
 
-        // vkutil::transition_image(cmd, _drawImage.image, VK_IMAGE_LAYOUT_GENERAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
-
-        // DrawGeometry(cmd);
+        VkUtil::TransitionImage(cmd, m_DrawImage.Image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL);
+        VkUtil::TransitionImage(cmd, m_DepthImage.Image, VK_IMAGE_LAYOUT_UNDEFINED,
+            VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL);
+        //DrawGeometry(cmd);
         DrawGeometryTextured(cmd);
 
         // vkCmdEndRendering(cmd);
@@ -308,7 +307,7 @@ namespace Zero
                            &pushConstants);
         vkCmdBindIndexBuffer(cmd, m_Rectangle.IndexBuffer.Buffer, 0, VK_INDEX_TYPE_UINT32);
 
-        vkCmdDrawIndexed(cmd, 6, 1, 0, 0, 0);
+        vkCmdDrawIndexed(cmd, 18, 1, 0, 0, 0);
 
         vkCmdEndRendering(cmd);
     }
@@ -320,6 +319,7 @@ namespace Zero
                                                                            VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
         VkRenderingAttachmentInfo depthAttachment = VkInit::DepthAttachmentInfo(
             m_DepthImage.ImageView, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL);
+
         VkRenderingInfo renderInfo = VkInit::RenderingInfo(m_DrawExtent, &colorAttachment, &depthAttachment);
         vkCmdBeginRendering(cmd, &renderInfo);
 
@@ -329,8 +329,8 @@ namespace Zero
         viewport.y = 0;
         viewport.width = static_cast<float>(m_DrawExtent.width);
         viewport.height = static_cast<float>(m_DrawExtent.height);
-        viewport.minDepth = 0.f;
-        viewport.maxDepth = 1.f;
+        viewport.minDepth = 1.f;
+        viewport.maxDepth = 0.f;
 
         vkCmdSetViewport(cmd, 0, 1, &viewport);
 
@@ -353,18 +353,16 @@ namespace Zero
         });
 
         //write the buffer
-        GPUSceneData* sceneUniformData = (GPUSceneData*)gpuSceneDataBuffer.Allocation->GetMappedData();
-        *sceneUniformData = m_SceneData;
+        //GPUSceneData* sceneUniformData = (GPUSceneData*)gpuSceneDataBuffer.Allocation->GetMappedData();
+        //*sceneUniformData = m_SceneData;
 
-        //create a descriptor set that binds that buffer and update it
-        VkDescriptorSet globalDescriptor = GetCurrentFrame().FrameDescriptors.Allocate(
-            m_Device, m_GpuSceneDataDescriptorLayout);
+        ////create a descriptor set that binds that buffer and update it
+        //VkDescriptorSet globalDescriptor = GetCurrentFrame().FrameDescriptors.Allocate(
+        //    m_Device, m_GpuSceneDataDescriptorLayout);
 
-        DescriptorWriter writer;
-        writer.WriteBuffer(0, gpuSceneDataBuffer.Buffer, sizeof(GPUSceneData), 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
-        writer.UpdateSet(m_Device, globalDescriptor);
-
-        // vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_PlainPipeline);
+        //DescriptorWriter writer;
+        //writer.WriteBuffer(0, gpuSceneDataBuffer.Buffer, sizeof(GPUSceneData), 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+        //writer.UpdateSet(m_Device, globalDescriptor);
 
         // TEXTURES /////////////////////////////////////////////////////////////////////////////////////////////////
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TexturedPipeline);
@@ -390,9 +388,9 @@ namespace Zero
             rlastTime = currentTime;
         }
 
-        glm::mat4 model = glm::rotate(model, glm::radians(rrotation), glm::vec3(0.0f, 0.0f, 1.0f));
+        glm::mat4 model = glm::rotate(glm::mat4{ 1.f }, glm::radians(rrotation), glm::vec3(0.0f, 1.0f, 0.0f));
 
-        glm::mat4 view = Application::Get().GetMainCamera().GetViewMatrix();
+        glm::mat4 view = glm::translate(glm::vec3{ 0,-0.5,-2 });
         // camera projection
         glm::mat4 projection = glm::perspective(glm::radians(70.f),
                                                 static_cast<float>(m_DrawExtent.width) / static_cast<float>(m_DrawExtent
@@ -400,7 +398,7 @@ namespace Zero
         projection[1][1] *= -1;
 
         GPUDrawPushConstants pushConstants;
-        pushConstants.WorldMatrix = projection * view; //* model;
+        pushConstants.WorldMatrix = projection * view * model;
         pushConstants.VertexBuffer = m_Rectangle.VertexBufferAddress;
 
         // vkCmdPushConstants(cmd, m_PlainPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants),
@@ -410,7 +408,7 @@ namespace Zero
                            &pushConstants);
         vkCmdBindIndexBuffer(cmd, m_Rectangle.IndexBuffer.Buffer, 0, VK_INDEX_TYPE_UINT32);
 
-        vkCmdDrawIndexed(cmd, 6, 1, 0, 0, 0);
+        vkCmdDrawIndexed(cmd, 18, 1, 0, 0, 0);
 
         vkCmdEndRendering(cmd);
     }
@@ -815,7 +813,7 @@ namespace Zero
         //no blending
         pipelineBuilder.DisableBlending();
 
-        pipelineBuilder.EnableDepthTest(true, VK_COMPARE_OP_LESS_OR_EQUAL);
+        pipelineBuilder.EnableDepthTest(true, VK_COMPARE_OP_LESS);
 
         //connect the image format we will draw into, from draw image
         pipelineBuilder.SetColorAttachmentFormat(m_DrawImage.ImageFormat);
@@ -887,7 +885,7 @@ namespace Zero
         //pipelineBuilder.disable_blending();
         pipelineBuilder.DisableBlending();
         //no depth testing
-        pipelineBuilder.EnableDepthTest(true, VK_COMPARE_OP_LESS);
+        pipelineBuilder.EnableDepthTest(true, VK_COMPARE_OP_GREATER_OR_EQUAL);
 
         //connect the image format we will draw into, from draw image
         pipelineBuilder.SetColorAttachmentFormat(m_DrawImage.ImageFormat);
