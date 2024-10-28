@@ -2,22 +2,20 @@
 
 #include <glad/glad.h>
 
-class VBO
+#include "Interfaces\IObjectInterface.h"
+
+class VBO : public IObjectInterface
 {
 public:
-	VBO() = default;
-	// Constructor that generates a Vertex Buffer Object and links it to vertices
-	VBO(GLfloat* vertices, GLsizeiptr size);
+    // Constructor that generates a Vertex Buffer Object and links it to vertices
+    VBO(GLfloat* vertices, GLsizeiptr size);
 
-	// Binds the VBO
-	void Bind();
-	// Unbinds the VBO
-	void Unbind();
-	// Deletes the VBO
-	void Delete();
+    void Bind() override;
+    void Unbind() override;
+    void Delete() override;
+    ~VBO() override = default;
 
 private:
-	// Reference ID of the Vertex Buffer Object
-	GLuint ID;
+    // Reference ID of the Vertex Buffer Object
+    GLuint ID;
 };
-

@@ -147,7 +147,7 @@ namespace Zero
 
         AllocatedImage m_ErrorCheckerboardImage;
         AllocatedImage m_DogImage;
-        
+
         VkSampler m_DefaultSamplerLinear = nullptr;
         VkSampler m_DefaultSamplerNearest = nullptr;
 
