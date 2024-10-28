@@ -8,11 +8,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c1e6d020-1b85-454d-b55c-363ab39862b5" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Zero/src/EnumModes/RendererMode.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.zero/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.zero/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/Camera.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/Camera.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/Camera.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/Camera.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Zero/Zero.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/Zero.vcxproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Zero/src/core/Application.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/core/Application.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Zero/src/core/Application.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/core/Application.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Zero/src/renderer/OpenGLRenderer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/OpenGLRenderer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Zero/src/renderer/OpenGLRenderer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/OpenGLRenderer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Zero/src/renderer/Renderer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/Renderer.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Zero/src/renderer/VulkanRenderer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/VulkanRenderer.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Zero/src/renderer/VulkanRenderer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/VulkanRenderer.h" afterDir="false" />
     </list>
@@ -25,23 +28,16 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.36.32532/include/memory" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://C:/VulkanSDK/1.3.283.0/Include/vulkan/vulkan_core.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Zero/Vendor/stb_image/stb_image.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Zero/Vendor/vk-bootstrap/VkBootstrapDispatch.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Zero/src/renderer/OpenGL/OpenGLShader.cpp" root0="FORCE_HIGHLIGHTING" />
@@ -59,8 +55,6 @@
     <setting file="file://$PROJECT_DIR$/Zero/src/shared/vk_pipelines.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Zero/src/shared/vk_pipelines.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Zero/src/shared/vk_types.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/../../Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.38.33130/include/array" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/../../VulkanSDK/1.3.296.0/Include/vulkan/vulkan_core.h" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,

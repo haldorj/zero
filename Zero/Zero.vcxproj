@@ -140,6 +140,7 @@
     <ClInclude Include="src\camera\Camera.h" />
     <ClInclude Include="src\core\Application.h" />
     <ClInclude Include="src\core\core.h" />
+    <ClInclude Include="src\EnumModes\RendererMode.hpp" />
     <ClInclude Include="src\Interfaces\IObjectInterface.h" />
     <ClInclude Include="src\renderer\OpenGL\EBO.h" />
     <ClInclude Include="src\renderer\OpenGL\OpenGLShader.h" />

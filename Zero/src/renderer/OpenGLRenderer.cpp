@@ -75,7 +75,7 @@ namespace Zero
     float rotation = 0.0f;
     double lastTime = glfwGetTime();
 
-    void OpenGLRenderer::Draw()
+    void OpenGLRenderer::Draw(Topology topology)
     {
         // Specify the color of the background
         glClearColor(_clearColor.r, _clearColor.g, _clearColor.b, _clearColor.a);
@@ -107,6 +107,9 @@ namespace Zero
         int projLoc = glGetUniformLocation(shaderProgram->GetID(), "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
+        
+
+        
         // Scale uniform. Must be called after the Shader Program has been activated.
         glUniform1f(uniID, 1.f);
         // Bind the texture so that it is used in the Shader Program
@@ -114,7 +117,20 @@ namespace Zero
         // Bind the VAO so OpenGL knows to use it
         VAO1->Bind();
         // Draw primitives, number of indices, datatype of indices, index of indices
-        glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(RectIndeces.size()), GL_UNSIGNED_INT, 0);
+        switch (topology)
+        {
+        case Topology::None:
+            glDrawElements(GL_NONE, static_cast<GLsizei>(RectIndeces.size()), GL_UNSIGNED_INT, 0);
+            break;
+        case Topology::Lines:
+            glDrawElements(GL_LINES, static_cast<GLsizei>(RectIndeces.size()), GL_UNSIGNED_INT, 0);
+            break;
+        case Topology::Triangles:
+            glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(RectIndeces.size()), GL_UNSIGNED_INT, 0);
+            break;
+        default: ;
+        }
+        
         // Swap the back buffer with the front buffer
         glfwSwapBuffers(Application::Get().GetWindow());
     }

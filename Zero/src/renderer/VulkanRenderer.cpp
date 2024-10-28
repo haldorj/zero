@@ -102,7 +102,7 @@ namespace Zero
         });
     }
 
-    void VulkanRenderer::Draw()
+    void VulkanRenderer::Draw(Topology topology)
     {
         if (ResizeRequested)
             ResizeSwapchain();

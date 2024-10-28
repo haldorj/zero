@@ -1,5 +1,6 @@
 #pragma once
 
+#include "EnumModes/RendererMode.hpp"
 #include "OpenGL/EBO.h"
 #include "OpenGL/OpenGLShader.h"
 #include "OpenGL/VAO.h"
@@ -16,7 +17,7 @@ namespace Zero
         void InitObject(std::span<uint32_t> indices, std::span<Vertex> vertices) override;
         void Shutdown() override;
         void SetClearColor(glm::vec4 clearColor) override { _clearColor = clearColor; }
-        void Draw() override;
+        void Draw(Topology) override;
 
     private:
         void InitShaders();

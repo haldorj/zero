@@ -8,6 +8,8 @@
 
 #include <ranges>
 
+#include "EnumModes/RendererMode.hpp"
+
 namespace Zero
 {
     struct AllocatedImage
@@ -62,7 +64,7 @@ namespace Zero
         void InitTextures();
         void Shutdown() override;
         void SetClearColor(const glm::vec4 clearColor) override { m_ClearColor = clearColor; }
-        void Draw() override;
+        void Draw(Topology) override;
 
         void DrawBackground(VkCommandBuffer cmd);
         void DrawGeometry(VkCommandBuffer cmd);

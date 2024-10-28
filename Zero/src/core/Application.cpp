@@ -11,13 +11,24 @@
 namespace Zero
 {
     // Choose RendererAPI
-    RendererAPI RendererType = RendererAPI::Vulkan;
+    RendererAPI RendererType = RendererAPI::OpenGL;
 
     Application* LoadedEngine = nullptr;
     Application& Application::Get() { return *LoadedEngine; }
 
     void Application::CreateRectangle() const
     {
+
+        struct {
+            glm::vec3 position;
+            glm::vec3 normal;
+            glm::vec2 textCoord;
+        }vertices;
+
+        vertices.position = {1,2,3};
+        vertices.normal = {1,2,3};
+        vertices.textCoord = {2,3};
+        
         std::array<Vertex, 4> rectVertices{};
 
         rectVertices[0].Position = {0.5, -0.5, 0};
@@ -130,7 +141,7 @@ namespace Zero
         const float flash = std::abs(std::sin(static_cast<float>(m_FrameCount) / 240.f));
 
         m_Renderer->SetClearColor({0, 0, flash * 0.5, 1});
-        m_Renderer->Draw();
+        m_Renderer->Draw(m_topology);
 
         m_FrameCount++;
     }
