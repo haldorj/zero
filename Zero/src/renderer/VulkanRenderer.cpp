@@ -2,17 +2,17 @@
 
 #include "core/Application.h"
 
-#include <shared/vk_initializers.h>
-#include <shared/vk_types.h>
+#include <Renderer/Vulkan/vk_initializers.h>
+#include <Renderer/Vulkan/vk_types.h>
 
 #include "VkBootstrap.h"
 
 #include <chrono>
 #include <iostream>
-#include <shared/vk_images.h>
+#include <Renderer/Vulkan/vk_images.h>
 
 #define VMA_IMPLEMENTATION
-#include <shared/vk_pipelines.h>
+#include <Renderer/Vulkan/vk_pipelines.h>
 #include "vk_mem_alloc.h"
 
 #include <GLFW/glfw3.h>
@@ -22,7 +22,7 @@
 
 #include <stb_image.h>
 #include <glm/gtx/quaternion.hpp>
-#include <shared/VulkanBuffer.h>
+#include <Renderer/Vulkan/VulkanBuffer.h>
 
 
 namespace Zero
@@ -50,7 +50,22 @@ namespace Zero
 
     void VulkanRenderer::InitObject(std::span<uint32_t> indices, std::span<Vertex> vertices)
     {
-        m_Rectangle = UploadMesh(indices, vertices);
+        std::vector<VkVertex> vkvertices;
+        vkvertices.reserve(vertices.size());
+
+        for (auto& vertex : vertices)
+		{
+            VkVertex v{};
+            v.Position = vertex.GetPosition();
+            v.Normal = vertex.GetNormal();
+            v.Color = glm::vec4(vertex.GetNormal(), 1.0f);
+            v.UvX = vertex.GetTexCoord().x;
+            v.UvY = vertex.GetTexCoord().y;
+
+            vkvertices.push_back(v);
+		}
+
+        m_Rectangle = UploadMesh(indices, vkvertices);
 
         //delete the rectangle data on engine shutdown
         m_MainDeletionQueue.PushFunction([&]()
@@ -856,12 +871,12 @@ namespace Zero
         ResizeRequested = false;
     }
 
-    GPUMeshBuffers VulkanRenderer::UploadMesh(std::span<uint32_t> indices, std::span<Vertex> vertices)
+    GPUMeshBuffers VulkanRenderer::UploadMesh(std::span<uint32_t> indices, std::span<VkVertex> vertices)
     {
-        const size_t vertexBufferSize = vertices.size() * sizeof(Vertex);
+        const size_t vertexBufferSize = vertices.size() * sizeof(VkVertex);
         const size_t indexBufferSize = indices.size() * sizeof(uint32_t);
 
-        GPUMeshBuffers newSurface;
+        GPUMeshBuffers newSurface{};
 
         //create vertex buffer
         newSurface.VertexBuffer = VulkanBufferManager::CreateBuffer(m_Allocator, vertexBufferSize,

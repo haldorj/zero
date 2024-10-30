@@ -1,7 +1,8 @@
 #pragma once
 
 #include "glm/glm.hpp"
-#include <shared/vk_types.h>
+#include <Renderer/Vulkan/vk_types.h>
+#include <model/Vertex.h>
 
 // Renderer interface
 namespace Zero

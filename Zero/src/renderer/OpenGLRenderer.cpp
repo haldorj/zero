@@ -17,7 +17,6 @@ namespace Zero
 
         glfwMakeContextCurrent(Application::Get().GetWindow());
 
-        // Why c-style cast ?, reinterpret_cast?
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         {
             std::cout << "Failed to initialize GLAD" << '\n';
@@ -47,14 +46,14 @@ namespace Zero
     {
         for (const auto& vertex : vertices)
         {
-            RectVertices.push_back(static_cast<GLfloat>(vertex.Position.x));
-            RectVertices.push_back(static_cast<GLfloat>(vertex.Position.y));
-            RectVertices.push_back(static_cast<GLfloat>(vertex.Position.z));
-            RectVertices.push_back(static_cast<GLfloat>(vertex.Color.r));
-            RectVertices.push_back(static_cast<GLfloat>(vertex.Color.g));
-            RectVertices.push_back(static_cast<GLfloat>(vertex.Color.b));
-            RectVertices.push_back(static_cast<GLfloat>(vertex.UvX));
-            RectVertices.push_back(static_cast<GLfloat>(vertex.UvY));
+            RectVertices.push_back(static_cast<GLfloat>(vertex.GetPosition().x));
+            RectVertices.push_back(static_cast<GLfloat>(vertex.GetPosition().y));
+            RectVertices.push_back(static_cast<GLfloat>(vertex.GetPosition().z));
+            RectVertices.push_back(static_cast<GLfloat>(vertex.GetNormal().x));
+            RectVertices.push_back(static_cast<GLfloat>(vertex.GetNormal().y));
+            RectVertices.push_back(static_cast<GLfloat>(vertex.GetNormal().z));
+            RectVertices.push_back(static_cast<GLfloat>(vertex.GetTexCoord().x));
+            RectVertices.push_back(static_cast<GLfloat>(vertex.GetTexCoord().y));
         }
         for (const auto index : indices)
         {

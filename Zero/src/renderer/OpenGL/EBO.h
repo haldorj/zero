@@ -2,9 +2,7 @@
 
 #include <glad/glad.h>
 
-#include "Interfaces\IObjectInterface.h"
-
-class EBO final : public IObjectInterface
+class EBO final
 {
 public:
     EBO() = default;
@@ -12,13 +10,11 @@ public:
     EBO(GLuint* indices, GLsizeiptr size);
 
     // Binds the EBO
-    void Bind() override;
+    void Bind();
     // Unbinds the EBO
-    void Unbind() override;
+    void Unbind();
     // Deletes the EBO
-    void Delete() override;
-
-    ~EBO() override = default;
+    void Delete();
 
 private:
     // ID reference of Elements Buffer Object

@@ -1,12 +1,13 @@
 ﻿#include "Application.h"
 #include "core/core.h"
 
-#include <shared/vk_types.h>
+#include <Renderer/Vulkan/vk_types.h>
 
 #include "VkBootstrap.h"
 
 #include <chrono>
 #include <thread>
+#include "model/Vertex.h"
 
 namespace Zero
 {
@@ -18,21 +19,12 @@ namespace Zero
 
     void Application::CreateRectangle() const
     {
-        std::array<Vertex, 4> rectVertices{};
-
-        rectVertices[0].Position = {0.5, -0.5, 0};
-        rectVertices[0].UvX = 1; rectVertices[0].UvY = 0;
-        rectVertices[1].Position = {0.5, 0.5, 0};
-        rectVertices[1].UvX = 1; rectVertices[1].UvY = 1;
-        rectVertices[2].Position = {-0.5, -0.5, 0};
-        rectVertices[2].UvX = 0; rectVertices[2].UvY = 0;
-        rectVertices[3].Position = {-0.5, 0.5, 0};
-        rectVertices[3].UvX = 0; rectVertices[3].UvY = 1;
-
-        rectVertices[0].Color = {.2, .8, .2, 1};
-        rectVertices[1].Color = {.8, .8, .2, 1};
-        rectVertices[2].Color = {.8, .2, .2, 1};
-        rectVertices[3].Color = {.2, .2, .8, 1};
+        std::array<Vertex, 4> rectVertices{
+            Vertex{{0.5, -0.5, 0}, {0.2, 0.8, 0.2}, {1, 0}}, // 0
+            Vertex{{0.5, 0.5, 0}, {0.8, 0.8, 0.2}, {1, 1}}, // 1
+            Vertex{{-0.5, -0.5, 0}, {0.8, 0.2, 0.2}, {0, 0}}, // 2
+            Vertex{{-0.5, 0.5, 0}, {0.2, 0.2, 0.8}, {0, 1}} // 3
+        };
 
         std::array<uint32_t, 6> rectIndices{};
 
@@ -49,26 +41,13 @@ namespace Zero
 
     void Application::CreatePyramid() const
     {
-        std::array<Vertex, 5> pyramidVertices{};
-        pyramidVertices[0].Position = {-0.5, 0.0, 0.5};
-        pyramidVertices[0].UvX = 0; pyramidVertices[0].UvY = 0;
-        pyramidVertices[0].Color = {1, 0, 0, 1};
-
-        pyramidVertices[1].Position = {-0.5, 0.0, -0.5};
-        pyramidVertices[1].UvX = 5.0f; pyramidVertices[1].UvY = 0;
-        pyramidVertices[1].Color = { 0, 1, 0, 1 };
-
-        pyramidVertices[2].Position = {0.5, 0.0, -0.5};
-        pyramidVertices[2].UvX = 0; pyramidVertices[2].UvY = 0;
-        pyramidVertices[2].Color = { 0, 0, 1, 1 };
-
-        pyramidVertices[3].Position = {0.5, 0.0, 0.5};
-        pyramidVertices[3].UvX = 5.0f; pyramidVertices[3].UvY = 0;
-        pyramidVertices[3].Color = { 1, 1, 0, 1 };
-
-        pyramidVertices[4].Position = {0.0, 0.8, 0.0};
-        pyramidVertices[4].UvX = 2.5f; pyramidVertices[4].UvY = 5.0f;
-        pyramidVertices[4].Color = { 0, 1, 1, 1 };
+        std::array<Vertex, 5> pyramidVertices{
+            Vertex{{-0.5, 0.0, 0.5}, {1, 0, 0}, {0, 0}}, // 0
+            Vertex{{-0.5, 0.0, -0.5}, {0, 1, 0}, {5, 0}}, // 1
+            Vertex{{0.5, 0.0, -0.5}, {0, 0, 1}, {0, 0}}, // 2
+            Vertex{{0.5, 0.0, 0.5}, {1, 1, 0}, {5, 0}}, // 3
+            Vertex{{0, 0.8, 0}, {1, 1, 1}, {2.5, 5}} // 4
+        };
 
         std::array<uint32_t, 18> indices =
         {
@@ -94,7 +73,7 @@ namespace Zero
         // Initialize the renderer
         m_Renderer = RendererFactory::CreateRenderer(RendererType);
 
-        m_MainCamera.SetPosition({0, 0, -3});
+        m_MainCamera.SetPosition({0, 0.5, -2});
 
         switch (RendererType)
         {

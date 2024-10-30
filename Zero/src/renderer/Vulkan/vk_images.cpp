@@ -1,5 +1,5 @@
-#include <shared/vk_images.h>
-#include <shared/vk_initializers.h>
+#include <Renderer/Vulkan/vk_images.h>
+#include <Renderer/Vulkan/vk_initializers.h>
 
 void VkUtil::TransitionImage(VkCommandBuffer cmd, VkImage image, VkImageLayout currentLayout, VkImageLayout newLayout)
 {

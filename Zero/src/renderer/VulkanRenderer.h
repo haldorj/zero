@@ -1,7 +1,7 @@
 #pragma once
 
-#include <shared/vk_descriptors.h>
-#include <shared/vk_types.h>
+#include <Renderer/Vulkan/vk_descriptors.h>
+#include <Renderer/Vulkan/vk_types.h>
 #include "renderer.h"
 #include "core/core.h"
 #include "glm/glm.hpp"
@@ -68,7 +68,7 @@ namespace Zero
         void DrawGeometry(VkCommandBuffer cmd);
         void DrawGeometryTextured(VkCommandBuffer cmd);
 
-        GPUMeshBuffers UploadMesh(std::span<uint32_t> indices, std::span<Vertex> vertices);
+        GPUMeshBuffers UploadMesh(std::span<uint32_t> indices, std::span<VkVertex> vertices);
 
         FrameData& GetCurrentFrame() { return m_Frames[m_FrameNumber % FRAME_OVERLAP]; }
 

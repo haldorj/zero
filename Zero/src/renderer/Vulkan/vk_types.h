@@ -30,7 +30,7 @@
         }                                                               \
     } while (0)
 
-struct Vertex {
+struct VkVertex {
     glm::vec3 Position;
     float UvX;
     glm::vec3 Normal;

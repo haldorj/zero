@@ -1,6 +1,6 @@
-﻿#include <shared/vk_pipelines.h>
+﻿#include <Renderer/Vulkan/vk_pipelines.h>
 #include <fstream>
-#include <shared/vk_initializers.h>
+#include <Renderer/Vulkan/vk_initializers.h>
 
 bool VkUtil::LoadShaderModule(const char* filePath,
                                 const VkDevice device,
