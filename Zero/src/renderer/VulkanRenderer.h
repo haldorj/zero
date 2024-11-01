@@ -80,7 +80,6 @@ namespace Zero
         void InitDescriptors();
         void InitPipelines();
 
-        void InitPlainPipeline();
         void InitTexturedPipeline();
 
         void CreateSwapchain(uint32_t width, uint32_t height);
@@ -133,8 +132,8 @@ namespace Zero
         VkDescriptorSet m_DrawImageDescriptors{};
         VkDescriptorSetLayout m_DrawImageDescriptorLayout{};
 
-        VkPipelineLayout m_PlainPipelineLayout{};
-        VkPipeline m_PlainPipeline{};
+        //VkPipelineLayout m_PlainPipelineLayout{};
+        //VkPipeline m_PlainPipeline{};
 
         VkPipelineLayout m_TexturedPipelineLayout{};
         VkPipeline m_TexturedPipeline{};
