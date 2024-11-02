@@ -23,10 +23,15 @@ namespace Zero
 
         glm::vec4 _clearColor = {};
         std::unique_ptr<OpenGLShader> shaderProgram;
+        std::unique_ptr<OpenGLShader> lightShaderProgram;
 
         std::unique_ptr<VAO> VAO1;
         std::unique_ptr<VBO> VBO1;
         std::unique_ptr<EBO> EBO1;
+
+        VAO* lightVAO;
+        VBO* lightVBO;
+        EBO* lightEBO;
 
         GLuint uniID = 0;
         std::shared_ptr<OpenGLTexture> texture1;
