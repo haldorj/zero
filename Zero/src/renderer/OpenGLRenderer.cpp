@@ -9,37 +9,17 @@
 // Vertices coordinates
 GLfloat vertices[] =
 {   //     COORDINATES     /        COLORS          /    TexCoord   /        NORMALS       //
-    -0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-    -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 5.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-     0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 5.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-     0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-
-    -0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
-    -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
-     0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,     -0.8f, 0.5f,  0.0f, // Left Side
-
-    -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
-     0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
-     0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
-
-     0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
-     0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
-     0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,      0.8f, 0.5f,  0.0f, // Right side
-
-     0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
-    -0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
-     0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,      0.0f, 0.5f,  0.8f  // Facing side
+    -1.0f, 0.0f,  1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 0.0f,		0.0f, 1.0f, 0.0f,
+    -1.0f, 0.0f, -1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 1.0f,		0.0f, 1.0f, 0.0f,
+     1.0f, 0.0f, -1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 1.0f,		0.0f, 1.0f, 0.0f,
+     1.0f, 0.0f,  1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 0.0f,		0.0f, 1.0f, 0.0f
 };
 
 // Indices for vertices order
 GLuint indices[] =
 {
-    0, 1, 2, // Bottom side
-    0, 2, 3, // Bottom side
-    4, 6, 5, // Left side
-    7, 9, 8, // Non-facing side
-    10, 12, 11, // Right side
-    13, 15, 14 // Facing side
+    0, 1, 2,
+    0, 2, 3
 };
 
 GLfloat lightVertices[] =
@@ -112,9 +92,12 @@ namespace Zero
         glUniform4f(glGetUniformLocation(shaderProgram->GetID(), "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
         glUniform3f(glGetUniformLocation(shaderProgram->GetID(), "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
-        texture1 = std::make_shared<OpenGLTexture>("../assets/images/brick.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA,
-                                                   GL_UNSIGNED_BYTE);
-        texture1->TexUnit(*shaderProgram, "tex0", 0);
+        planks = std::make_shared<OpenGLTexture>("../assets/images/planks.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
+        planks->TexUnit(*shaderProgram, "tex0", 0);
+
+        planksSpec = std::make_shared<OpenGLTexture>("../assets/images/planksSpec.png", GL_TEXTURE_2D, 1, GL_RED, GL_UNSIGNED_BYTE);
+        planksSpec->TexUnit(*shaderProgram, "tex1", 1);
+
 
         // Enable depth testing for 3D
         glEnable(GL_DEPTH_TEST);
@@ -147,7 +130,8 @@ namespace Zero
         VBO1->Delete();
         EBO1->Delete();
         shaderProgram->Delete();
-        texture1->Delete();
+        planks->Delete();
+        planksSpec->Delete();
     }
 
     float rotation = 0.0f;
@@ -187,7 +171,8 @@ namespace Zero
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
         // Bind the texture so that it is used in the Shader Program
-        texture1->Bind();
+        planks->Bind();
+        planksSpec->Bind();
         // Bind the VAO so OpenGL knows to use it
         VAO1->Bind();
         // Draw primitives, number of indices, datatype of indices, index of indices
@@ -249,20 +234,20 @@ namespace Zero
     }
 
     // Checks if the different Shaders have compiled properly
-    void OpenGLShader::compileErrors(unsigned int shader, const char* type)
+    void OpenGLShader::compileErrors(unsigned int shader, const char* Type)
     {
         // Stores status of compilation
         GLint hasCompiled;
         // Character array to store error message in
         // char infoLog[1024];
         std::array<char, 1024> infoLog;
-        if (type != "PROGRAM")
+        if (Type != "PROGRAM")
         {
             glGetShaderiv(shader, GL_COMPILE_STATUS, &hasCompiled);
             if (hasCompiled == GL_FALSE)
             {
                 glGetShaderInfoLog(shader, 1024, NULL, infoLog.data());
-                std::cout << "SHADER_COMPILATION_ERROR for:" << type << "\n" << infoLog.data() << std::endl;
+                std::cout << "SHADER_COMPILATION_ERROR for:" << Type << "\n" << infoLog.data() << std::endl;
             }
         }
         else
@@ -271,7 +256,7 @@ namespace Zero
             if (hasCompiled == GL_FALSE)
             {
                 glGetProgramInfoLog(shader, 1024, NULL, infoLog.data());
-                std::cout << "SHADER_LINKING_ERROR for:" << type << "\n" << infoLog.data() << std::endl;
+                std::cout << "SHADER_LINKING_ERROR for:" << Type << "\n" << infoLog.data() << std::endl;
             }
         }
     }

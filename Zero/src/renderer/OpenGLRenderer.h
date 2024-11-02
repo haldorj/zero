@@ -34,6 +34,7 @@ namespace Zero
         EBO* lightEBO;
 
         GLuint uniID = 0;
-        std::shared_ptr<OpenGLTexture> texture1;
+        std::shared_ptr<OpenGLTexture> planks;
+        std::shared_ptr<OpenGLTexture> planksSpec;
     };
 } // namespace Zero
