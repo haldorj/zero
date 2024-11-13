@@ -12,7 +12,7 @@
 namespace Zero
 {
     // Choose RendererAPI
-    RendererAPI RendererType = RendererAPI::OpenGL;
+    RendererAPI RendererType = RendererAPI::Vulkan;
 
     Application* LoadedEngine = nullptr;
     Application& Application::Get() { return *LoadedEngine; }
@@ -106,9 +106,7 @@ namespace Zero
 
     void Application::Draw()
     {
-        const float flash = std::abs(std::sin(static_cast<float>(m_FrameCount) / 240.f));
-
-        m_Renderer->SetClearColor({0, 0, flash * 0.5, 1});
+        m_Renderer->SetClearColor({0.1, 0, 0.4, 1});
         m_Renderer->Draw();
 
         m_FrameCount++;

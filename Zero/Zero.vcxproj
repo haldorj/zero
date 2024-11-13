@@ -79,7 +79,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;ZERO_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;$(VULKAN_SDK)\include;vendor\vk-bootstrap;vendor\VMA;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\assimp\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;$(VULKAN_SDK)\include;vendor\vk-bootstrap;vendor\VMA;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -97,7 +97,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;ZERO_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;$(VULKAN_SDK)\include;vendor\vk-bootstrap;vendor\VMA;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\assimp\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;$(VULKAN_SDK)\include;vendor\vk-bootstrap;vendor\VMA;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -119,7 +119,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;ZERO_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;$(VULKAN_SDK)\include;vendor\vk-bootstrap;vendor\VMA;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\assimp\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;$(VULKAN_SDK)\include;vendor\vk-bootstrap;vendor\VMA;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -139,7 +139,8 @@
   <ItemGroup>
     <ClInclude Include="src\camera\Camera.h" />
     <ClInclude Include="src\core\Application.h" />
-    <ClInclude Include="src\core\Core.h" />
+    <ClInclude Include="src\core\core.h" />
+    <ClInclude Include="src\model\Vertex.h" />
     <ClInclude Include="src\renderer\OpenGL\EBO.h" />
     <ClInclude Include="src\renderer\OpenGL\OpenGLShader.h" />
     <ClInclude Include="src\renderer\OpenGL\OpenGLTexture.h" />
@@ -147,13 +148,15 @@
     <ClInclude Include="src\renderer\OpenGL\VBO.h" />
     <ClInclude Include="src\renderer\OpenGLRenderer.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
-    <ClInclude Include="src\renderer\VulkanRenderer.h" />
+    <ClInclude Include="src\renderer\Vulkan\VulkanBuffer.h" />
     <ClInclude Include="src\renderer\Vulkan\vk_descriptors.h" />
     <ClInclude Include="src\renderer\Vulkan\vk_images.h" />
     <ClInclude Include="src\renderer\Vulkan\vk_initializers.h" />
     <ClInclude Include="src\renderer\Vulkan\vk_loader.h" />
     <ClInclude Include="src\renderer\Vulkan\vk_pipelines.h" />
+    <ClInclude Include="src\renderer\Vulkan\vk_texture.h" />
     <ClInclude Include="src\renderer\Vulkan\vk_types.h" />
+    <ClInclude Include="src\renderer\VulkanRenderer.h" />
     <ClInclude Include="vendor\VMA\vk_mem_alloc.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
@@ -574,31 +577,28 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrap.h" />
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h" />
-    <ClInclude Include="src\renderer\Vulkan\vk_texture.h" />
-    <ClInclude Include="src\renderer\Vulkan\VulkanBuffer.h" />
-    <ClInclude Include="src\model\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\camera\Camera.cpp" />
     <ClCompile Include="src\core\Application.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\model\Vertex.cpp" />
     <ClCompile Include="src\renderer\OpenGL\EBO.cpp" />
     <ClCompile Include="src\renderer\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="src\renderer\OpenGL\OpenGLTexture.cpp" />
     <ClCompile Include="src\renderer\OpenGL\VAO.cpp" />
     <ClCompile Include="src\renderer\OpenGL\VBO.cpp" />
     <ClCompile Include="src\renderer\OpenGLRenderer.cpp" />
-    <ClCompile Include="src\renderer\VulkanRenderer.cpp" />
+    <ClCompile Include="src\renderer\Vulkan\VulkanBuffer.cpp" />
     <ClCompile Include="src\renderer\Vulkan\vk_descriptors.cpp" />
     <ClCompile Include="src\renderer\Vulkan\vk_images.cpp" />
     <ClCompile Include="src\renderer\Vulkan\vk_initializers.cpp" />
     <ClCompile Include="src\renderer\Vulkan\vk_loader.cpp" />
     <ClCompile Include="src\renderer\Vulkan\vk_pipelines.cpp" />
+    <ClCompile Include="src\renderer\Vulkan\vk_texture.cpp" />
+    <ClCompile Include="src\renderer\VulkanRenderer.cpp" />
     <ClCompile Include="vendor\stb_image\stb_image.cpp" />
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp" />
-    <ClCompile Include="src\renderer\Vulkan\vk_texture.cpp" />
-    <ClCompile Include="src\renderer\Vulkan\VulkanBuffer.cpp" />
-    <ClCompile Include="src\model\Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

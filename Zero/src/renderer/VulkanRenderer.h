@@ -65,7 +65,6 @@ namespace Zero
         void Draw() override;
 
         void DrawBackground(VkCommandBuffer cmd);
-        void DrawGeometry(VkCommandBuffer cmd);
         void DrawGeometryTextured(VkCommandBuffer cmd);
 
         GPUMeshBuffers UploadMesh(std::span<uint32_t> indices, std::span<VkVertex> vertices);

@@ -10,14 +10,17 @@
     <Filter Include="src\core">
       <UniqueIdentifier>{C55F2ECF-B12C-89DA-DA45-7782C671BE68}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\model">
+      <UniqueIdentifier>{4D12AFB5-B97C-632C-02BB-14D26E644181}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\renderer">
       <UniqueIdentifier>{936D1A48-7FD0-A9EC-2856-E2A21498756F}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\renderer\OpenGL">
       <UniqueIdentifier>{67B3A77A-D314-8588-5C82-CB3AC8E2BB47}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\shared">
-      <UniqueIdentifier>{D3351079-BFED-51C6-28F5-2A2214CCECB6}</UniqueIdentifier>
+    <Filter Include="src\renderer\Vulkan">
+      <UniqueIdentifier>{B3175A8B-1F79-3799-A8E6-7D4B14476E58}</UniqueIdentifier>
     </Filter>
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
@@ -57,8 +60,11 @@
     <ClInclude Include="src\core\Application.h">
       <Filter>src\core</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\Core.h">
+    <ClInclude Include="src\core\core.h">
       <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model\Vertex.h">
+      <Filter>src\model</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\OpenGL\EBO.h">
       <Filter>src\renderer\OpenGL</Filter>
@@ -81,26 +87,32 @@
     <ClInclude Include="src\renderer\Renderer.h">
       <Filter>src\renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\VulkanRenderer.h">
-      <Filter>src\renderer</Filter>
+    <ClInclude Include="src\renderer\Vulkan\VulkanBuffer.h">
+      <Filter>src\renderer\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\Vulkan\vk_descriptors.h">
-      <Filter>src\shared</Filter>
+      <Filter>src\renderer\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\Vulkan\vk_images.h">
-      <Filter>src\shared</Filter>
+      <Filter>src\renderer\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\Vulkan\vk_initializers.h">
-      <Filter>src\shared</Filter>
+      <Filter>src\renderer\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\Vulkan\vk_loader.h">
-      <Filter>src\shared</Filter>
+      <Filter>src\renderer\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\Vulkan\vk_pipelines.h">
-      <Filter>src\shared</Filter>
+      <Filter>src\renderer\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\Vulkan\vk_texture.h">
+      <Filter>src\renderer\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\Vulkan\vk_types.h">
-      <Filter>src\shared</Filter>
+      <Filter>src\renderer\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\VulkanRenderer.h">
+      <Filter>src\renderer</Filter>
     </ClInclude>
     <ClInclude Include="vendor\VMA\vk_mem_alloc.h">
       <Filter>vendor\VMA</Filter>
@@ -1362,9 +1374,6 @@
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\Vulkan\vk_texture.h" />
-    <ClInclude Include="src\renderer\Vulkan\VulkanBuffer.h" />
-    <ClInclude Include="src\model\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\camera\Camera.cpp">
@@ -1375,6 +1384,9 @@
     </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\model\Vertex.cpp">
+      <Filter>src\model</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\OpenGL\EBO.cpp">
       <Filter>src\renderer\OpenGL</Filter>
@@ -1394,23 +1406,29 @@
     <ClCompile Include="src\renderer\OpenGLRenderer.cpp">
       <Filter>src\renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\VulkanRenderer.cpp">
-      <Filter>src\renderer</Filter>
+    <ClCompile Include="src\renderer\Vulkan\VulkanBuffer.cpp">
+      <Filter>src\renderer\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\Vulkan\vk_descriptors.cpp">
-      <Filter>src\shared</Filter>
+      <Filter>src\renderer\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\Vulkan\vk_images.cpp">
-      <Filter>src\shared</Filter>
+      <Filter>src\renderer\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\Vulkan\vk_initializers.cpp">
-      <Filter>src\shared</Filter>
+      <Filter>src\renderer\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\Vulkan\vk_loader.cpp">
-      <Filter>src\shared</Filter>
+      <Filter>src\renderer\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\Vulkan\vk_pipelines.cpp">
-      <Filter>src\shared</Filter>
+      <Filter>src\renderer\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\Vulkan\vk_texture.cpp">
+      <Filter>src\renderer\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\VulkanRenderer.cpp">
+      <Filter>src\renderer</Filter>
     </ClCompile>
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
@@ -1418,8 +1436,5 @@
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\Vulkan\vk_texture.cpp" />
-    <ClCompile Include="src\renderer\Vulkan\VulkanBuffer.cpp" />
-    <ClCompile Include="src\model\Vertex.cpp" />
   </ItemGroup>
 </Project>

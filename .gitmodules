@@ -7,3 +7,6 @@
 [submodule "Zero/Vendor/imgui"]
 	path = Zero/Vendor/imgui
 	url = https://github.com/ocornut/imgui
+[submodule "Zero/Vendor/Assimp"]
+	path = Zero/Vendor/Assimp
+	url = https://github.com/assimp/assimp
