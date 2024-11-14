@@ -8,51 +8,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c1e6d020-1b85-454d-b55c-363ab39862b5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Zero/Vendor/Assimp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Zero/src/model/Vertex.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Zero/src/model/Vertex.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Zero/src/renderer/Vulkan/vk_loader.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/images/planks.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/images/planksSpec.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/shaders/light.frag" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/shaders/light.vert" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitmodules" beforeDir="false" afterPath="$PROJECT_DIR$/.gitmodules" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero.sln" beforeDir="false" afterPath="$PROJECT_DIR$/Zero.sln" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Zero/src/EnumModes/RendererMode.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.zero/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.zero/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Zero/Zero.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/Zero.vcxproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/Zero.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/Zero.vcxproj.filters" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/Interfaces/IObjectInterface.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/camera/Camera.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/camera/Camera.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Zero/src/core/Application.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/core/Application.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Zero/src/core/Application.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/core/Application.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/renderer/OpenGL/EBO.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/OpenGL/EBO.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/renderer/OpenGL/OpenGLShader.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/OpenGL/OpenGLShader.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/renderer/OpenGL/OpenGLTexture.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/OpenGL/OpenGLTexture.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/renderer/OpenGL/OpenGLTexture.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/OpenGL/OpenGLTexture.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/renderer/OpenGL/VAO.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/OpenGL/VAO.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/renderer/OpenGL/VBO.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/OpenGL/VBO.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Zero/src/renderer/OpenGLRenderer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/OpenGLRenderer.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Zero/src/renderer/OpenGLRenderer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/OpenGLRenderer.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Zero/src/renderer/Renderer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/Renderer.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Zero/src/renderer/VulkanRenderer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/VulkanRenderer.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Zero/src/renderer/VulkanRenderer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/VulkanRenderer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/shared/VulkanBuffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/Vulkan/VulkanBuffer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/shared/VulkanBuffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/Vulkan/VulkanBuffer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/shared/vk_descriptors.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/Vulkan/vk_descriptors.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/shared/vk_descriptors.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/Vulkan/vk_descriptors.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/shared/vk_images.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/Vulkan/vk_images.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/shared/vk_images.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/Vulkan/vk_images.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/shared/vk_initializers.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/Vulkan/vk_initializers.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/shared/vk_initializers.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/Vulkan/vk_initializers.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/shared/vk_loader.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/shared/vk_loader.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/Vulkan/vk_loader.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/shared/vk_pipelines.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/Vulkan/vk_pipelines.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/shared/vk_pipelines.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/Vulkan/vk_pipelines.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/shared/vk_types.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/Vulkan/vk_types.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/vk_texture.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/Vulkan/vk_texture.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/vk_texture.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/Vulkan/vk_texture.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/premake5.lua" beforeDir="false" afterPath="$PROJECT_DIR$/premake5.lua" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shaders/default.frag" beforeDir="false" afterPath="$PROJECT_DIR$/shaders/default.frag" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shaders/default.vert" beforeDir="false" afterPath="$PROJECT_DIR$/shaders/default.vert" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,6 +28,14 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///Dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.36.32532/include/memory" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://C:/VulkanSDK/1.3.283.0/Include/vulkan/vulkan_core.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Zero/Vendor/stb_image/stb_image.h" root0="SKIP_HIGHLIGHTING" />
@@ -71,50 +44,55 @@
     <setting file="file://$PROJECT_DIR$/Zero/src/renderer/OpenGL/OpenGLShader.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Zero/src/renderer/OpenGL/VAO.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Zero/src/renderer/OpenGL/VBO.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Zero/src/renderer/OpenGLRenderer.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Zero/src/renderer/OpenGLRenderer.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Zero/src/renderer/OpenGLRenderer.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Zero/src/renderer/VulkanRenderer.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Zero/src/renderer/VulkanRenderer.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Zero/src/shared/vk_initializers.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Zero/src/shared/vk_initializers.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Zero/src/shared/vk_loader.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Zero/src/shared/vk_loader.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Zero/src/shared/vk_pipelines.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Zero/src/shared/vk_pipelines.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Zero/src/shared/vk_types.h" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 3
 }</component>
   <component name="ProjectId" id="2nSRFRxpW37gHFa7K1ZyIsDSHiu" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "C++ Project.Zero.executor": "Debug",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "main",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.sourceCode.C++",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;C++ Project.Zero.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.C++&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "rider.external.source.directories": [
-      "C:\\Users\\haldo\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\DecompilerCache",
-      "C:\\Users\\haldo\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\SourcesCache",
-      "C:\\Users\\haldo\\AppData\\Local\\Symbols\\src"
+  &quot;keyToStringList&quot;: {
+    &quot;rider.external.source.directories&quot;: [
+      &quot;C:\\Users\\haldo\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\DecompilerCache&quot;,
+      &quot;C:\\Users\\haldo\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\SourcesCache&quot;,
+      &quot;C:\\Users\\haldo\\AppData\\Local\\Symbols\\src&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="Zero" type="CppProject" factoryName="C++ Project">
       <configuration_1>
         <option name="CONFIGURATION" value="Debug" />
         <option name="PLATFORM" value="x64" />
         <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Zero/Zero.vcxproj" />
+        <option name="CURRENT_LAUNCH_PROFILE" value="Local" />
         <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
         <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
         <option name="WORKING_DIRECTORY" value="$(LocalDebuggerWorkingDirectory)" />
@@ -125,6 +103,7 @@
         <option name="CONFIGURATION" value="Dist" />
         <option name="PLATFORM" value="x64" />
         <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Zero/Zero.vcxproj" />
+        <option name="CURRENT_LAUNCH_PROFILE" value="Local" />
         <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
         <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
         <option name="WORKING_DIRECTORY" value="$(LocalDebuggerWorkingDirectory)" />
@@ -135,6 +114,7 @@
         <option name="CONFIGURATION" value="Release" />
         <option name="PLATFORM" value="x64" />
         <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Zero/Zero.vcxproj" />
+        <option name="CURRENT_LAUNCH_PROFILE" value="Local" />
         <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
         <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
         <option name="WORKING_DIRECTORY" value="$(LocalDebuggerWorkingDirectory)" />
@@ -160,16 +140,13 @@
       <workItem from="1729301343695" duration="775000" />
       <workItem from="1729305489036" duration="1439000" />
       <workItem from="1729388645057" duration="14624000" />
-      <workItem from="1731616588567" duration="21000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
-  <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>
