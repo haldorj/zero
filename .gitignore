@@ -8,3 +8,5 @@ bin-int/
 
 #Premake
 !vendor/bin
+.idea/.idea.zero/.idea/workspace.xml
+Zero/src/renderer/.idea/workspace.xml
