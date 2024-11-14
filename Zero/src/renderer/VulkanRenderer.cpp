@@ -2,17 +2,17 @@
 
 #include "core/Application.h"
 
-#include <Renderer/Vulkan/vk_initializers.h>
-#include <Renderer/Vulkan/vk_types.h>
+#include <shared/vk_initializers.h>
+#include <shared/vk_types.h>
 
 #include "VkBootstrap.h"
 
 #include <chrono>
 #include <iostream>
-#include <Renderer/Vulkan/vk_images.h>
+#include <shared/vk_images.h>
 
 #define VMA_IMPLEMENTATION
-#include <Renderer/Vulkan/vk_pipelines.h>
+#include <shared/vk_pipelines.h>
 #include "vk_mem_alloc.h"
 
 #include <GLFW/glfw3.h>
@@ -22,7 +22,7 @@
 
 #include <stb_image.h>
 #include <glm/gtx/quaternion.hpp>
-#include <Renderer/Vulkan/VulkanBuffer.h>
+#include <shared/VulkanBuffer.h>
 
 
 namespace Zero
@@ -50,22 +50,7 @@ namespace Zero
 
     void VulkanRenderer::InitObject(std::span<uint32_t> indices, std::span<Vertex> vertices)
     {
-        std::vector<VkVertex> vkvertices;
-        vkvertices.reserve(vertices.size());
-
-        for (auto& vertex : vertices)
-		{
-            VkVertex v{};
-            v.Position = vertex.GetPosition();
-            v.Normal = vertex.GetNormal();
-            v.Color = glm::vec4(vertex.GetNormal(), 1.0f);
-            v.UvX = vertex.GetTexCoord().x;
-            v.UvY = vertex.GetTexCoord().y;
-
-            vkvertices.push_back(v);
-		}
-
-        m_Rectangle = UploadMesh(indices, vkvertices);
+        m_Rectangle = UploadMesh(indices, vertices);
 
         //delete the rectangle data on engine shutdown
         m_MainDeletionQueue.PushFunction([&]()
@@ -240,6 +225,57 @@ namespace Zero
 
     float rrotation = 0.0f;
     double rlastTime = glfwGetTime();
+
+    void VulkanRenderer::DrawGeometry(VkCommandBuffer cmd)
+    {
+        //begin a render pass  connected to our draw image
+        VkRenderingAttachmentInfo colorAttachment = VkInit::AttachmentInfo(m_DrawImage.ImageView, nullptr,
+                                                                           VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+        VkRenderingAttachmentInfo depthAttachment = VkInit::DepthAttachmentInfo(
+            m_DepthImage.ImageView, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL);
+        VkRenderingInfo renderInfo = VkInit::RenderingInfo(m_DrawExtent, &colorAttachment, &depthAttachment);
+        vkCmdBeginRendering(cmd, &renderInfo);
+
+        //set dynamic viewport and scissor
+        VkViewport viewport = {};
+        viewport.x = 0;
+        viewport.y = 0;
+        viewport.width = static_cast<float>(m_DrawExtent.width);
+        viewport.height = static_cast<float>(m_DrawExtent.height);
+        viewport.minDepth = 0.f;
+        viewport.maxDepth = 1.f;
+
+        vkCmdSetViewport(cmd, 0, 1, &viewport);
+
+        VkRect2D scissor = {};
+        scissor.offset.x = 0;
+        scissor.offset.y = 0;
+        scissor.extent.width = m_DrawExtent.width;
+        scissor.extent.height = m_DrawExtent.height;
+
+        vkCmdSetScissor(cmd, 0, 1, &scissor);
+
+        vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_PlainPipeline);
+
+        glm::mat4 view = Application::Get().GetMainCamera().GetViewMatrix();
+        // camera projection
+        glm::mat4 projection = glm::perspective(glm::radians(70.f),
+                                                (float)m_DrawExtent.width / (float)m_DrawExtent.height, 0.1f, 10000.f);
+
+        projection[1][1] *= -1;
+
+        GPUDrawPushConstants pushConstants;
+        pushConstants.WorldMatrix = view * projection;
+        pushConstants.VertexBuffer = m_Rectangle.VertexBufferAddress;
+
+        vkCmdPushConstants(cmd, m_PlainPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants),
+                           &pushConstants);
+        vkCmdBindIndexBuffer(cmd, m_Rectangle.IndexBuffer.Buffer, 0, VK_INDEX_TYPE_UINT32);
+
+        vkCmdDrawIndexed(cmd, 18, 1, 0, 0, 0);
+
+        vkCmdEndRendering(cmd);
+    }
 
     void VulkanRenderer::DrawGeometryTextured(VkCommandBuffer cmd)
     {
@@ -614,7 +650,78 @@ namespace Zero
 
     void VulkanRenderer::InitPipelines()
     {
+        // InitPlainPipeline();
         InitTexturedPipeline();
+    }
+
+    void VulkanRenderer::InitPlainPipeline()
+    {
+        VkShaderModule triangleFragShader;
+        if (!VkUtil::LoadShaderModule("../shaders/compiled/plain.frag.spv", m_Device, &triangleFragShader))
+        {
+            printf("Error when building the triangle fragment shader module \n");
+        }
+        else
+        {
+            printf("Triangle fragment shader successfully loaded \n");
+        }
+
+        VkShaderModule triangleVertexShader;
+        if (!VkUtil::LoadShaderModule("../shaders/compiled/textured.vert.spv", m_Device, &triangleVertexShader))
+        {
+            printf("Error when building the triangle vertex shader module \n");
+        }
+        else
+        {
+            printf("Triangle vertex shader successfully loaded \n");
+        }
+
+        VkPushConstantRange bufferRange{};
+        bufferRange.offset = 0;
+        bufferRange.size = sizeof(GPUDrawPushConstants);
+        bufferRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+        VkPipelineLayoutCreateInfo pipelineLayoutInfo = VkInit::PipelineLayoutCreateInfo();
+        pipelineLayoutInfo.pPushConstantRanges = &bufferRange;
+        pipelineLayoutInfo.pushConstantRangeCount = 1;
+
+        VK_CHECK(vkCreatePipelineLayout(m_Device, &pipelineLayoutInfo, nullptr, &m_PlainPipelineLayout));
+
+        PipelineBuilder pipelineBuilder;
+
+        //use the triangle layout we created
+        pipelineBuilder.PipelineLayout = m_PlainPipelineLayout;
+        //connecting the vertex and pixel shaders to the pipeline
+        pipelineBuilder.SetShaders(triangleVertexShader, triangleFragShader);
+        //it will draw triangles
+        pipelineBuilder.SetInputTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+        //filled triangles
+        pipelineBuilder.SetPolygonMode(VK_POLYGON_MODE_FILL);
+        //no backface culling
+        pipelineBuilder.SetCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE);
+        //no multisampling
+        pipelineBuilder.SetMultisamplingNone();
+        //no blending
+        pipelineBuilder.DisableBlending();
+
+        pipelineBuilder.EnableDepthTest(true, VK_COMPARE_OP_LESS);
+
+        //connect the image format we will draw into, from draw image
+        pipelineBuilder.SetColorAttachmentFormat(m_DrawImage.ImageFormat);
+        pipelineBuilder.SetDepthFormat(m_DepthImage.ImageFormat);
+
+        //finally build the pipeline
+        m_PlainPipeline = pipelineBuilder.BuildPipeline(m_Device);
+
+        //clean structures
+        vkDestroyShaderModule(m_Device, triangleFragShader, nullptr);
+        vkDestroyShaderModule(m_Device, triangleVertexShader, nullptr);
+
+        m_MainDeletionQueue.PushFunction([&]()
+        {
+            vkDestroyPipelineLayout(m_Device, m_PlainPipelineLayout, nullptr);
+            vkDestroyPipeline(m_Device, m_PlainPipeline, nullptr);
+        });
     }
 
     void VulkanRenderer::InitTexturedPipeline()
@@ -749,12 +856,12 @@ namespace Zero
         ResizeRequested = false;
     }
 
-    GPUMeshBuffers VulkanRenderer::UploadMesh(std::span<uint32_t> indices, std::span<VkVertex> vertices)
+    GPUMeshBuffers VulkanRenderer::UploadMesh(std::span<uint32_t> indices, std::span<Vertex> vertices)
     {
-        const size_t vertexBufferSize = vertices.size() * sizeof(VkVertex);
+        const size_t vertexBufferSize = vertices.size() * sizeof(Vertex);
         const size_t indexBufferSize = indices.size() * sizeof(uint32_t);
 
-        GPUMeshBuffers newSurface{};
+        GPUMeshBuffers newSurface;
 
         //create vertex buffer
         newSurface.VertexBuffer = VulkanBufferManager::CreateBuffer(m_Allocator, vertexBufferSize,

@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include <Renderer/Vulkan/vk_types.h>
+#include <shared/vk_types.h>
 #include <GLFW/glfw3.h>
 
 #include "camera/Camera.h"

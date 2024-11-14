@@ -13,7 +13,6 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
-IncludeDir["assimp"] = "Zero/vendor/assimp/include"
 IncludeDir["GLFW"] = "Zero/vendor/GLFW/include"
 IncludeDir["Glad"] = "Zero/vendor/Glad/include"
 IncludeDir["ImGui"] = "Zero/vendor/imgui"
@@ -23,7 +22,6 @@ IncludeDir["vkb"] = "Zero/vendor/vk-bootstrap"
 IncludeDir["VMA"] = "Zero/vendor/VMA"
 IncludeDir["stb"] = "Zero/vendor/stb_image"
 
-include "Zero/vendor/assimp" 
 include "Zero/vendor/GLFW"
 include "Zero/vendor/Glad"
 include "Zero/vendor/imgui"
@@ -60,7 +58,6 @@ project "Zero"
 	includedirs
 	{
 		"%{prj.name}/src",
-		"%{IncludeDir.assimp}",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
