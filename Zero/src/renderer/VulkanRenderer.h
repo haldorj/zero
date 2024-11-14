@@ -1,7 +1,7 @@
 #pragma once
 
-#include <shared/vk_descriptors.h>
-#include <shared/vk_types.h>
+#include <Renderer/Vulkan/vk_descriptors.h>
+#include <Renderer/Vulkan/vk_types.h>
 #include "renderer.h"
 #include "core/core.h"
 #include "glm/glm.hpp"
@@ -67,10 +67,9 @@ namespace Zero
         void Draw(Topology) override;
 
         void DrawBackground(VkCommandBuffer cmd);
-        void DrawGeometry(VkCommandBuffer cmd);
         void DrawGeometryTextured(VkCommandBuffer cmd);
 
-        GPUMeshBuffers UploadMesh(std::span<uint32_t> indices, std::span<Vertex> vertices);
+        GPUMeshBuffers UploadMesh(std::span<uint32_t> indices, std::span<VkVertex> vertices);
 
         FrameData& GetCurrentFrame() { return m_Frames[m_FrameNumber % FRAME_OVERLAP]; }
 
@@ -82,7 +81,6 @@ namespace Zero
         void InitDescriptors();
         void InitPipelines();
 
-        void InitPlainPipeline();
         void InitTexturedPipeline();
 
         void CreateSwapchain(uint32_t width, uint32_t height);
@@ -135,8 +133,8 @@ namespace Zero
         VkDescriptorSet m_DrawImageDescriptors{};
         VkDescriptorSetLayout m_DrawImageDescriptorLayout{};
 
-        VkPipelineLayout m_PlainPipelineLayout{};
-        VkPipeline m_PlainPipeline{};
+        //VkPipelineLayout m_PlainPipelineLayout{};
+        //VkPipeline m_PlainPipeline{};
 
         VkPipelineLayout m_TexturedPipelineLayout{};
         VkPipeline m_TexturedPipeline{};

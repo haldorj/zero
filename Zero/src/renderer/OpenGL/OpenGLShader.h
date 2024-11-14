@@ -26,7 +26,7 @@ namespace Zero
 		GLuint GetID() const { return ID; }
 
 	private:
-		void compileErrors(unsigned int shader, const char* type);
+		void compileErrors(unsigned int shader, const char* Type);
 
 		// Reference ID of the Shader Program
 		GLuint ID;

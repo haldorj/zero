@@ -3,9 +3,9 @@
 
 namespace Zero
 {
-	OpenGLTexture::OpenGLTexture(const char* image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType)
+	OpenGLTexture::OpenGLTexture(const char* image, GLenum texType, GLuint slot, GLenum format, GLenum pixelType)
 	{
-		type = texType;
+		Type = texType;
 		int texWidth, texHeight, texChannels;
 		stbi_set_flip_vertically_on_load(true);
 		stbi_uc* pixels = stbi_load(image, &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
@@ -14,7 +14,8 @@ namespace Zero
 			std::cout << "Failed to load texture file" << std::endl;
 		}
 		glGenTextures(1, &ID);
-		glActiveTexture(slot);
+		glActiveTexture(GL_TEXTURE0 + slot);
+		Slot = slot;
 		glBindTexture(GL_TEXTURE_2D, ID);
 
 		glTexParameteri(texType, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
@@ -39,12 +40,13 @@ namespace Zero
 
 	void OpenGLTexture::Bind()
 	{
-		glBindTexture(type, ID);
+		glActiveTexture(GL_TEXTURE0 + Slot);
+		glBindTexture(Type, ID);
 	}
 
 	void OpenGLTexture::Unbind()
 	{
-		glBindTexture(type, 0);
+		glBindTexture(Type, 0);
 	}
 
 	void OpenGLTexture::Delete()
