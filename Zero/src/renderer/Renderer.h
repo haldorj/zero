@@ -1,7 +1,7 @@
 #pragma once
 
 #include "glm/glm.hpp"
-#include <shared/vk_types.h>
+#include <Renderer/Vulkan/vk_types.h>
 #include "EnumModes/RendererMode.hpp"
 
 // Renderer interface

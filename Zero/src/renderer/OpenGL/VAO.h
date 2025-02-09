@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include "VBO.h"
 
-class VAO final : public IObjectInterface
+class VAO final
 {
 public:
     // Constructor that generates a VAO ID
@@ -12,13 +12,13 @@ public:
     // Links a VBO to the VAO using a certain layout
     void LinkAttrib(VBO& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset);
     // Binds the VAO
-    void Bind() override;
+    void Bind();
     // Unbinds the VAO
-    void Unbind() override;
+    void Unbind();
     // Deletes the VAO
-    void Delete() override;
+    void Delete();
 
-    ~VAO() override = default;
+    ~VAO() = default;
 
 private:
     // ID reference for the Vertex Array Object

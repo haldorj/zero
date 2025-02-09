@@ -1,4 +1,4 @@
-﻿#include <shared/vk_initializers.h>
+﻿#include <Renderer/Vulkan/vk_initializers.h>
 
 //> init_cmd
 VkCommandPoolCreateInfo VkInit::CommandPoolCreateInfo(uint32_t queueFamilyIndex,

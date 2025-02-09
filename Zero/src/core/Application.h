@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include <shared/vk_types.h>
+#include <Renderer/Vulkan/vk_types.h>
 #include <GLFW/glfw3.h>
 
 #include "camera/Camera.h"
@@ -66,8 +66,5 @@ namespace Zero
 
         GLFWwindow* m_Window = nullptr;
         RendererBase* m_Renderer = nullptr;
-
-        Topology m_topology = Topology::Lines;
-        void SetRendererMode(const Topology& tp) { m_topology = tp; }
     };
 } // namespace Zero

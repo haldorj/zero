@@ -2,17 +2,17 @@
 
 #include "core/Application.h"
 
-#include <shared/vk_initializers.h>
-#include <shared/vk_types.h>
+#include <Renderer/Vulkan/vk_initializers.h>
+#include <Renderer/Vulkan/vk_types.h>
 
 #include "VkBootstrap.h"
 
 #include <chrono>
 #include <iostream>
-#include <shared/vk_images.h>
+#include <Renderer/Vulkan/vk_images.h>
 
 #define VMA_IMPLEMENTATION
-#include <shared/vk_pipelines.h>
+#include <Renderer/Vulkan/vk_pipelines.h>
 #include "vk_mem_alloc.h"
 
 #include <GLFW/glfw3.h>
@@ -22,7 +22,7 @@
 
 #include <stb_image.h>
 #include <glm/gtx/quaternion.hpp>
-#include <shared/VulkanBuffer.h>
+#include <Renderer/Vulkan/VulkanBuffer.h>
 
 
 namespace Zero

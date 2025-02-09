@@ -1,7 +1,7 @@
 #pragma once
 
-#include <shared/vk_descriptors.h>
-#include <shared/vk_types.h>
+#include <Renderer/Vulkan/vk_descriptors.h>
+#include <Renderer/Vulkan/vk_types.h>
 #include "renderer.h"
 #include "core/core.h"
 #include "glm/glm.hpp"

@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include <shared/vk_types.h>
+#include <Renderer/Vulkan/vk_types.h>
 
 struct DescriptorLayoutBuilder {
 

@@ -51,55 +51,55 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\camera\Camera.h">
+    <ClInclude Include="src\Camera\Camera.h">
       <Filter>src\camera</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\Application.h">
+    <ClInclude Include="src\Core\Application.h">
       <Filter>src\core</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\core.h">
+    <ClInclude Include="src\Core\core.h">
       <Filter>src\core</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\OpenGL\EBO.h">
+    <ClInclude Include="src\Renderer\OpenGL\EBO.h">
       <Filter>src\renderer\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\OpenGL\OpenGLShader.h">
+    <ClInclude Include="src\Renderer\OpenGL\OpenGLShader.h">
       <Filter>src\renderer\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\OpenGL\OpenGLTexture.h">
+    <ClInclude Include="src\Renderer\OpenGL\OpenGLTexture.h">
       <Filter>src\renderer\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\OpenGL\VAO.h">
+    <ClInclude Include="src\Renderer\OpenGL\VAO.h">
       <Filter>src\renderer\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\OpenGL\VBO.h">
+    <ClInclude Include="src\Renderer\OpenGL\VBO.h">
       <Filter>src\renderer\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\OpenGLRenderer.h">
+    <ClInclude Include="src\Renderer\OpenGLRenderer.h">
       <Filter>src\renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\Renderer.h">
+    <ClInclude Include="src\Renderer\Renderer.h">
       <Filter>src\renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\VulkanRenderer.h">
+    <ClInclude Include="src\Renderer\VulkanRenderer.h">
       <Filter>src\renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\shared\vk_descriptors.h">
+    <ClInclude Include="src\Renderer\Vulkan\vk_descriptors.h">
       <Filter>src\shared</Filter>
     </ClInclude>
-    <ClInclude Include="src\shared\vk_images.h">
+    <ClInclude Include="src\Renderer\Vulkan\vk_images.h">
       <Filter>src\shared</Filter>
     </ClInclude>
-    <ClInclude Include="src\shared\vk_initializers.h">
+    <ClInclude Include="src\Renderer\Vulkan\vk_initializers.h">
       <Filter>src\shared</Filter>
     </ClInclude>
-    <ClInclude Include="src\shared\vk_loader.h">
+    <ClInclude Include="src\Renderer\Vulkan\vk_loader.h">
       <Filter>src\shared</Filter>
     </ClInclude>
-    <ClInclude Include="src\shared\vk_pipelines.h">
+    <ClInclude Include="src\Renderer\Vulkan\vk_pipelines.h">
       <Filter>src\shared</Filter>
     </ClInclude>
-    <ClInclude Include="src\shared\vk_types.h">
+    <ClInclude Include="src\Renderer\Vulkan\vk_types.h">
       <Filter>src\shared</Filter>
     </ClInclude>
     <ClInclude Include="vendor\VMA\vk_mem_alloc.h">
@@ -1362,53 +1362,53 @@
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClInclude>
-    <ClInclude Include="vk_texture.h" />
-    <ClInclude Include="src\shared\VulkanBuffer.h" />
+    <ClInclude Include="src\Renderer\Vulkan\VulkanBuffer.h" />
+    <ClInclude Include="src\EnumModes\RendererMode.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\camera\Camera.cpp">
+    <ClCompile Include="src\Camera\Camera.cpp">
       <Filter>src\camera</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\Application.cpp">
+    <ClCompile Include="src\Core\Application.cpp">
       <Filter>src\core</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\OpenGL\EBO.cpp">
+    <ClCompile Include="src\Renderer\OpenGL\EBO.cpp">
       <Filter>src\renderer\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\OpenGL\OpenGLShader.cpp">
+    <ClCompile Include="src\Renderer\OpenGL\OpenGLShader.cpp">
       <Filter>src\renderer\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\OpenGL\OpenGLTexture.cpp">
+    <ClCompile Include="src\Renderer\OpenGL\OpenGLTexture.cpp">
       <Filter>src\renderer\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\OpenGL\VAO.cpp">
+    <ClCompile Include="src\Renderer\OpenGL\VAO.cpp">
       <Filter>src\renderer\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\OpenGL\VBO.cpp">
+    <ClCompile Include="src\Renderer\OpenGL\VBO.cpp">
       <Filter>src\renderer\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\OpenGLRenderer.cpp">
+    <ClCompile Include="src\Renderer\OpenGLRenderer.cpp">
       <Filter>src\renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\VulkanRenderer.cpp">
+    <ClCompile Include="src\Renderer\VulkanRenderer.cpp">
       <Filter>src\renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\shared\vk_descriptors.cpp">
+    <ClCompile Include="src\Renderer\Vulkan\vk_descriptors.cpp">
       <Filter>src\shared</Filter>
     </ClCompile>
-    <ClCompile Include="src\shared\vk_images.cpp">
+    <ClCompile Include="src\Renderer\Vulkan\vk_images.cpp">
       <Filter>src\shared</Filter>
     </ClCompile>
-    <ClCompile Include="src\shared\vk_initializers.cpp">
+    <ClCompile Include="src\Renderer\Vulkan\vk_initializers.cpp">
       <Filter>src\shared</Filter>
     </ClCompile>
-    <ClCompile Include="src\shared\vk_loader.cpp">
+    <ClCompile Include="src\Renderer\Vulkan\vk_loader.cpp">
       <Filter>src\shared</Filter>
     </ClCompile>
-    <ClCompile Include="src\shared\vk_pipelines.cpp">
+    <ClCompile Include="src\Renderer\Vulkan\vk_pipelines.cpp">
       <Filter>src\shared</Filter>
     </ClCompile>
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
@@ -1417,7 +1417,6 @@
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClCompile>
-    <ClCompile Include="vk_texture.cpp" />
-    <ClCompile Include="src\shared\VulkanBuffer.cpp" />
+    <ClCompile Include="src\Renderer\Vulkan\VulkanBuffer.cpp" />
   </ItemGroup>
 </Project>

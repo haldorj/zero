@@ -1,7 +1,7 @@
 ﻿#include "Application.h"
 #include "core/core.h"
 
-#include <shared/vk_types.h>
+#include <Renderer/Vulkan/vk_types.h>
 
 #include "VkBootstrap.h"
 
@@ -18,7 +18,6 @@ namespace Zero
 
     void Application::CreateRectangle() const
     {
-
         struct {
             glm::vec3 position;
             glm::vec3 normal;
@@ -141,7 +140,7 @@ namespace Zero
         const float flash = std::abs(std::sin(static_cast<float>(m_FrameCount) / 240.f));
 
         m_Renderer->SetClearColor({0, 0, flash * 0.5, 1});
-        m_Renderer->Draw(m_topology);
+        m_Renderer->Draw(Topology::Triangles);
 
         m_FrameCount++;
     }
