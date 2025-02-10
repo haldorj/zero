@@ -1,54 +1,75 @@
 #include "OpenGLTexture.h"
 
 
-namespace Zero
-{
-	OpenGLTexture::OpenGLTexture(const char* image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType)
+namespace Zero {
+
+	OpenGLTexture::OpenGLTexture(const char* image, const char* texType, GLuint slot, GLenum format, GLenum pixelType)
 	{
-		type = texType;
-		int texWidth, texHeight, texChannels;
+		// Assigns the type of the texture ot the texture object
+		TexType = texType;
+
+		// Stores the width, height, and the number of color channels of the image
+		int widthImg, heightImg, numColCh;
+		// Flips the image so it appears right side up
 		stbi_set_flip_vertically_on_load(true);
-		stbi_uc* pixels = stbi_load(image, &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
-		if (!pixels)
-		{
-			std::cout << "Failed to load texture file" << std::endl;
-		}
+		// Reads the image from a file and stores it in bytes
+		unsigned char* bytes = stbi_load(image, &widthImg, &heightImg, &numColCh, 0);
+
+		// Generates an OpenGL texture object
 		glGenTextures(1, &ID);
-		glActiveTexture(slot);
+		// Assigns the texture to a Texture Unit
+		glActiveTexture(GL_TEXTURE0 + slot);
+		Unit = slot;
 		glBindTexture(GL_TEXTURE_2D, ID);
 
-		glTexParameteri(texType, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
-		glTexParameteri(texType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		// Configures the type of algorithm that is used to make the image smaller or bigger
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+		// Configures the way the texture repeats (if it does at all)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+		// Extra lines in case you choose to use GL_CLAMP_TO_BORDER
+		// float flatColor[] = {1.0f, 1.0f, 1.0f, 1.0f};
+		// glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, flatColor);
+
+		// Assigns the image to the OpenGL Texture object
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, format, pixelType, bytes);
+		// Generates MipMaps
 		glGenerateMipmap(GL_TEXTURE_2D);
 
-		stbi_image_free(pixels);
+		// Deletes the image data as it is already in the OpenGL Texture object
+		stbi_image_free(bytes);
+
+		// Unbinds the OpenGL Texture object so that it can't accidentally be modified
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	void OpenGLTexture::TexUnit(OpenGLShader& shader, const char* uniform, GLuint unit)
 	{
+		// Gets the location of the uniform
 		GLuint texUni = glGetUniformLocation(shader.GetID(), uniform);
+		// Shader needs to be activated before changing the value of a uniform
 		shader.Activate();
+		// Sets the value of the uniform
 		glUniform1i(texUni, unit);
 	}
 
 	void OpenGLTexture::Bind()
 	{
-		glBindTexture(type, ID);
+		glActiveTexture(GL_TEXTURE0 + Unit);
+		glBindTexture(GL_TEXTURE_2D, ID);
 	}
 
 	void OpenGLTexture::Unbind()
 	{
-		glBindTexture(type, 0);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	void OpenGLTexture::Delete()
 	{
 		glDeleteTextures(1, &ID);
 	}
+
 } // namespace Zero

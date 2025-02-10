@@ -20,7 +20,6 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 
-
 #define VK_CHECK(x)                                                     \
     do {                                                                \
         VkResult err = x;                                               \
@@ -29,14 +28,6 @@
             abort();                                                    \
         }                                                               \
     } while (0)
-
-struct Vertex {
-    glm::vec3 Position;
-    float UvX;
-    glm::vec3 Normal;
-    float UvY;
-    glm::vec4 Color;
-};
 
 struct AllocatedBuffer {
     VkBuffer Buffer;

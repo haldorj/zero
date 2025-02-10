@@ -6,7 +6,7 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-std::vector<GLfloat> RectVertices;
+std::vector<Vertex> RectVertices;
 std::vector<GLuint> RectIndeces;
 
 namespace Zero
@@ -34,10 +34,6 @@ namespace Zero
 
         InitShaders();
 
-        texture1 = std::make_shared<OpenGLTexture>("../assets/images/brick.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA,
-                                                   GL_UNSIGNED_BYTE);
-        texture1->TexUnit(*shaderProgram, "tex0", 0);
-
         // Enable depth testing for 3D
         glEnable(GL_DEPTH_TEST);
     }
@@ -47,29 +43,26 @@ namespace Zero
     {
         for (const auto& vertex : vertices)
         {
-            RectVertices.push_back(static_cast<GLfloat>(vertex.Position.x));
-            RectVertices.push_back(static_cast<GLfloat>(vertex.Position.y));
-            RectVertices.push_back(static_cast<GLfloat>(vertex.Position.z));
-            RectVertices.push_back(static_cast<GLfloat>(vertex.Color.r));
-            RectVertices.push_back(static_cast<GLfloat>(vertex.Color.g));
-            RectVertices.push_back(static_cast<GLfloat>(vertex.Color.b));
-            RectVertices.push_back(static_cast<GLfloat>(vertex.UvX));
-            RectVertices.push_back(static_cast<GLfloat>(vertex.UvY));
+            RectVertices.push_back(vertex);
         }
-        for (const auto index : indices)
+        for (const auto& index : indices)
         {
             RectIndeces.push_back(static_cast<GLuint>(index));
         }
+
+        std::string path = "../assets/images/brick.png";
+        OpenGLTexture TEX(path.c_str(), "diffuse", 0, GL_RGBA, GL_UNSIGNED_BYTE);
+
+        std::vector<OpenGLTexture> pyramidTextures;
+        pyramidTextures.push_back(TEX);
+
+        Pyramid = new Mesh(RectVertices, RectIndeces, pyramidTextures);
     }
 
     void OpenGLRenderer::Shutdown()
     {
-        // Delete all the objects we've created
-        VAO1->Delete();
-        VBO1->Delete();
-        EBO1->Delete();
         shaderProgram->Delete();
-        texture1->Delete();
+
     }
 
     float rotation = 0.0f;
@@ -82,7 +75,7 @@ namespace Zero
         // Clean the back buffer and assign the new color to it
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // Tell OpenGL which Shader Program we want to use
-        shaderProgram->Activate();
+   /*     shaderProgram->Activate();*/
 
         double currentTime = glfwGetTime();
 
@@ -107,29 +100,24 @@ namespace Zero
         int projLoc = glGetUniformLocation(shaderProgram->GetID(), "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-        
+        Pyramid->Draw(*shaderProgram, Application::Get().GetMainCamera());
 
-        
-        // Scale uniform. Must be called after the Shader Program has been activated.
-        glUniform1f(uniID, 1.f);
-        // Bind the texture so that it is used in the Shader Program
-        texture1->Bind();
-        // Bind the VAO so OpenGL knows to use it
-        VAO1->Bind();
+       
         // Draw primitives, number of indices, datatype of indices, index of indices
-        switch (topology)
-        {
-        case Topology::None:
-            glDrawElements(GL_NONE, static_cast<GLsizei>(RectIndeces.size()), GL_UNSIGNED_INT, 0);
-            break;
-        case Topology::Lines:
-            glDrawElements(GL_LINES, static_cast<GLsizei>(RectIndeces.size()), GL_UNSIGNED_INT, 0);
-            break;
-        case Topology::Triangles:
-            glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(RectIndeces.size()), GL_UNSIGNED_INT, 0);
-            break;
-        default: ;
-        }
+        // 
+        //switch (topology)
+        //{
+        //case Topology::None:
+        //    glDrawElements(GL_NONE, static_cast<GLsizei>(RectIndeces.size()), GL_UNSIGNED_INT, 0);
+        //    break;
+        //case Topology::Lines:
+        //    glDrawElements(GL_LINES, static_cast<GLsizei>(RectIndeces.size()), GL_UNSIGNED_INT, 0);
+        //    break;
+        //case Topology::Triangles:
+        //    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(RectIndeces.size()), GL_UNSIGNED_INT, 0);
+        //    break;
+        //default: ;
+        //}
         
         // Swap the back buffer with the front buffer
         glfwSwapBuffers(Application::Get().GetWindow());
@@ -139,27 +127,6 @@ namespace Zero
     {
         // Create Shader object
         shaderProgram = std::make_unique<OpenGLShader>("../shaders/default.vert", "../shaders/default.frag");
-
-        // Generates Vertex Array Object and binds it
-        VAO1 = std::make_unique<VAO>();
-        VAO1->Bind();
-
-
-        // Generates Vertex Buffer Object and links it to vertices
-        VBO1 = std::make_unique<VBO>(RectVertices.data(), RectVertices.size() * sizeof(float));
-        // Generates Element Buffer Object and links it to indices
-        EBO1 = std::make_unique<EBO>(RectIndeces.data(), RectIndeces.size() * sizeof(GLuint));
-
-        // Links VBO attributes such as coordinates and colors to VAO
-        VAO1->LinkAttrib(*VBO1, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0); // Vertex positions
-        VAO1->LinkAttrib(*VBO1, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float))); // Vertex colors
-        VAO1->LinkAttrib(*VBO1, 2, 2, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float))); // Texture coordinates
-        // Unbind all to prevent accidentally modifying them
-        VAO1->Unbind();
-        VBO1->Unbind();
-        EBO1->Unbind();
-
-        uniID = glGetUniformLocation(shaderProgram->GetID(), "scale");
     }
 
     // Checks if the different Shaders have compiled properly

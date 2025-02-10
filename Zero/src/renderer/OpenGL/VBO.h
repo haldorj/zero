@@ -1,12 +1,14 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <vector>
+#include <Mesh/Vertex.h>
 
 class VBO
 {
 public:
-    // Constructor that generates a Vertex Buffer Object and links it to vertices
-    VBO(GLfloat* vertices, GLsizeiptr size);
+    VBO() = default;
+    VBO(std::vector<Vertex>& vertices);
 
     void Bind();
     void Unbind();

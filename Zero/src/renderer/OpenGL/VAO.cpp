@@ -4,6 +4,10 @@
 VAO::VAO()
 {
     glGenVertexArrays(1, &ID);
+    if (ID == 0) {
+        // Handle error
+        printf("Error generating VAO\n");
+    }
 }
 
 // Links a VBO to the VAO using a certain layout

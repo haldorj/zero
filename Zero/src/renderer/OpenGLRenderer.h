@@ -7,6 +7,7 @@
 
 #include "renderer/Renderer.h"
 #include "renderer/OpenGL/OpenGLTexture.h"
+#include <Mesh/Mesh.h>
 
 namespace Zero
 {
@@ -22,14 +23,9 @@ namespace Zero
     private:
         void InitShaders();
 
+        Mesh* Pyramid{};
+
         glm::vec4 _clearColor = {};
         std::unique_ptr<OpenGLShader> shaderProgram;
-
-        std::unique_ptr<VAO> VAO1;
-        std::unique_ptr<VBO> VBO1;
-        std::unique_ptr<EBO> EBO1;
-
-        GLuint uniID = 0;
-        std::shared_ptr<OpenGLTexture> texture1;
     };
 } // namespace Zero

@@ -7,6 +7,7 @@
 
 #include <chrono>
 #include <thread>
+#include <Mesh/Mesh.h>
 
 namespace Zero
 {
@@ -18,16 +19,6 @@ namespace Zero
 
     void Application::CreateRectangle() const
     {
-        struct {
-            glm::vec3 position;
-            glm::vec3 normal;
-            glm::vec2 textCoord;
-        }vertices;
-
-        vertices.position = {1,2,3};
-        vertices.normal = {1,2,3};
-        vertices.textCoord = {2,3};
-        
         std::array<Vertex, 4> rectVertices{};
 
         rectVertices[0].Position = {0.5, -0.5, 0};
@@ -54,29 +45,36 @@ namespace Zero
         rectIndices[4] = 1;
         rectIndices[5] = 3;
 
-        m_Renderer->InitObject(rectIndices, rectVertices);
+        // Mesh* Rectangle = new Mesh(rectVertices, rectIndices);
+
+        // m_Renderer->InitObject();
     }
 
     void Application::CreatePyramid() const
     {
         std::array<Vertex, 5> pyramidVertices{};
         pyramidVertices[0].Position = {-0.5, 0.0, 0.5};
+        pyramidVertices[0].Normal = {0, 0, 0};
         pyramidVertices[0].UvX = 0; pyramidVertices[0].UvY = 0;
         pyramidVertices[0].Color = {1, 0, 0, 1};
 
         pyramidVertices[1].Position = {-0.5, 0.0, -0.5};
+        pyramidVertices[1].Normal = { 0, 0, 0 };
         pyramidVertices[1].UvX = 5.0f; pyramidVertices[1].UvY = 0;
         pyramidVertices[1].Color = { 0, 1, 0, 1 };
 
         pyramidVertices[2].Position = {0.5, 0.0, -0.5};
+        pyramidVertices[2].Normal = { 0, 0, 0 };
         pyramidVertices[2].UvX = 0; pyramidVertices[2].UvY = 0;
         pyramidVertices[2].Color = { 0, 0, 1, 1 };
 
         pyramidVertices[3].Position = {0.5, 0.0, 0.5};
+        pyramidVertices[3].Normal = { 0, 0, 0 };
         pyramidVertices[3].UvX = 5.0f; pyramidVertices[3].UvY = 0;
         pyramidVertices[3].Color = { 1, 1, 0, 1 };
 
         pyramidVertices[4].Position = {0.0, 0.8, 0.0};
+        pyramidVertices[4].Normal = { 0, 0, 0 };
         pyramidVertices[4].UvX = 2.5f; pyramidVertices[4].UvY = 5.0f;
         pyramidVertices[4].Color = { 0, 1, 1, 1 };
 
@@ -109,8 +107,8 @@ namespace Zero
         switch (RendererType)
         {
         case RendererAPI::OpenGL:
-            CreatePyramid();
             m_Renderer->Init();
+            CreatePyramid();
             break;
         case RendererAPI::Vulkan:
             m_Renderer->Init();

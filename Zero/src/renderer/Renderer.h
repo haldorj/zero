@@ -1,7 +1,8 @@
 #pragma once
 
 #include "glm/glm.hpp"
-#include <Renderer/Vulkan/vk_types.h>
+#include <span>
+#include <Mesh/Vertex.h>
 #include "EnumModes/RendererMode.hpp"
 
 // Renderer interface

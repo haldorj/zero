@@ -5,6 +5,10 @@ layout (location = 0) out vec3 outColor;
 layout (location = 1) out vec2 outUV;
 
 struct Vertex {
+
+	// The reason the uv parameters are interleaved is is due to alignement limitations on GPUs. 
+	// The GPU expects an alignment to 16 bytes by default (vec4 is smallest valid variable).
+
 	vec3 position;
 	float uv_x;
 	vec3 normal;
