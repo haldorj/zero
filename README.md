@@ -1,10 +1,12 @@
-## Build
+# Build
 
 Start by cloning the repository with git clone ```--recursive https://github.com/haldorj/zero```.
 
 If the repository was cloned non-recursively previously, use ```git submodule update --init``` to clone the necessary submodules.
 
-# Assimp
+Run ```GenerateProjects.bat```
+
+## Assimp
 
 1. Head into the Assimp submodule folder ```Zero\Vendor\Assimp```
 2. Build with cmake (Open a command prompt and run the command ```cmake .```)
