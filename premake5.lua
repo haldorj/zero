@@ -21,6 +21,7 @@ IncludeDir["Vulkan"] = "$(VULKAN_SDK)/include"
 IncludeDir["vkb"] = "Zero/vendor/vk-bootstrap"
 IncludeDir["VMA"] = "Zero/vendor/VMA"
 IncludeDir["stb"] = "Zero/vendor/stb_image"
+IncludeDir["Assimp"] = "Zero/vendor/Assimp/include"
 
 include "Zero/vendor/GLFW"
 include "Zero/vendor/Glad"
@@ -65,7 +66,8 @@ project "Zero"
 		"%{IncludeDir.Vulkan}",
 		"%{IncludeDir.vkb}",
 		"%{IncludeDir.VMA}",
-		"%{IncludeDir.stb}"
+		"%{IncludeDir.stb}",
+		"%{IncludeDir.Assimp}"
 	}
 
 	links 
@@ -75,15 +77,16 @@ project "Zero"
 		"ImGui",
 		"opengl32.lib",
 		"$(VULKAN_SDK)/Lib/vulkan-1.lib",
+		"Zero/Vendor/assimp/lib/Release/assimp-vc143-mt.lib"
 	}
 
 	filter "system:windows"
 		systemversion "latest"
 
-		defines
-		{
-			"GLFW_INCLUDE_NONE"
-		}
+	defines
+	{
+		"GLFW_INCLUDE_NONE"
+	}
 
 
 	filter "configurations:Debug"

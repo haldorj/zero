@@ -8,6 +8,7 @@
 #include "renderer/Renderer.h"
 #include "renderer/OpenGL/OpenGLTexture.h"
 #include <Mesh/Mesh.h>
+#include <Mesh/Model.h>
 
 namespace Zero
 {
@@ -24,6 +25,7 @@ namespace Zero
         void InitShaders();
 
         Mesh* Pyramid{};
+        Model* monkey;
 
         glm::vec4 _clearColor = {};
         std::unique_ptr<OpenGLShader> shaderProgram;

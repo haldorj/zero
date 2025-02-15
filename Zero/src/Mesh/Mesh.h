@@ -14,16 +14,14 @@ namespace Zero {
 	class Mesh
 	{
 	public:
-		std::vector <Vertex> vertices;
-		std::vector <GLuint> indices;
-		std::vector <OpenGLTexture> textures;
-		// Store VAO in public so it can be used in the Draw function
-		VAO VAO;
-
-		// Initializes the mesh
 		Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::vector <OpenGLTexture>& textures);
+		void Draw(OpenGLShader& shader);
 
-		// Draws the mesh
-		void Draw(OpenGLShader& shader, Camera& camera);
+	private:
+		VAO m_VAO;
+
+		std::vector <Vertex> m_Vertices;
+		std::vector <GLuint> m_Indices;
+		std::vector <OpenGLTexture> m_Textures;
 	};
 }

@@ -3,17 +3,37 @@
 
 namespace Zero {
 
-	OpenGLTexture::OpenGLTexture(const char* image, const char* texType, GLuint slot, GLenum format, GLenum pixelType)
+	OpenGLTexture::OpenGLTexture(const char* path, const char* texType, GLuint slot, GLenum pixelType)
 	{
+		Path = path;
 		// Assigns the type of the texture ot the texture object
 		TexType = texType;
 
 		// Stores the width, height, and the number of color channels of the image
-		int widthImg, heightImg, numColCh;
+		int widthImg = 0, heightImg = 0, numColCh = 0;
 		// Flips the image so it appears right side up
 		stbi_set_flip_vertically_on_load(true);
 		// Reads the image from a file and stores it in bytes
-		unsigned char* bytes = stbi_load(image, &widthImg, &heightImg, &numColCh, 0);
+		unsigned char* bytes = stbi_load(path, &widthImg, &heightImg, &numColCh, 0);
+		if (!bytes) {
+			printf("Failed to load texture: %s\n", path);
+			return; // Exit the constructor if the image failed to load
+		}
+
+		// Check if width, height, and number of color channels are valid
+		if (widthImg <= 0 || heightImg <= 0 || numColCh <= 0) {
+			printf("Invalid image dimensions: %s\n", path);
+			stbi_image_free(bytes);
+			return;
+		}
+
+		GLenum format = 0;
+		if (numColCh == 1)
+			format = GL_RED;
+		else if (numColCh == 3)
+			format = GL_RGB;
+		else if (numColCh == 4)
+			format = GL_RGBA;
 
 		// Generates an OpenGL texture object
 		glGenTextures(1, &ID);
@@ -35,7 +55,7 @@ namespace Zero {
 		// glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, flatColor);
 
 		// Assigns the image to the OpenGL Texture object
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, format, pixelType, bytes);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, widthImg, heightImg, 0, format, pixelType, bytes);
 		// Generates MipMaps
 		glGenerateMipmap(GL_TEXTURE_2D);
 

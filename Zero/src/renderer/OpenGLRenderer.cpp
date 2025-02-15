@@ -36,6 +36,9 @@ namespace Zero
 
         // Enable depth testing for 3D
         glEnable(GL_DEPTH_TEST);
+
+        const char * path = "../assets/models/black_bison2.fbx";
+        monkey = new Model(path);
     }
 
 
@@ -51,7 +54,7 @@ namespace Zero
         }
 
         std::string path = "../assets/images/brick.png";
-        OpenGLTexture TEX(path.c_str(), "diffuse", 0, GL_RGBA, GL_UNSIGNED_BYTE);
+        OpenGLTexture TEX(path.c_str(), "diffuse", 0, GL_UNSIGNED_BYTE);
 
         std::vector<OpenGLTexture> pyramidTextures;
         pyramidTextures.push_back(TEX);
@@ -85,11 +88,12 @@ namespace Zero
             lastTime = currentTime;
         }
 
-        glm::mat4 model = glm::mat4(1.0f);
+        glm::mat4 model = glm::scale(glm::mat4(1), glm::vec3(0.1f));
+        //glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
 
-        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
+        // model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
         view = Application::Get().GetMainCamera().GetViewMatrix();
         projection = glm::perspective(glm::radians(70.0f), (float)EXTENT_WIDTH / (float)EXTENT_HEIGHT, 0.1f, 100.0f);
 
@@ -100,8 +104,8 @@ namespace Zero
         int projLoc = glGetUniformLocation(shaderProgram->GetID(), "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-        Pyramid->Draw(*shaderProgram, Application::Get().GetMainCamera());
-
+        // Pyramid->Draw(*shaderProgram);
+        monkey->Draw(*shaderProgram);
        
         // Draw primitives, number of indices, datatype of indices, index of indices
         // 
