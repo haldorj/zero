@@ -79,7 +79,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;ZERO_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;$(VULKAN_SDK)\include;vendor\vk-bootstrap;vendor\VMA;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;$(VULKAN_SDK)\include;vendor\vk-bootstrap;vendor\VMA;vendor\stb_image;vendor\Assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -89,7 +89,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;$(VULKAN_SDK)\Lib\vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;$(VULKAN_SDK)\Lib\vulkan-1.lib;Vendor\assimp\lib\Release\assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -97,7 +97,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;ZERO_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;$(VULKAN_SDK)\include;vendor\vk-bootstrap;vendor\VMA;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;$(VULKAN_SDK)\include;vendor\vk-bootstrap;vendor\VMA;vendor\stb_image;vendor\Assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -111,7 +111,7 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;$(VULKAN_SDK)\Lib\vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;$(VULKAN_SDK)\Lib\vulkan-1.lib;Vendor\assimp\lib\Release\assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
@@ -119,7 +119,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;ZERO_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;$(VULKAN_SDK)\include;vendor\vk-bootstrap;vendor\VMA;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;$(VULKAN_SDK)\include;vendor\vk-bootstrap;vendor\VMA;vendor\stb_image;vendor\Assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -133,15 +133,15 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;$(VULKAN_SDK)\Lib\vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;$(VULKAN_SDK)\Lib\vulkan-1.lib;Vendor\assimp\lib\Release\assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Mesh\Mesh.h" />
     <ClInclude Include="src\Camera\Camera.h" />
     <ClInclude Include="src\Core\Application.h" />
     <ClInclude Include="src\Core\core.h" />
-    <ClInclude Include="src\EnumModes\RendererMode.hpp" />
+    <ClInclude Include="src\Mesh\Mesh.h" />
+    <ClInclude Include="src\Mesh\Model.h" />
     <ClInclude Include="src\Mesh\Vertex.h" />
     <ClInclude Include="src\Renderer\OpenGL\EBO.h" />
     <ClInclude Include="src\Renderer\OpenGL\OpenGLShader.h" />
@@ -150,13 +150,14 @@
     <ClInclude Include="src\Renderer\OpenGL\VBO.h" />
     <ClInclude Include="src\Renderer\OpenGLRenderer.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
-    <ClInclude Include="src\Renderer\VulkanRenderer.h" />
+    <ClInclude Include="src\Renderer\Vulkan\VulkanBuffer.h" />
     <ClInclude Include="src\Renderer\Vulkan\vk_descriptors.h" />
     <ClInclude Include="src\Renderer\Vulkan\vk_images.h" />
     <ClInclude Include="src\Renderer\Vulkan\vk_initializers.h" />
     <ClInclude Include="src\Renderer\Vulkan\vk_loader.h" />
     <ClInclude Include="src\Renderer\Vulkan\vk_pipelines.h" />
     <ClInclude Include="src\Renderer\Vulkan\vk_types.h" />
+    <ClInclude Include="src\Renderer\VulkanRenderer.h" />
     <ClInclude Include="vendor\VMA\vk_mem_alloc.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
@@ -577,28 +578,28 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrap.h" />
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h" />
-    <ClInclude Include="src\Renderer\Vulkan\VulkanBuffer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Mesh\Mesh.cpp" />
     <ClCompile Include="src\Camera\Camera.cpp" />
     <ClCompile Include="src\Core\Application.cpp" />
-    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Mesh\Mesh.cpp" />
+    <ClCompile Include="src\Mesh\Model.cpp" />
     <ClCompile Include="src\Renderer\OpenGL\EBO.cpp" />
     <ClCompile Include="src\Renderer\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="src\Renderer\OpenGL\OpenGLTexture.cpp" />
     <ClCompile Include="src\Renderer\OpenGL\VAO.cpp" />
     <ClCompile Include="src\Renderer\OpenGL\VBO.cpp" />
     <ClCompile Include="src\Renderer\OpenGLRenderer.cpp" />
-    <ClCompile Include="src\Renderer\VulkanRenderer.cpp" />
+    <ClCompile Include="src\Renderer\Vulkan\VulkanBuffer.cpp" />
     <ClCompile Include="src\Renderer\Vulkan\vk_descriptors.cpp" />
     <ClCompile Include="src\Renderer\Vulkan\vk_images.cpp" />
     <ClCompile Include="src\Renderer\Vulkan\vk_initializers.cpp" />
     <ClCompile Include="src\Renderer\Vulkan\vk_loader.cpp" />
     <ClCompile Include="src\Renderer\Vulkan\vk_pipelines.cpp" />
+    <ClCompile Include="src\Renderer\VulkanRenderer.cpp" />
+    <ClCompile Include="src\main.cpp" />
     <ClCompile Include="vendor\stb_image\stb_image.cpp" />
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp" />
-    <ClCompile Include="src\Renderer\Vulkan\VulkanBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

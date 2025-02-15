@@ -4,20 +4,23 @@
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\camera">
-      <UniqueIdentifier>{255F4553-1117-87A0-7A1E-60FC66F52191}</UniqueIdentifier>
+    <Filter Include="src\Camera">
+      <UniqueIdentifier>{054BA008-F102-E255-5A0A-BBB146E17C46}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\core">
-      <UniqueIdentifier>{C55F2ECF-B12C-89DA-DA45-7782C671BE68}</UniqueIdentifier>
+    <Filter Include="src\Core">
+      <UniqueIdentifier>{A5D31CCF-91A0-77DA-BAB9-6582A6E5AC68}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\renderer">
-      <UniqueIdentifier>{936D1A48-7FD0-A9EC-2856-E2A21498756F}</UniqueIdentifier>
+    <Filter Include="src\Mesh">
+      <UniqueIdentifier>{092522CF-F5F1-7CDA-1E0B-6B820A37B268}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\renderer\OpenGL">
-      <UniqueIdentifier>{67B3A77A-D314-8588-5C82-CB3AC8E2BB47}</UniqueIdentifier>
+    <Filter Include="src\Renderer">
+      <UniqueIdentifier>{73D1DFBF-5F34-6F64-08BA-A71AF4FB3AE7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\shared">
-      <UniqueIdentifier>{D3351079-BFED-51C6-28F5-2A2214CCECB6}</UniqueIdentifier>
+    <Filter Include="src\Renderer\OpenGL">
+      <UniqueIdentifier>{47FBB911-B35C-971F-3CCA-DDD1A82ACEDE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Renderer\Vulkan">
+      <UniqueIdentifier>{935F6C22-FFC0-4930-882E-90E2F48E80EF}</UniqueIdentifier>
     </Filter>
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
@@ -52,55 +55,67 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Camera\Camera.h">
-      <Filter>src\camera</Filter>
+      <Filter>src\Camera</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Application.h">
-      <Filter>src\core</Filter>
+      <Filter>src\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\core.h">
-      <Filter>src\core</Filter>
+      <Filter>src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mesh\Mesh.h">
+      <Filter>src\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mesh\Model.h">
+      <Filter>src\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mesh\Vertex.h">
+      <Filter>src\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\OpenGL\EBO.h">
-      <Filter>src\renderer\OpenGL</Filter>
+      <Filter>src\Renderer\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\OpenGL\OpenGLShader.h">
-      <Filter>src\renderer\OpenGL</Filter>
+      <Filter>src\Renderer\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\OpenGL\OpenGLTexture.h">
-      <Filter>src\renderer\OpenGL</Filter>
+      <Filter>src\Renderer\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\OpenGL\VAO.h">
-      <Filter>src\renderer\OpenGL</Filter>
+      <Filter>src\Renderer\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\OpenGL\VBO.h">
-      <Filter>src\renderer\OpenGL</Filter>
+      <Filter>src\Renderer\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\OpenGLRenderer.h">
-      <Filter>src\renderer</Filter>
+      <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Renderer.h">
-      <Filter>src\renderer</Filter>
+      <Filter>src\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\VulkanRenderer.h">
-      <Filter>src\renderer</Filter>
+    <ClInclude Include="src\Renderer\Vulkan\VulkanBuffer.h">
+      <Filter>src\Renderer\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Vulkan\vk_descriptors.h">
-      <Filter>src\shared</Filter>
+      <Filter>src\Renderer\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Vulkan\vk_images.h">
-      <Filter>src\shared</Filter>
+      <Filter>src\Renderer\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Vulkan\vk_initializers.h">
-      <Filter>src\shared</Filter>
+      <Filter>src\Renderer\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Vulkan\vk_loader.h">
-      <Filter>src\shared</Filter>
+      <Filter>src\Renderer\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Vulkan\vk_pipelines.h">
-      <Filter>src\shared</Filter>
+      <Filter>src\Renderer\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Vulkan\vk_types.h">
-      <Filter>src\shared</Filter>
+      <Filter>src\Renderer\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\VulkanRenderer.h">
+      <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="vendor\VMA\vk_mem_alloc.h">
       <Filter>vendor\VMA</Filter>
@@ -1362,56 +1377,61 @@
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\Vulkan\VulkanBuffer.h" />
-    <ClInclude Include="src\EnumModes\RendererMode.hpp" />
-    <ClInclude Include="src\Mesh\Mesh.h" />
-    <ClInclude Include="src\Mesh\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera\Camera.cpp">
-      <Filter>src\camera</Filter>
+      <Filter>src\Camera</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Application.cpp">
-      <Filter>src\core</Filter>
+      <Filter>src\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mesh\Mesh.cpp">
+      <Filter>src\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mesh\Model.cpp">
+      <Filter>src\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\OpenGL\EBO.cpp">
+      <Filter>src\Renderer\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\OpenGL\OpenGLShader.cpp">
+      <Filter>src\Renderer\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\OpenGL\OpenGLTexture.cpp">
+      <Filter>src\Renderer\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\OpenGL\VAO.cpp">
+      <Filter>src\Renderer\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\OpenGL\VBO.cpp">
+      <Filter>src\Renderer\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\OpenGLRenderer.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Vulkan\VulkanBuffer.cpp">
+      <Filter>src\Renderer\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Vulkan\vk_descriptors.cpp">
+      <Filter>src\Renderer\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Vulkan\vk_images.cpp">
+      <Filter>src\Renderer\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Vulkan\vk_initializers.cpp">
+      <Filter>src\Renderer\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Vulkan\vk_loader.cpp">
+      <Filter>src\Renderer\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Vulkan\vk_pipelines.cpp">
+      <Filter>src\Renderer\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\VulkanRenderer.cpp">
+      <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer\OpenGL\EBO.cpp">
-      <Filter>src\renderer\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer\OpenGL\OpenGLShader.cpp">
-      <Filter>src\renderer\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer\OpenGL\OpenGLTexture.cpp">
-      <Filter>src\renderer\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer\OpenGL\VAO.cpp">
-      <Filter>src\renderer\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer\OpenGL\VBO.cpp">
-      <Filter>src\renderer\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer\OpenGLRenderer.cpp">
-      <Filter>src\renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer\VulkanRenderer.cpp">
-      <Filter>src\renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer\Vulkan\vk_descriptors.cpp">
-      <Filter>src\shared</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer\Vulkan\vk_images.cpp">
-      <Filter>src\shared</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer\Vulkan\vk_initializers.cpp">
-      <Filter>src\shared</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer\Vulkan\vk_loader.cpp">
-      <Filter>src\shared</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer\Vulkan\vk_pipelines.cpp">
-      <Filter>src\shared</Filter>
     </ClCompile>
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
@@ -1419,7 +1439,5 @@
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer\Vulkan\VulkanBuffer.cpp" />
-    <ClCompile Include="src\Mesh\Mesh.cpp" />
   </ItemGroup>
 </Project>

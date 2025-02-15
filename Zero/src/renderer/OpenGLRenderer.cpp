@@ -88,8 +88,11 @@ namespace Zero
             lastTime = currentTime;
         }
 
-        glm::mat4 model = glm::scale(glm::mat4(1), glm::vec3(0.1f));
-        //glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+        glm::mat4 model = glm::mat4(1);
+
+        model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
+
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
 
