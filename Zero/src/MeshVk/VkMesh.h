@@ -23,6 +23,8 @@ namespace Zero {
 			GPUDrawPushConstants& pushConstants
 		);
 
+		void DestroyMesh();
+
 		std::vector<Vertex> GetVertices() const { return m_Vertices; }
 		std::vector<uint32_t> GetIndices() const { return m_Indices; }
 		std::vector<VulkanTexture> GetTexture() const { return m_Textures; }

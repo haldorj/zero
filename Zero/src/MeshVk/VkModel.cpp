@@ -23,6 +23,18 @@ namespace Zero {
 			meshes[i].Draw(cmd, pipelineLayout, drawExtent, sampler, pushConstants);
 	}
 
+	void VkModel::DestroyModel()
+	{
+		for (auto mesh : meshes)
+		{
+			mesh.DestroyMesh();
+		}
+		for (auto texture : LoadedTextures)
+		{
+			texture.DestroyImage();
+		}
+	}
+
 	void VkModel::LoadModel(std::string path)
 	{
 		Assimp::Importer importer;
@@ -148,11 +160,6 @@ namespace Zero {
 				textures.push_back(texture);
 				LoadedTextures.push_back(texture);
 			}
-		}
-
-		if (textures.size() <= 0)
-		{
-			textures.push_back(VulkanTexture(0));
 		}
 
 		return textures;

@@ -14,24 +14,6 @@ namespace Zero {
         m_Type = type;
         m_Image = CreateImageFromFile(
             filepath, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT, mipmapped);
-
-        renderer->GetMainDeletionQueue().PushFunction([&]()
-            {
-                vkDestroyImageView(renderer->GetDevice(), m_Image.ImageView, nullptr);
-			    vmaDestroyImage(renderer->GetAllocator(), m_Image.Image, m_Image.Allocation);
-            });
-    }
-
-    VulkanTexture::VulkanTexture(int i)
-    {
-        VulkanRenderer* renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
-        m_Image = CreateErrorImage();
-
-        renderer->GetMainDeletionQueue().PushFunction([&]()
-            {
-                vkDestroyImageView(renderer->GetDevice(), m_Image.ImageView, nullptr);
-                vmaDestroyImage(renderer->GetAllocator(), m_Image.Image, m_Image.Allocation);
-            });
     }
 
     AllocatedImage VulkanTexture::CreateImage(VkExtent3D size, VkFormat format, VkImageUsageFlags usage,
@@ -124,7 +106,8 @@ namespace Zero {
     AllocatedImage VulkanTexture::CreateImageFromFile(const std::string& filePath, VkFormat format, VkImageUsageFlags usage, bool mipmapped)
     {
         VulkanRenderer* renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
-        if (!renderer) return{};
+        if (!renderer) 
+            return CreateErrorImage();
 
         // Load image data using stb_image
         int texWidth, texHeight, texChannels;
@@ -228,6 +211,13 @@ namespace Zero {
         VulkanBufferManager::DestroyBuffer(renderer->GetAllocator(), stagingBuffer);
 
         return newImage;
+    }
+
+    void VulkanTexture::DestroyImage()
+    {
+        VulkanRenderer* renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+		vkDestroyImageView(renderer->GetDevice(), m_Image.ImageView, nullptr);
+		vmaDestroyImage(renderer->GetAllocator(), m_Image.Image, m_Image.Allocation);
     }
 
     AllocatedImage VulkanTexture::CreateErrorImage()

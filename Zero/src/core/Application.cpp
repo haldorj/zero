@@ -102,19 +102,10 @@ namespace Zero {
         // Initialize the renderer
         m_Renderer = RendererFactory::CreateRenderer(RendererType);
 
-        m_MainCamera.SetPosition({0, 0, -3});
+        m_MainCamera.SetPosition({2, 1, -1});
 
-        switch (RendererType)
-        {
-        case RendererAPI::OpenGL:
-            m_Renderer->Init();
-            CreatePyramid();
-            break;
-        case RendererAPI::Vulkan:
-            m_Renderer->Init();
-            CreatePyramid();
-            break;
-        }
+        m_Renderer->Init();
+        CreatePyramid();
 
         // everything went fine
         m_IsInitialized = true;

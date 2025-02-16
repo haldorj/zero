@@ -369,6 +369,8 @@ namespace Zero
     {
         vkDeviceWaitIdle(m_Device);
 
+        m_Model.DestroyModel();
+
         // Free per-frame structures and deletion queue
         for (auto& frame : m_Frames)
         {

@@ -15,12 +15,6 @@ namespace Zero {
         m_Textures = textures;
 
         m_GPUMeshBuffers = renderer->UploadMesh(indices, vertices);
-
-        renderer->GetMainDeletionQueue().PushFunction([&]()
-        {
-            VulkanBufferManager::DestroyBuffer(renderer->GetAllocator(), m_GPUMeshBuffers.IndexBuffer);
-            VulkanBufferManager::DestroyBuffer(renderer->GetAllocator(), m_GPUMeshBuffers.VertexBuffer);
-        });
     }
 
     void VkMesh::Draw(VkCommandBuffer& cmd, VkPipelineLayout& pipelineLayout, VkExtent2D drawExtent, VkSampler& sampler, GPUDrawPushConstants& pushConstants)
@@ -60,6 +54,14 @@ namespace Zero {
         vkCmdBindIndexBuffer(cmd, m_GPUMeshBuffers.IndexBuffer.Buffer, 0, VK_INDEX_TYPE_UINT32);
 
         vkCmdDrawIndexed(cmd, m_Indices.size(), 1, 0, 0, 0);
+    }
+
+    void VkMesh::DestroyMesh()
+    {
+        auto renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+
+		VulkanBufferManager::DestroyBuffer(renderer->GetAllocator(), m_GPUMeshBuffers.IndexBuffer);
+		VulkanBufferManager::DestroyBuffer(renderer->GetAllocator(), m_GPUMeshBuffers.VertexBuffer);
     }
 
 }

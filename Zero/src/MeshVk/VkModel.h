@@ -16,6 +16,8 @@ namespace Zero {
         VkModel(const char* path);
         void Draw(VkCommandBuffer& cmd, VkPipelineLayout& pipelineLayout, VkExtent2D drawExtent, VkSampler& sampler, GPUDrawPushConstants& pushConstants);
 
+        void DestroyModel();
+
         std::vector<VulkanTexture> GetLoadedTextures() const { return LoadedTextures; }
 
     private:
