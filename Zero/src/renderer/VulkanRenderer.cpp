@@ -76,10 +76,21 @@ namespace Zero
 
     void VulkanRenderer::InitTextures()
     {
+        // Checkerboard image
+        //const uint32_t black = glm::packUnorm4x8(glm::vec4(0, 0, 0, 0));
+        //const uint32_t magenta = glm::packUnorm4x8(glm::vec4(1, 0, 1, 1));
+        //std::array<uint32_t, static_cast<uint32_t>(16 * 16)> pixels; //for 16x16 checkerboard texture
+        //for (int x = 0; x < 16; x++)
+        //{
+        //    for (int y = 0; y < 16; y++)
+        //    {
+        //        pixels[y * 16 + x] = ((x % 2) ^ (y % 2)) ? magenta : black;
+        //    }
+        //}
+        //m_ErrorCheckerboardImage = CreateImage(pixels.data(), VkExtent3D{16, 16, 1}, VK_FORMAT_R8G8B8A8_UNORM,
+        //                                       VK_IMAGE_USAGE_SAMPLED_BIT);
 
-        m_ErrorCheckerboardImage = VulkanTexture();
-
-        m_Texture = VulkanTexture("../assets/images/brick.png", "texture_diffuse", true);
+        m_Texture = VulkanTexture("../assets/images/bric.png", "texture_diffuse", true);
 
         VkSamplerCreateInfo samplerCreateInfo = {.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO};
 
@@ -97,7 +108,7 @@ namespace Zero
             vkDestroySampler(m_Device, m_DefaultSamplerNearest, nullptr);
             vkDestroySampler(m_Device, m_DefaultSamplerLinear, nullptr);
 
-            DestroyImage(m_ErrorCheckerboardImage.GetImage());
+            //DestroyImage(m_ErrorCheckerboardImage);
             DestroyImage(m_Texture.GetImage());
         });
     }

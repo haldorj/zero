@@ -140,7 +140,7 @@ namespace Zero
         VkCommandBuffer m_ImmCommandBuffer{};
         VkCommandPool m_ImmCommandPool{};
 
-        VulkanTexture m_ErrorCheckerboardImage;
+        // VulkanTexture m_ErrorCheckerboardImage;
         VulkanTexture m_Texture;
 
         VkSampler m_DefaultSamplerLinear = nullptr;

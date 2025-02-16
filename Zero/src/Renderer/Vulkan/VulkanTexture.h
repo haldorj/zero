@@ -6,14 +6,16 @@ namespace Zero {
 	class VulkanTexture
 	{
 		public:
-		VulkanTexture();
+		VulkanTexture() = default;
 		VulkanTexture(std::string filepath, std::string type, bool mipmapped);
 
-		static AllocatedImage CreateImage(VkExtent3D size, VkFormat format, VkImageUsageFlags usage, bool mipmapped = false);
+		AllocatedImage CreateImage(VkExtent3D size, VkFormat format, VkImageUsageFlags usage, bool mipmapped = false);
 		AllocatedImage CreateImage(void* data, VkExtent3D size, VkFormat format, VkImageUsageFlags usage,
 			bool mipmapped = false);
-		static AllocatedImage CreateImageFromFile(const std::string& filePath, VkFormat format, VkImageUsageFlags usage,
+		AllocatedImage CreateImageFromFile(const std::string& filePath, VkFormat format, VkImageUsageFlags usage,
 			bool mipmapped);
+
+		AllocatedImage CreateErrorImage();
 
 		AllocatedImage GetImage() const { return m_Image; }
 
