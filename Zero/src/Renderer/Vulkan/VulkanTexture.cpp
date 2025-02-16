@@ -9,7 +9,7 @@ namespace Zero {
 
     VulkanTexture::VulkanTexture(std::string filepath, std::string type, bool mipmapped)
     {
-        VulkanRenderer* renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+        VulkanRenderer* renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
         m_FilePath = filepath;
         m_Type = type;
         m_Image = CreateImageFromFile(
@@ -19,7 +19,7 @@ namespace Zero {
     AllocatedImage VulkanTexture::CreateImage(VkExtent3D size, VkFormat format, VkImageUsageFlags usage,
         bool mipmapped)
     {
-        VulkanRenderer* renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+        VulkanRenderer* renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
 
         AllocatedImage newImage;
         newImage.ImageFormat = format;
@@ -59,7 +59,7 @@ namespace Zero {
     AllocatedImage VulkanTexture::CreateImage(void* data, VkExtent3D size, VkFormat format, VkImageUsageFlags usage,
         bool mipmapped)
     {
-        VulkanRenderer* renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+        VulkanRenderer* renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
 
         const uint32_t dataSize = size.depth * size.width * size.height * 4;
 
@@ -105,7 +105,7 @@ namespace Zero {
     // Function to load an image from a file using stb_image and create an AllocatedImage
     AllocatedImage VulkanTexture::CreateImageFromFile(const std::string& filePath, VkFormat format, VkImageUsageFlags usage, bool mipmapped)
     {
-        VulkanRenderer* renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+        VulkanRenderer* renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
         if (!renderer) 
             return CreateErrorImage();
 
@@ -141,14 +141,14 @@ namespace Zero {
 		}
 
 
-        VkExtent3D imageExtent = {
+        const VkExtent3D imageExtent = {
             static_cast<uint32_t>(texWidth),
             static_cast<uint32_t>(texHeight),
             1
         };
 
         // Calculate the size of the image data
-        VkDeviceSize imageSize = texWidth * texHeight * 4;
+        const VkDeviceSize imageSize = texWidth * texHeight * 4;
 
         // Create a staging buffer
         AllocatedBuffer stagingBuffer;
@@ -215,7 +215,7 @@ namespace Zero {
 
     void VulkanTexture::DestroyImage()
     {
-        VulkanRenderer* renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+        VulkanRenderer* renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
 		vkDestroyImageView(renderer->GetDevice(), m_Image.ImageView, nullptr);
 		vmaDestroyImage(renderer->GetAllocator(), m_Image.Image, m_Image.Allocation);
     }

@@ -8,7 +8,7 @@ namespace Zero {
 
     VulkanMesh::VulkanMesh(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices, std::vector<VulkanTexture> textures)
     {
-        auto renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+        auto renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
 
         m_Vertices = vertices;
         m_Indices = indices;
@@ -19,7 +19,7 @@ namespace Zero {
 
     void VulkanMesh::Draw(VkCommandBuffer& cmd, VkPipelineLayout& pipelineLayout, VkExtent2D drawExtent, VkSampler& sampler, GPUDrawPushConstants& pushConstants)
     {
-        auto renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+        auto renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
         if (!renderer)
 		{
 			printf("VkMesh::Draw: Renderer is not of type VulkanRenderer");
@@ -28,6 +28,9 @@ namespace Zero {
 
         //// TEXTURES /////////////////////////////////////////////////////////////////////////////////////////////////
 
+        // TODO: Implement textures
+        
+        
         //VkDescriptorSet imageSet = renderer->GetCurrentFrame().FrameDescriptors.Allocate(
         //    renderer->GetDevice(), renderer->GetSingleImageDescriptorLayout());
         //{
@@ -53,12 +56,12 @@ namespace Zero {
             &pushConstants);
         vkCmdBindIndexBuffer(cmd, m_GPUMeshBuffers.IndexBuffer.Buffer, 0, VK_INDEX_TYPE_UINT32);
 
-        vkCmdDrawIndexed(cmd, m_Indices.size(), 1, 0, 0, 0);
+        vkCmdDrawIndexed(cmd, static_cast<uint32_t>(m_Indices.size()), 1, 0, 0, 0);
     }
 
     void VulkanMesh::DestroyMesh()
     {
-        auto renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+        auto renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
 
 		VulkanBufferManager::DestroyBuffer(renderer->GetAllocator(), m_GPUMeshBuffers.IndexBuffer);
 		VulkanBufferManager::DestroyBuffer(renderer->GetAllocator(), m_GPUMeshBuffers.VertexBuffer);

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "EnumModes/RendererMode.hpp"
 #include "OpenGL/EBO.h"
 #include "OpenGL/OpenGLShader.h"
 #include "OpenGL/VAO.h"
@@ -12,7 +11,7 @@
 
 namespace Zero
 {
-    class OpenGLRenderer : public RendererBase
+    class OpenGLRenderer : public Renderer
     {
     public:
         void Init() override;

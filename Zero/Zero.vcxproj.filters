@@ -10,11 +10,14 @@
     <Filter Include="src\Core">
       <UniqueIdentifier>{A5D31CCF-91A0-77DA-BAB9-6582A6E5AC68}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Mesh">
-      <UniqueIdentifier>{092522CF-F5F1-7CDA-1E0B-6B820A37B268}</UniqueIdentifier>
+    <Filter Include="src\Model">
+      <UniqueIdentifier>{2D026CB3-996C-202A-E2AA-D1CF4E54FE7E}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\MeshVk">
-      <UniqueIdentifier>{CA963F20-B64E-816D-1F56-5AC90B2D1C5E}</UniqueIdentifier>
+    <Filter Include="src\Model\OpenGL">
+      <UniqueIdentifier>{C1D6840F-ADCF-A361-D601-89E6C259836D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Model\Vulkan">
+      <UniqueIdentifier>{0D3B3720-F933-5672-2266-3BF70EBE357E}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Renderer">
       <UniqueIdentifier>{73D1DFBF-5F34-6F64-08BA-A71AF4FB3AE7}</UniqueIdentifier>
@@ -67,19 +70,19 @@
       <Filter>src\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Model\OpenGL\OpenGLMesh.h">
-      <Filter>src\Mesh</Filter>
+      <Filter>src\Model\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Model\OpenGL\OpenGLModel.h">
-      <Filter>src\Mesh</Filter>
+      <Filter>src\Model\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Model\Vertex.h">
-      <Filter>src\Mesh</Filter>
+      <Filter>src\Model</Filter>
     </ClInclude>
     <ClInclude Include="src\Model\Vulkan\VulkanMesh.h">
-      <Filter>src\MeshVk</Filter>
+      <Filter>src\Model\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="src\Model\Vulkan\VulkanModel.h">
-      <Filter>src\MeshVk</Filter>
+      <Filter>src\Model\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\OpenGL\EBO.h">
       <Filter>src\Renderer\OpenGL</Filter>
@@ -1398,16 +1401,16 @@
       <Filter>src\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Model\OpenGL\OpenGLMesh.cpp">
-      <Filter>src\Mesh</Filter>
+      <Filter>src\Model\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Model\OpenGL\OpenGLModel.cpp">
-      <Filter>src\Mesh</Filter>
+      <Filter>src\Model\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Model\Vulkan\VulkanMesh.cpp">
-      <Filter>src\MeshVk</Filter>
+      <Filter>src\Model\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="src\Model\Vulkan\VulkanModel.cpp">
-      <Filter>src\MeshVk</Filter>
+      <Filter>src\Model\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\OpenGL\EBO.cpp">
       <Filter>src\Renderer\OpenGL</Filter>

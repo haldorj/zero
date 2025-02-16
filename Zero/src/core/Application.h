@@ -4,7 +4,6 @@
 #include <GLFW/glfw3.h>
 
 #include "camera/Camera.h"
-#include "EnumModes/RendererMode.hpp"
 #include "renderer/VulkanRenderer.h"
 #include "renderer/OpenGLRenderer.h"
 
@@ -23,7 +22,7 @@ namespace Zero
         // If you get the error "attempting to reference a deleted function"
         // Remember to give new objects a default constructor
 
-        static RendererBase* CreateRenderer(const RendererAPI type)
+        static Renderer* CreateRenderer(const RendererAPI type)
         {
             switch (type)
             {
@@ -56,7 +55,7 @@ namespace Zero
 
         static Application& Get();
 
-        RendererBase* GetRenderer() const { return m_Renderer; }
+        Renderer* GetRenderer() const { return m_Renderer; }
         GLFWwindow* GetWindow() const { return m_Window; }
         Camera& GetMainCamera() { return m_MainCamera; }
 
@@ -69,6 +68,6 @@ namespace Zero
         int32_t m_FrameCount{0};
 
         GLFWwindow* m_Window = nullptr;
-        RendererBase* m_Renderer = nullptr;
+        Renderer* m_Renderer = nullptr;
     };
 } // namespace Zero

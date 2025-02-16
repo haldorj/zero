@@ -8,7 +8,6 @@
 
 #include <ranges>
 
-#include "EnumModes/RendererMode.hpp"
 #include <Model/Vulkan/VulkanMesh.h>
 #include <Model/Vulkan/VulkanModel.h>
 #include "Vulkan/VulkanTexture.h"
@@ -50,7 +49,7 @@ namespace Zero {
 
     constexpr unsigned int FRAME_OVERLAP = 2;
 
-    class VulkanRenderer : public RendererBase
+    class VulkanRenderer : public Renderer
     {
     public:
         void Init() override;
@@ -149,7 +148,7 @@ namespace Zero {
 
         VkDescriptorSetLayout m_SingleImageDescriptorLayout = nullptr;
 
-        VulkanMesh m_Pyramid;
+        VulkanMesh m_Pyramid{};
         // VulkanModel m_Model;
         std::vector<std::shared_ptr<VulkanModel>> m_Models;
     };

@@ -16,13 +16,13 @@ namespace Zero {
 		// Reads the image from a file and stores it in bytes
 		unsigned char* bytes = stbi_load(path.c_str(), &widthImg, &heightImg, &numColCh, 0);
 		if (!bytes) {
-			printf("Failed to load texture: %s\n", path);
+			printf("Failed to load texture: %s\n", path.c_str());
 			return; // Exit the constructor if the image failed to load
 		}
 
 		// Check if width, height, and number of color channels are valid
 		if (widthImg <= 0 || heightImg <= 0 || numColCh <= 0) {
-			printf("Invalid image dimensions: %s\n", path);
+			printf("Invalid image dimensions: %s\n", path.c_str());
 			stbi_image_free(bytes);
 			return;
 		}

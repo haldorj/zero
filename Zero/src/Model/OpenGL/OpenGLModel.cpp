@@ -16,8 +16,8 @@ namespace Zero {
 
 	void OpenGLModel::Draw(OpenGLShader& shader)
 	{
-		for (unsigned int i = 0; i < meshes.size(); i++)
-			meshes[i].Draw(shader);
+		for (auto& mesh : meshes)
+			mesh.Draw(shader);
 	}
 
 	void OpenGLModel::LoadModel(std::string path)
@@ -27,7 +27,7 @@ namespace Zero {
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
-			printf("Model failed to load: %s", path, importer.GetErrorString());
+			printf("Model failed to load: %s, %s", path.c_str(), importer.GetErrorString());
 			return;
 		}
 		directory = path.substr(0, path.find_last_of('/'));

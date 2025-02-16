@@ -16,14 +16,13 @@ namespace Zero {
 		LoadModel(path);
 	}
 
-	void VulkanModel::Draw(VkCommandBuffer& cmd, VkPipelineLayout& pipelineLayout, VkExtent2D drawExtent, VkSampler& sampler, GPUDrawPushConstants& pushConstants)
+	void VulkanModel::Draw(VkCommandBuffer& cmd, VkPipelineLayout& pipelineLayout, const VkExtent2D drawExtent, VkSampler& sampler, GPUDrawPushConstants& pushConstants)
 	{
-		auto renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
 		for (unsigned int i = 0; i < meshes.size(); i++)
 			meshes[i].Draw(cmd, pipelineLayout, drawExtent, sampler, pushConstants);
 	}
 
-	void VulkanModel::DestroyModel()
+	void VulkanModel::DestroyModel() const
 	{
 		for (auto mesh : meshes)
 		{
@@ -42,7 +41,7 @@ namespace Zero {
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
-			printf("Model failed to load: %s", path, importer.GetErrorString());
+			printf("Model failed to load: %s", (path + " " + importer.GetErrorString()).c_str());
 			return;
 		}
 		directory = path.substr(0, path.find_last_of('/'));
@@ -128,7 +127,7 @@ namespace Zero {
 
 	std::vector<VulkanTexture> VulkanModel::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
 	{
-		auto renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+		auto renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
 
 		std::vector<VulkanTexture> textures;
 		for (size_t i = 0; i < mat->GetTextureCount(type); i++)
@@ -138,7 +137,7 @@ namespace Zero {
 			bool skip = false;
 			for (unsigned int j = 0; j < LoadedTextures.size(); j++)
 			{
-				size_t idx = std::string(LoadedTextures[j].GetFilePath().c_str()).rfind('/');
+				const size_t idx = std::string(LoadedTextures[j].GetFilePath().c_str()).rfind('/');
 				std::string texName = std::string(LoadedTextures[j].GetFilePath().c_str()).substr(idx + 1);
 
 				if (texName == path.C_Str())
@@ -150,10 +149,10 @@ namespace Zero {
 			}
 			if (!skip)
 			{
-				size_t idx = std::string(path.C_Str()).rfind('\\');
+				const size_t idx = std::string(path.C_Str()).rfind('\\');
 
 				std::string tex = std::string(path.data).substr(idx + 1);
-				std::string pathStr = directory + '/' + tex;
+				const std::string pathStr = directory + '/' + tex;
 
 				VulkanTexture texture = VulkanTexture(pathStr, typeName, true);
 

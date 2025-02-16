@@ -11,7 +11,7 @@
 namespace Zero {
 
     // Choose RendererAPI
-    RendererAPI RendererType = RendererAPI::Vulkan;
+    RendererAPI RendererType = RendererAPI::OpenGL;
 
     Application* LoadedEngine = nullptr;
     Application& Application::Get() { return *LoadedEngine; }
@@ -58,7 +58,8 @@ namespace Zero {
         InitGLFW(RendererType);
 
         std::vector<std::string> modelPaths{
-            "../assets/models/black_bison2.fbx"
+            "../assets/models/black_bison2.fbx",
+            "../assets/models/green_rhino2.fbx",
         };
 
         // Initialize the renderer

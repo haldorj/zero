@@ -24,7 +24,7 @@ struct DescriptorAllocator {
     void ClearDescriptors(VkDevice device);
     void DestroyPool(VkDevice device);
 
-    VkDescriptorSet allocate(VkDevice device, VkDescriptorSetLayout layout);
+    VkDescriptorSet Allocate(VkDevice device, VkDescriptorSetLayout layout);
 };
 
 class DescriptorAllocatorGrowable {

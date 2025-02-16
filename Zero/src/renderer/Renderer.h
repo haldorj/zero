@@ -3,15 +3,24 @@
 #include "glm/glm.hpp"
 #include <span>
 #include <Model/Vertex.h>
-#include "EnumModes/RendererMode.hpp"
+
+namespace Zero
+{
+    enum class Topology
+    {
+        None,
+        Lines,
+        Triangles,
+    };
+}
 
 // Renderer interface
 namespace Zero
 {
-    class RendererBase
+    class Renderer
     {
     public:
-        virtual ~RendererBase() = default;
+        virtual ~Renderer() = default;
 
         virtual void Init() = 0;
 
