@@ -7,7 +7,6 @@
 
 #include <chrono>
 #include <thread>
-#include <Mesh/Mesh.h>
 
 namespace Zero {
 
@@ -50,47 +49,6 @@ namespace Zero {
         // m_Renderer->InitObject();
     }
 
-    void Application::CreatePyramid() const
-    {
-        std::array<Vertex, 5> pyramidVertices{};
-        pyramidVertices[0].Position = {-0.5, 0.0, 0.5};
-        pyramidVertices[0].Normal = {0, 0, 0};
-        pyramidVertices[0].UvX = 0; pyramidVertices[0].UvY = 0;
-        pyramidVertices[0].Color = {1, 0, 0, 1};
-
-        pyramidVertices[1].Position = {-0.5, 0.0, -0.5};
-        pyramidVertices[1].Normal = { 0, 0, 0 };
-        pyramidVertices[1].UvX = 5.0f; pyramidVertices[1].UvY = 0;
-        pyramidVertices[1].Color = { 0, 1, 0, 1 };
-
-        pyramidVertices[2].Position = {0.5, 0.0, -0.5};
-        pyramidVertices[2].Normal = { 0, 0, 0 };
-        pyramidVertices[2].UvX = 0; pyramidVertices[2].UvY = 0;
-        pyramidVertices[2].Color = { 0, 0, 1, 1 };
-
-        pyramidVertices[3].Position = {0.5, 0.0, 0.5};
-        pyramidVertices[3].Normal = { 0, 0, 0 };
-        pyramidVertices[3].UvX = 5.0f; pyramidVertices[3].UvY = 0;
-        pyramidVertices[3].Color = { 1, 1, 0, 1 };
-
-        pyramidVertices[4].Position = {0.0, 0.8, 0.0};
-        pyramidVertices[4].Normal = { 0, 0, 0 };
-        pyramidVertices[4].UvX = 2.5f; pyramidVertices[4].UvY = 5.0f;
-        pyramidVertices[4].Color = { 0, 1, 1, 1 };
-
-        std::array<uint32_t, 18> indices =
-        {
-            0, 1, 2,
-            0, 2, 3,
-            0, 1, 4,
-            1, 2, 4,
-            2, 3, 4,
-            3, 0, 4
-        };
-
-        m_Renderer->InitObject(indices, pyramidVertices);
-    }
-
     void Application::Init()
     {
         // Only one engine initialization is allowed with the application.
@@ -99,13 +57,16 @@ namespace Zero {
 
         InitGLFW(RendererType);
 
+        std::vector<std::string> modelPaths{
+            "../assets/models/black_bison2.fbx"
+        };
+
         // Initialize the renderer
         m_Renderer = RendererFactory::CreateRenderer(RendererType);
-
-        m_MainCamera.SetPosition({2, 1, -1});
-
+        m_MainCamera.SetPosition({1, 1, -1});
         m_Renderer->Init();
-        CreatePyramid();
+
+        m_Renderer->InitObjects(modelPaths);
 
         // everything went fine
         m_IsInitialized = true;

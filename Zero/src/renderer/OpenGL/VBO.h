@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 #include <vector>
-#include <Mesh/Vertex.h>
+#include <Model/Vertex.h>
 
 class VBO
 {

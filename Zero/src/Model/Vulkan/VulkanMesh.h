@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include <Mesh/Vertex.h>
+#include <Model/Vertex.h>
 #include <span>
 
 #include <Renderer/Vulkan/vk_types.h>
@@ -10,11 +10,11 @@ class VulkanRenderer;
 
 namespace Zero {
 
-	class VkMesh
+	class VulkanMesh
 	{
 	public:
-		VkMesh() = default;
-		VkMesh(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices, std::vector<VulkanTexture> textures);
+		VulkanMesh() = default;
+		VulkanMesh(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices, std::vector<VulkanTexture> textures);
 
 		void Draw(VkCommandBuffer& cmd,
 			VkPipelineLayout& pipelineLayout,

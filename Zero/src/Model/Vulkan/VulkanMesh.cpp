@@ -1,4 +1,4 @@
-#include "VkMesh.h"
+#include "VulkanMesh.h"
 #include <Renderer/VulkanRenderer.h>
 #include <Core/Application.h>
 #include <glm/ext/matrix_clip_space.hpp>
@@ -6,7 +6,7 @@
 
 namespace Zero {
 
-    VkMesh::VkMesh(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices, std::vector<VulkanTexture> textures)
+    VulkanMesh::VulkanMesh(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices, std::vector<VulkanTexture> textures)
     {
         auto renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
 
@@ -17,7 +17,7 @@ namespace Zero {
         m_GPUMeshBuffers = renderer->UploadMesh(indices, vertices);
     }
 
-    void VkMesh::Draw(VkCommandBuffer& cmd, VkPipelineLayout& pipelineLayout, VkExtent2D drawExtent, VkSampler& sampler, GPUDrawPushConstants& pushConstants)
+    void VulkanMesh::Draw(VkCommandBuffer& cmd, VkPipelineLayout& pipelineLayout, VkExtent2D drawExtent, VkSampler& sampler, GPUDrawPushConstants& pushConstants)
     {
         auto renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
         if (!renderer)
@@ -56,7 +56,7 @@ namespace Zero {
         vkCmdDrawIndexed(cmd, m_Indices.size(), 1, 0, 0, 0);
     }
 
-    void VkMesh::DestroyMesh()
+    void VulkanMesh::DestroyMesh()
     {
         auto renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
 

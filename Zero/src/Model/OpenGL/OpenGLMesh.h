@@ -1,9 +1,9 @@
 #pragma once
 #include <span>
-#include "Vertex.h"
 
 #include<string>
 
+#include "Model/Vertex.h"
 #include"Renderer/OpenGL/VAO.h"
 #include"Renderer/OpenGL/EBO.h"
 #include"Renderer/OpenGL/OpenGLTexture.h"
@@ -11,10 +11,10 @@
 #include <Camera/Camera.h>
 
 namespace Zero {
-	class Mesh
+	class OpenGLMesh
 	{
 	public:
-		Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::vector <OpenGLTexture>& textures);
+		OpenGLMesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::vector <OpenGLTexture>& textures);
 		void Draw(OpenGLShader& shader);
 
 	private:

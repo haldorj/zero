@@ -10,22 +10,22 @@ namespace Zero {
 	{
 	public:
 		OpenGLTexture() = default;
-		OpenGLTexture(const char* path, const char* texType, GLuint slot, GLenum pixelType);
+		OpenGLTexture(std::string path, std::string texType, GLuint slot, GLenum pixelType);
 
-		void TexUnit(OpenGLShader& shader, const char* uniform, GLuint unit);
+		void TexUnit(OpenGLShader& shader, std::string uniform, GLuint unit);
 		void Bind();
 		void Unbind();
 		void Delete();
 
-		const char* GetType() const { return TexType; }
-		const char* GetPath() const { return Path; }
+		std::string GetType() const { return TexType; }
+		std::string GetFilePath() const { return Path; }
 
 	private:
 		GLuint ID;
-		const char* TexType;
+		std::string TexType;
 		GLuint Unit;
 
-		const char* Path;
+		std::string Path;
 	};
 
 } // namespace Zero

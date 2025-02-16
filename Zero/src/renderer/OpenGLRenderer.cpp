@@ -36,36 +36,20 @@ namespace Zero
 
         // Enable depth testing for 3D
         glEnable(GL_DEPTH_TEST);
-
-        const char * path = "../assets/models/black_bison2.fbx";
-        monkey = new Model(path);
     }
 
 
-    void OpenGLRenderer::InitObject(std::span<uint32_t> indices, std::span<Vertex> vertices)
+    void OpenGLRenderer::InitObjects(std::vector<std::string>& paths)
     {
-        for (const auto& vertex : vertices)
-        {
-            RectVertices.push_back(vertex);
-        }
-        for (const auto& index : indices)
-        {
-            RectIndeces.push_back(static_cast<GLuint>(index));
-        }
-
-        std::string path = "../assets/images/brick.png";
-        OpenGLTexture TEX(path.c_str(), "diffuse", 0, GL_UNSIGNED_BYTE);
-
-        std::vector<OpenGLTexture> pyramidTextures;
-        pyramidTextures.push_back(TEX);
-
-        Pyramid = new Mesh(RectVertices, RectIndeces, pyramidTextures);
+		for (const auto& filePath : paths)
+		{
+			m_Models.push_back(std::make_shared<OpenGLModel>(filePath.c_str()));
+		}
     }
 
     void OpenGLRenderer::Shutdown()
     {
-        shaderProgram->Delete();
-
+        m_ShaderProgram->Delete();
     }
 
     float rotation = 0.0f;
@@ -74,7 +58,7 @@ namespace Zero
     void OpenGLRenderer::Draw(Topology topology)
     {
         // Specify the color of the background
-        glClearColor(_clearColor.r, _clearColor.g, _clearColor.b, _clearColor.a);
+        glClearColor(m_ClearColor.r, m_ClearColor.g, m_ClearColor.b, m_ClearColor.a);
         // Clean the back buffer and assign the new color to it
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // Tell OpenGL which Shader Program we want to use
@@ -100,15 +84,17 @@ namespace Zero
         view = Application::Get().GetMainCamera().GetViewMatrix();
         projection = glm::perspective(glm::radians(70.0f), (float)EXTENT_WIDTH / (float)EXTENT_HEIGHT, 0.1f, 100.0f);
 
-        int modelLoc = glGetUniformLocation(shaderProgram->GetID(), "model");
+        int modelLoc = glGetUniformLocation(m_ShaderProgram->GetID(), "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        int viewLoc = glGetUniformLocation(shaderProgram->GetID(), "view");
+        int viewLoc = glGetUniformLocation(m_ShaderProgram->GetID(), "view");
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        int projLoc = glGetUniformLocation(shaderProgram->GetID(), "projection");
+        int projLoc = glGetUniformLocation(m_ShaderProgram->GetID(), "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-        // Pyramid->Draw(*shaderProgram);
-        monkey->Draw(*shaderProgram);
+        for (auto& model : m_Models)
+		{
+			model->Draw(*m_ShaderProgram);
+		}
        
         // Draw primitives, number of indices, datatype of indices, index of indices
         // 
@@ -133,7 +119,7 @@ namespace Zero
     void OpenGLRenderer::InitShaders()
     {
         // Create Shader object
-        shaderProgram = std::make_unique<OpenGLShader>("../shaders/default.vert", "../shaders/default.frag");
+        m_ShaderProgram = std::make_unique<OpenGLShader>("../shaders/default.vert", "../shaders/default.frag");
     }
 
     // Checks if the different Shaders have compiled properly

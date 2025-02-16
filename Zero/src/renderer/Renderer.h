@@ -2,7 +2,7 @@
 
 #include "glm/glm.hpp"
 #include <span>
-#include <Mesh/Vertex.h>
+#include <Model/Vertex.h>
 #include "EnumModes/RendererMode.hpp"
 
 // Renderer interface
@@ -15,7 +15,7 @@ namespace Zero
 
         virtual void Init() = 0;
 
-        virtual void InitObject(std::span<uint32_t> indices, std::span<Vertex> vertices) = 0;
+        virtual void InitObjects(std::vector<std::string>& paths) = 0;
 
         virtual void Shutdown() = 0;
 

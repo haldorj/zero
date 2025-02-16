@@ -9,9 +9,9 @@
 #include <ranges>
 
 #include "EnumModes/RendererMode.hpp"
-#include <MeshVk/VkMesh.h>
+#include <Model/Vulkan/VulkanMesh.h>
+#include <Model/Vulkan/VulkanModel.h>
 #include "Vulkan/VulkanTexture.h"
-#include <MeshVk/VkModel.h>
 
 namespace Zero {
 
@@ -54,7 +54,7 @@ namespace Zero {
     {
     public:
         void Init() override;
-        void InitObject(std::span<uint32_t> indices, std::span<Vertex> vertices) override;
+        void InitObjects(std::vector<std::string>& paths) override;
         void InitTextures();
         void Shutdown() override;
         void SetClearColor(const glm::vec4 clearColor) override { m_ClearColor = clearColor; }
@@ -149,7 +149,8 @@ namespace Zero {
 
         VkDescriptorSetLayout m_SingleImageDescriptorLayout = nullptr;
 
-        VkMesh m_Pyramid;
-        VkModel m_Model;
+        VulkanMesh m_Pyramid;
+        // VulkanModel m_Model;
+        std::vector<std::shared_ptr<VulkanModel>> m_Models;
     };
 }

@@ -7,8 +7,8 @@
 
 #include "renderer/Renderer.h"
 #include "renderer/OpenGL/OpenGLTexture.h"
-#include <Mesh/Mesh.h>
-#include <Mesh/Model.h>
+#include <Model/OpenGL/OpenGLMesh.h>
+#include <Model/OpenGL/OpenGLModel.h>
 
 namespace Zero
 {
@@ -16,18 +16,17 @@ namespace Zero
     {
     public:
         void Init() override;
-        void InitObject(std::span<uint32_t> indices, std::span<Vertex> vertices) override;
+        void InitObjects(std::vector<std::string>& paths) override;
         void Shutdown() override;
-        void SetClearColor(glm::vec4 clearColor) override { _clearColor = clearColor; }
+        void SetClearColor(glm::vec4 clearColor) override { m_ClearColor = clearColor; }
         void Draw(Topology) override;
 
     private:
         void InitShaders();
 
-        Mesh* Pyramid{};
-        Model* monkey;
+        glm::vec4 m_ClearColor = {};
+        std::shared_ptr<OpenGLShader> m_ShaderProgram;
 
-        glm::vec4 _clearColor = {};
-        std::unique_ptr<OpenGLShader> shaderProgram;
+        std::vector<std::shared_ptr<OpenGLModel>> m_Models;
     };
 } // namespace Zero

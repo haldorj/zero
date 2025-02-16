@@ -140,11 +140,11 @@
     <ClInclude Include="src\Camera\Camera.h" />
     <ClInclude Include="src\Core\Application.h" />
     <ClInclude Include="src\Core\core.h" />
-    <ClInclude Include="src\Mesh\Mesh.h" />
-    <ClInclude Include="src\Mesh\Model.h" />
-    <ClInclude Include="src\Mesh\Vertex.h" />
-    <ClInclude Include="src\MeshVk\VkMesh.h" />
-    <ClInclude Include="src\MeshVk\VkModel.h" />
+    <ClInclude Include="src\Model\OpenGL\OpenGLMesh.h" />
+    <ClInclude Include="src\Model\OpenGL\OpenGLModel.h" />
+    <ClInclude Include="src\Model\Vertex.h" />
+    <ClInclude Include="src\Model\Vulkan\VulkanMesh.h" />
+    <ClInclude Include="src\Model\Vulkan\VulkanModel.h" />
     <ClInclude Include="src\Renderer\OpenGL\EBO.h" />
     <ClInclude Include="src\Renderer\OpenGL\OpenGLShader.h" />
     <ClInclude Include="src\Renderer\OpenGL\OpenGLTexture.h" />
@@ -585,10 +585,10 @@
   <ItemGroup>
     <ClCompile Include="src\Camera\Camera.cpp" />
     <ClCompile Include="src\Core\Application.cpp" />
-    <ClCompile Include="src\Mesh\Mesh.cpp" />
-    <ClCompile Include="src\Mesh\Model.cpp" />
-    <ClCompile Include="src\MeshVk\VkMesh.cpp" />
-    <ClCompile Include="src\MeshVk\VkModel.cpp" />
+    <ClCompile Include="src\Model\OpenGL\OpenGLMesh.cpp" />
+    <ClCompile Include="src\Model\OpenGL\OpenGLModel.cpp" />
+    <ClCompile Include="src\Model\Vulkan\VulkanMesh.cpp" />
+    <ClCompile Include="src\Model\Vulkan\VulkanModel.cpp" />
     <ClCompile Include="src\Renderer\OpenGL\EBO.cpp" />
     <ClCompile Include="src\Renderer\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="src\Renderer\OpenGL\OpenGLTexture.cpp" />

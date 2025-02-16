@@ -3,7 +3,7 @@
 
 namespace Zero {
 
-	OpenGLTexture::OpenGLTexture(const char* path, const char* texType, GLuint slot, GLenum pixelType)
+	OpenGLTexture::OpenGLTexture(std::string path, std::string texType, GLuint slot, GLenum pixelType)
 	{
 		Path = path;
 		// Assigns the type of the texture ot the texture object
@@ -14,7 +14,7 @@ namespace Zero {
 		// Flips the image so it appears right side up
 		stbi_set_flip_vertically_on_load(true);
 		// Reads the image from a file and stores it in bytes
-		unsigned char* bytes = stbi_load(path, &widthImg, &heightImg, &numColCh, 0);
+		unsigned char* bytes = stbi_load(path.c_str(), &widthImg, &heightImg, &numColCh, 0);
 		if (!bytes) {
 			printf("Failed to load texture: %s\n", path);
 			return; // Exit the constructor if the image failed to load
@@ -66,10 +66,10 @@ namespace Zero {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	void OpenGLTexture::TexUnit(OpenGLShader& shader, const char* uniform, GLuint unit)
+	void OpenGLTexture::TexUnit(OpenGLShader& shader, std::string uniform, GLuint unit)
 	{
 		// Gets the location of the uniform
-		GLuint texUni = glGetUniformLocation(shader.GetID(), uniform);
+		GLuint texUni = glGetUniformLocation(shader.GetID(), uniform.c_str());
 		// Shader needs to be activated before changing the value of a uniform
 		shader.Activate();
 		// Sets the value of the uniform

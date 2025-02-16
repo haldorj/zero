@@ -1,4 +1,4 @@
-#include "Model.h"
+#include "VulkanModel.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -6,23 +6,39 @@
 
 #include <algorithm>
 
+#include <Renderer/VulkanRenderer.h>
+#include <Core/Application.h>
+
 namespace Zero {
 
-	Model::Model(const char* path)
+	VulkanModel::VulkanModel(const char* path)
 	{
 		LoadModel(path);
 	}
 
-	void Model::Draw(OpenGLShader& shader)
+	void VulkanModel::Draw(VkCommandBuffer& cmd, VkPipelineLayout& pipelineLayout, VkExtent2D drawExtent, VkSampler& sampler, GPUDrawPushConstants& pushConstants)
 	{
+		auto renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
 		for (unsigned int i = 0; i < meshes.size(); i++)
-			meshes[i].Draw(shader);
+			meshes[i].Draw(cmd, pipelineLayout, drawExtent, sampler, pushConstants);
 	}
 
-	void Model::LoadModel(std::string path)
+	void VulkanModel::DestroyModel()
+	{
+		for (auto mesh : meshes)
+		{
+			mesh.DestroyMesh();
+		}
+		for (auto texture : LoadedTextures)
+		{
+			texture.DestroyImage();
+		}
+	}
+
+	void VulkanModel::LoadModel(std::string path)
 	{
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
+		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
@@ -34,7 +50,7 @@ namespace Zero {
 		ProcessNode(scene->mRootNode, scene);
 	}
 
-	void Model::ProcessNode(aiNode* node, const aiScene* scene)
+	void VulkanModel::ProcessNode(aiNode* node, const aiScene* scene)
 	{
 		// process all the node's meshes (if any)
 		for (size_t i = 0; i < node->mNumMeshes; i++)
@@ -49,27 +65,27 @@ namespace Zero {
 		}
 	}
 
-	Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
+	VulkanMesh VulkanModel::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 	{
 		std::vector<Vertex> vertices;
-		std::vector<unsigned int> indices;
-		std::vector<OpenGLTexture> textures;
+		std::vector<uint32_t> indices;
+		std::vector<VulkanTexture> textures;
 
 		for (size_t i = 0; i < mesh->mNumVertices; i++)
 		{
 			Vertex vertex;
 			// process vertex positions, normals and texture coordinates
-			vertex.Position = 
+			vertex.Position =
 				glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
 
 			if (mesh->HasNormals())
 			{
-				vertex.Normal = 
+				vertex.Normal =
 					glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
 			}
 			else
 			{
-				vertex.Normal = 
+				vertex.Normal =
 					glm::vec3(0.0f, 0.0f, 0.0f);
 			}
 
@@ -99,49 +115,54 @@ namespace Zero {
 		if (mesh->mMaterialIndex >= 0)
 		{
 			aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-			std::vector<OpenGLTexture> diffuseMaps = LoadMaterialTextures(material,
+			std::vector<VulkanTexture> diffuseMaps = LoadMaterialTextures(material,
 				aiTextureType_DIFFUSE, "texture_diffuse");
 			textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-			std::vector<OpenGLTexture> specularMaps = LoadMaterialTextures(material,
+			std::vector<VulkanTexture> specularMaps = LoadMaterialTextures(material,
 				aiTextureType_SPECULAR, "texture_specular");
 			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 		}
 
-		return Mesh(vertices, indices, textures);
+		return VulkanMesh(vertices, indices, textures);
 	}
 
-    std::vector<OpenGLTexture> Model::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
-    {
-        std::vector<OpenGLTexture> textures;
-        for (size_t i = 0; i < mat->GetTextureCount(type); i++)
-        {
-            aiString path;
-            mat->GetTexture(type, i, &path);
-            bool skip = false;
-            for (unsigned int j = 0; j < LoadedTextures.size(); j++)
-            {
-                if (LoadedTextures[j].GetPath() == path.C_Str())
-                {
-                    textures.push_back(LoadedTextures[j]);
-                    skip = true;
-                    break;
-                }
-            }
-            if (!skip)
-            {
+	std::vector<VulkanTexture> VulkanModel::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
+	{
+		auto renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+
+		std::vector<VulkanTexture> textures;
+		for (size_t i = 0; i < mat->GetTextureCount(type); i++)
+		{
+			aiString path;
+			mat->GetTexture(type, i, &path);
+			bool skip = false;
+			for (unsigned int j = 0; j < LoadedTextures.size(); j++)
+			{
+				size_t idx = std::string(LoadedTextures[j].GetFilePath().c_str()).rfind('/');
+				std::string texName = std::string(LoadedTextures[j].GetFilePath().c_str()).substr(idx + 1);
+
+				if (texName == path.C_Str())
+				{
+					textures.push_back(LoadedTextures[j]);
+					skip = true;
+					break;
+				}
+			}
+			if (!skip)
+			{
 				size_t idx = std::string(path.C_Str()).rfind('\\');
 
 				std::string tex = std::string(path.data).substr(idx + 1);
 				std::string pathStr = directory + '/' + tex;
 
-                OpenGLTexture texture = OpenGLTexture(pathStr.c_str(), typeName.c_str(), i, GL_UNSIGNED_BYTE);
+				VulkanTexture texture = VulkanTexture(pathStr, typeName, true);
 
-                textures.push_back(texture);
-                LoadedTextures.push_back(texture);
-            }
-        }
-        return textures;
-    }
+				textures.push_back(texture);
+				LoadedTextures.push_back(texture);
+			}
+		}
+
+		return textures;
+	}
 
 }
-

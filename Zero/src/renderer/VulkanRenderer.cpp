@@ -48,32 +48,16 @@ namespace Zero
         InitPipelines();
     }
 
-    void VulkanRenderer::InitObject(std::span<uint32_t> indices, std::span<Vertex> vertices)
+    void VulkanRenderer::InitObjects(std::vector<std::string>& paths)
     {
-        //m_Rectangle = UploadMesh(indices, vertices);
-
-        ////delete the rectangle data on engine shutdown
-        //m_MainDeletionQueue.PushFunction([&]()
-        //{
-        //    VulkanBufferManager::DestroyBuffer(m_Allocator, m_Rectangle.IndexBuffer);
-        //    VulkanBufferManager::DestroyBuffer(m_Allocator, m_Rectangle.VertexBuffer);
-        //});
-
         InitTextures();
 
-        //auto v = std::vector<Vertex>(vertices.begin(), vertices.end());
-        //auto i = std::vector<uint32_t>(indices.begin(), indices.end());
-        //std::vector<VulkanTexture> t{ m_Texture };
-
-        //m_Pyramid = VkMesh(v, i, t);
-     
-        //m_MainDeletionQueue.PushFunction([&]()
-        //{
-        //    VulkanBufferManager::DestroyBuffer(m_Allocator, m_Pyramid.GetGPUMeshBuffers().IndexBuffer);
-        //    VulkanBufferManager::DestroyBuffer(m_Allocator, m_Pyramid.GetGPUMeshBuffers().VertexBuffer);
-        //});
+        for (const auto& filePath : paths)
+        {
+            m_Models.push_back(std::make_shared<VulkanModel>(filePath.c_str()));
+        }
         
-        m_Model = VkModel("../assets/models/black_bison2.fbx");
+        // m_Model = VulkanModel("../assets/models/black_bison2.fbx");
     }
 
     void VulkanRenderer::InitTextures()
@@ -360,7 +344,12 @@ namespace Zero
         GPUDrawPushConstants pushConstants;
         pushConstants.WorldMatrix = projection * view * model;
        
-        m_Model.Draw(cmd, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerNearest, pushConstants);
+        for (auto& m_Model : m_Models)
+        {
+            m_Model->Draw(cmd, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerLinear, pushConstants);
+        }
+
+        // m_Model.Draw(cmd, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerNearest, pushConstants);
 
         vkCmdEndRendering(cmd);
     }
@@ -369,7 +358,12 @@ namespace Zero
     {
         vkDeviceWaitIdle(m_Device);
 
-        m_Model.DestroyModel();
+        // m_Model.DestroyModel();
+
+        for (auto& model : m_Models)
+		{
+			model->DestroyModel();
+		}
 
         // Free per-frame structures and deletion queue
         for (auto& frame : m_Frames)

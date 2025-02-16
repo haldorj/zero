@@ -66,19 +66,19 @@
     <ClInclude Include="src\Core\core.h">
       <Filter>src\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mesh\Mesh.h">
+    <ClInclude Include="src\Model\OpenGL\OpenGLMesh.h">
       <Filter>src\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mesh\Model.h">
+    <ClInclude Include="src\Model\OpenGL\OpenGLModel.h">
       <Filter>src\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mesh\Vertex.h">
+    <ClInclude Include="src\Model\Vertex.h">
       <Filter>src\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="src\MeshVk\VkMesh.h">
+    <ClInclude Include="src\Model\Vulkan\VulkanMesh.h">
       <Filter>src\MeshVk</Filter>
     </ClInclude>
-    <ClInclude Include="src\MeshVk\VkModel.h">
+    <ClInclude Include="src\Model\Vulkan\VulkanModel.h">
       <Filter>src\MeshVk</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\OpenGL\EBO.h">
@@ -1397,16 +1397,16 @@
     <ClCompile Include="src\Core\Application.cpp">
       <Filter>src\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Mesh\Mesh.cpp">
+    <ClCompile Include="src\Model\OpenGL\OpenGLMesh.cpp">
       <Filter>src\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="src\Mesh\Model.cpp">
+    <ClCompile Include="src\Model\OpenGL\OpenGLModel.cpp">
       <Filter>src\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="src\MeshVk\VkMesh.cpp">
+    <ClCompile Include="src\Model\Vulkan\VulkanMesh.cpp">
       <Filter>src\MeshVk</Filter>
     </ClCompile>
-    <ClCompile Include="src\MeshVk\VkModel.cpp">
+    <ClCompile Include="src\Model\Vulkan\VulkanModel.cpp">
       <Filter>src\MeshVk</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\OpenGL\EBO.cpp">

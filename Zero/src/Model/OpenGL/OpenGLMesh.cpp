@@ -1,9 +1,7 @@
-#include "Mesh.h"
-
-#include "Mesh.h"
+#include "OpenGLMesh.h"
 
 namespace Zero {
-	Mesh::Mesh(std::vector <Vertex>& vertices, std::vector<GLuint>& indices, std::vector <OpenGLTexture>& textures)
+	OpenGLMesh::OpenGLMesh(std::vector <Vertex>& vertices, std::vector<GLuint>& indices, std::vector <OpenGLTexture>& textures)
 	{
 		m_Vertices = vertices;
 		m_Indices = indices;
@@ -28,7 +26,7 @@ namespace Zero {
 	}
 
 
-	void Mesh::Draw(OpenGLShader& shader)
+	void OpenGLMesh::Draw(OpenGLShader& shader)
 	{
 		// Bind shader to be able to access uniforms
 		shader.Activate();
