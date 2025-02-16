@@ -10,19 +10,23 @@
 #include <Core/Application.h>
 
 namespace Zero {
+
 	VkModel::VkModel(const char* path)
 	{
 		LoadModel(path);
 	}
 
-	void VkModel::Draw()
+	void VkModel::Draw(VkCommandBuffer& cmd, VkPipelineLayout& pipelineLayout, VkExtent2D drawExtent, VkSampler& sampler, GPUDrawPushConstants& pushConstants)
 	{
+		auto renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+		for (unsigned int i = 0; i < meshes.size(); i++)
+			meshes[i].Draw(cmd, pipelineLayout, drawExtent, sampler, pushConstants);
 	}
 
 	void VkModel::LoadModel(std::string path)
 	{
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
+		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
@@ -115,34 +119,43 @@ namespace Zero {
 		auto renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
 
 		std::vector<VulkanTexture> textures;
-		//for (size_t i = 0; i < mat->GetTextureCount(type); i++)
-		//{
-		//	aiString path;
-		//	mat->GetTexture(type, i, &path);
-		//	bool skip = false;
-		//	for (unsigned int j = 0; j < textures_loaded.size(); j++)
-		//	{
-		//		if (textures_loaded[j].FilePath.c_str() == path.C_Str())
-		//		{
-		//			textures.push_back(textures_loaded[j]);
-		//			skip = true;
-		//			break;
-		//		}
-		//	}
-		//	if (!skip)
-		//	{
-		//		size_t idx = std::string(path.C_Str()).rfind('\\');
+		for (size_t i = 0; i < mat->GetTextureCount(type); i++)
+		{
+			aiString path;
+			mat->GetTexture(type, i, &path);
+			bool skip = false;
+			for (unsigned int j = 0; j < LoadedTextures.size(); j++)
+			{
+				size_t idx = std::string(LoadedTextures[j].GetFilePath().c_str()).rfind('/');
+				std::string texName = std::string(LoadedTextures[j].GetFilePath().c_str()).substr(idx + 1);
 
-		//		std::string tex = std::string(path.data).substr(idx + 1);
-		//		std::string pathStr = directory + '/' + tex;
+				if (texName == path.C_Str())
+				{
+					textures.push_back(LoadedTextures[j]);
+					skip = true;
+					break;
+				}
+			}
+			if (!skip)
+			{
+				size_t idx = std::string(path.C_Str()).rfind('\\');
 
-		//		AllocatedImage texture = AllocatedImage();
+				std::string tex = std::string(path.data).substr(idx + 1);
+				std::string pathStr = directory + '/' + tex;
 
-		//		textures.push_back(texture);
-		//		textures_loaded.push_back(texture);
-		//	}
-		//}
+				VulkanTexture texture = VulkanTexture(pathStr, typeName, true);
+
+				textures.push_back(texture);
+				LoadedTextures.push_back(texture);
+			}
+		}
+
+		if (textures.size() <= 0)
+		{
+			textures.push_back(VulkanTexture(0));
+		}
 
 		return textures;
 	}
+
 }

@@ -8,18 +8,22 @@
 #include <Renderer/Vulkan/vk_types.h>
 
 namespace Zero {
+
     class VkModel
     {
     public:
+        VkModel() = default;
         VkModel(const char* path);
-        void Draw();
+        void Draw(VkCommandBuffer& cmd, VkPipelineLayout& pipelineLayout, VkExtent2D drawExtent, VkSampler& sampler, GPUDrawPushConstants& pushConstants);
+
+        std::vector<VulkanTexture> GetLoadedTextures() const { return LoadedTextures; }
 
     private:
         // model data
         std::vector<class VkMesh> meshes;
         std::string directory;
 
-        std::vector<VulkanTexture> textures_loaded;
+        std::vector<VulkanTexture> LoadedTextures;
 
         const aiScene* scene;
 
@@ -29,4 +33,5 @@ namespace Zero {
         std::vector<VulkanTexture> LoadMaterialTextures(aiMaterial* mat, aiTextureType type,
             std::string typeName);
     };
+
 }

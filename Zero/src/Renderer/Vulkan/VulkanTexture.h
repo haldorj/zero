@@ -8,6 +8,7 @@ namespace Zero {
 		public:
 		VulkanTexture() = default;
 		VulkanTexture(std::string filepath, std::string type, bool mipmapped);
+		VulkanTexture(int i);
 
 		AllocatedImage CreateImage(VkExtent3D size, VkFormat format, VkImageUsageFlags usage, bool mipmapped = false);
 		AllocatedImage CreateImage(void* data, VkExtent3D size, VkFormat format, VkImageUsageFlags usage,
@@ -16,8 +17,10 @@ namespace Zero {
 			bool mipmapped);
 
 		AllocatedImage CreateErrorImage();
-
 		AllocatedImage GetImage() const { return m_Image; }
+
+		std::string GetFilePath() const { return m_FilePath; }
+		std::string GetType() const { return m_Type; }
 
 	private:
 		AllocatedImage m_Image;

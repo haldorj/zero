@@ -11,9 +11,9 @@
 #include "EnumModes/RendererMode.hpp"
 #include <MeshVk/VkMesh.h>
 #include "Vulkan/VulkanTexture.h"
+#include <MeshVk/VkModel.h>
 
-namespace Zero
-{
+namespace Zero {
 
     struct DeletionQueue
     {
@@ -73,6 +73,7 @@ namespace Zero
         VkDevice& GetDevice() { return m_Device; }
         VkDescriptorSetLayout GetSingleImageDescriptorLayout() const { return m_SingleImageDescriptorLayout; }
         VmaAllocator& GetAllocator() { return m_Allocator; }
+        DeletionQueue& GetMainDeletionQueue() { return m_MainDeletionQueue; }
 
     private:
         void InitVulkan();
@@ -149,5 +150,6 @@ namespace Zero
         VkDescriptorSetLayout m_SingleImageDescriptorLayout = nullptr;
 
         VkMesh m_Pyramid;
+        VkModel m_Model;
     };
 }

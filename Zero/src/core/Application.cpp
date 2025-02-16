@@ -9,8 +9,8 @@
 #include <thread>
 #include <Mesh/Mesh.h>
 
-namespace Zero
-{
+namespace Zero {
+
     // Choose RendererAPI
     RendererAPI RendererType = RendererAPI::Vulkan;
 

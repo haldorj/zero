@@ -245,6 +245,11 @@ void DescriptorWriter::Clear()
 
 void DescriptorWriter::UpdateSet(VkDevice device, VkDescriptorSet set)
 {
+    if (Writes.empty()) {
+        printf("DescriptorWriter::UpdateSet called with no writes\n");
+        return;
+    }
+
     for (VkWriteDescriptorSet& write : Writes) {
         write.dstSet = set;
     }

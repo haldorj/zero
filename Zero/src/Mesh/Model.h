@@ -19,7 +19,7 @@ namespace Zero {
         std::vector<class Mesh> meshes;
         std::string directory;
 
-        std::vector<OpenGLTexture> textures_loaded;
+        std::vector<OpenGLTexture> LoadedTextures;
         VAO VAO;
 
         const aiScene* scene;

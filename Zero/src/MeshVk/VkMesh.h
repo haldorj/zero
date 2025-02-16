@@ -16,11 +16,11 @@ namespace Zero {
 		VkMesh() = default;
 		VkMesh(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices, std::vector<VulkanTexture> textures);
 
-		void Draw(VkCommandBuffer cmd, 
-			VkPipelineLayout pipelineLayout, 
+		void Draw(VkCommandBuffer& cmd,
+			VkPipelineLayout& pipelineLayout,
 			VkExtent2D drawExtent, 
-			VkSampler sampler,
-			GPUDrawPushConstants pushConstants
+			VkSampler& sampler,
+			GPUDrawPushConstants& pushConstants
 		);
 
 		std::vector<Vertex> GetVertices() const { return m_Vertices; }

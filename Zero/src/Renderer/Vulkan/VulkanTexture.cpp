@@ -14,6 +14,24 @@ namespace Zero {
         m_Type = type;
         m_Image = CreateImageFromFile(
             filepath, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT, mipmapped);
+
+        renderer->GetMainDeletionQueue().PushFunction([&]()
+            {
+                vkDestroyImageView(renderer->GetDevice(), m_Image.ImageView, nullptr);
+			    vmaDestroyImage(renderer->GetAllocator(), m_Image.Image, m_Image.Allocation);
+            });
+    }
+
+    VulkanTexture::VulkanTexture(int i)
+    {
+        VulkanRenderer* renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+        m_Image = CreateErrorImage();
+
+        renderer->GetMainDeletionQueue().PushFunction([&]()
+            {
+                vkDestroyImageView(renderer->GetDevice(), m_Image.ImageView, nullptr);
+                vmaDestroyImage(renderer->GetAllocator(), m_Image.Image, m_Image.Allocation);
+            });
     }
 
     AllocatedImage VulkanTexture::CreateImage(VkExtent3D size, VkFormat format, VkImageUsageFlags usage,
@@ -110,12 +128,35 @@ namespace Zero {
 
         // Load image data using stb_image
         int texWidth, texHeight, texChannels;
-        stbi_uc* pixels = stbi_load(filePath.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+        stbi_uc* pixels = stbi_load(filePath.c_str(), &texWidth, &texHeight, &texChannels, 0);
+
         if (!pixels)
         {
-            printf("Failed to load texture image!");
+            printf("Failed to load texture image! path: %s", filePath.c_str());
             return CreateErrorImage();
         }
+
+        if (texChannels == 0)
+        {
+            return CreateErrorImage();
+        }
+        else if (texChannels == 1)
+        {
+            format = VK_FORMAT_R8G8B8_UNORM;
+        }
+        else if (texChannels == 2)
+        {
+            format = VK_FORMAT_R8G8_UNORM;
+        }
+        else if (texChannels == 3)
+		{
+			format = VK_FORMAT_R8G8B8_UNORM;
+		}
+		else if (texChannels == 4)
+		{
+			format = VK_FORMAT_R8G8B8A8_UNORM;
+		}
+
 
         VkExtent3D imageExtent = {
             static_cast<uint32_t>(texWidth),

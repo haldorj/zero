@@ -19,6 +19,10 @@ namespace Zero
     class RendererFactory
     {
     public:
+        // Reminder: 
+        // If you get the error "attempting to reference a deleted function"
+        // Remember to give new objects a default constructor
+
         static RendererBase* CreateRenderer(const RendererAPI type)
         {
             switch (type)

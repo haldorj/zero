@@ -61,17 +61,19 @@ namespace Zero
 
         InitTextures();
 
-        auto v = std::vector<Vertex>(vertices.begin(), vertices.end());
-        auto i = std::vector<uint32_t>(indices.begin(), indices.end());
-        std::vector<VulkanTexture> t{ m_Texture };
+        //auto v = std::vector<Vertex>(vertices.begin(), vertices.end());
+        //auto i = std::vector<uint32_t>(indices.begin(), indices.end());
+        //std::vector<VulkanTexture> t{ m_Texture };
 
-        m_Pyramid = VkMesh(v, i, t);
+        //m_Pyramid = VkMesh(v, i, t);
      
-        m_MainDeletionQueue.PushFunction([&]()
-        {
-            VulkanBufferManager::DestroyBuffer(m_Allocator, m_Pyramid.GetGPUMeshBuffers().IndexBuffer);
-            VulkanBufferManager::DestroyBuffer(m_Allocator, m_Pyramid.GetGPUMeshBuffers().VertexBuffer);
-        });
+        //m_MainDeletionQueue.PushFunction([&]()
+        //{
+        //    VulkanBufferManager::DestroyBuffer(m_Allocator, m_Pyramid.GetGPUMeshBuffers().IndexBuffer);
+        //    VulkanBufferManager::DestroyBuffer(m_Allocator, m_Pyramid.GetGPUMeshBuffers().VertexBuffer);
+        //});
+        
+        m_Model = VkModel("../assets/models/black_bison2.fbx");
     }
 
     void VulkanRenderer::InitTextures()
@@ -90,7 +92,7 @@ namespace Zero
         //m_ErrorCheckerboardImage = CreateImage(pixels.data(), VkExtent3D{16, 16, 1}, VK_FORMAT_R8G8B8A8_UNORM,
         //                                       VK_IMAGE_USAGE_SAMPLED_BIT);
 
-        m_Texture = VulkanTexture("../assets/images/bric.png", "texture_diffuse", true);
+        m_Texture = VulkanTexture("../assets/models/bison_texture.png", "texture_diffuse", true);
 
         VkSamplerCreateInfo samplerCreateInfo = {.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO};
 
@@ -234,9 +236,6 @@ namespace Zero
         vkCmdClearColorImage(cmd, m_DrawImage.Image, VK_IMAGE_LAYOUT_GENERAL, &clearValue, 1, &clearRange);
     }
 
-    float rrotation = 0.0f;
-    double rlastTime = glfwGetTime();
-
     void VulkanRenderer::DrawGeometry(VkCommandBuffer cmd)
     {
         //begin a render pass  connected to our draw image
@@ -288,6 +287,9 @@ namespace Zero
         vkCmdEndRendering(cmd);
     }
 
+    float rotationvk = 0.0f;
+    double lastTimevk = glfwGetTime();
+
     void VulkanRenderer::DrawGeometryTextured(VkCommandBuffer cmd)
     {
         //begin a render pass  connected to our draw image
@@ -320,7 +322,32 @@ namespace Zero
 
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TexturedPipeline);
 
-        glm::mat4 model = glm::mat4{ 1.f };
+        VkDescriptorSet imageSet = GetCurrentFrame().FrameDescriptors.Allocate(
+            m_Device, m_SingleImageDescriptorLayout);
+        {
+            DescriptorWriter descriptorWriter;
+            descriptorWriter.WriteImage(0, m_Texture.GetImage().ImageView, m_DefaultSamplerLinear,
+                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+
+            descriptorWriter.UpdateSet(m_Device, imageSet);
+        }
+
+        vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TexturedPipelineLayout, 0, 1, &imageSet, 0,
+            nullptr);
+
+        double currentTime = glfwGetTime();
+
+        if (currentTime - lastTimevk >= 1 / 60)
+        {
+            rotationvk += 0.5f;
+            lastTimevk = currentTime;
+        }
+
+        glm::mat4 model = glm::mat4(1);
+
+        model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+        model = glm::rotate(model, glm::radians(rotationvk), glm::vec3(0.0f, 1.0f, 0.0f));
 
         glm::mat4 view = Application::Get().GetMainCamera().GetViewMatrix();
         // camera projection
@@ -333,7 +360,7 @@ namespace Zero
         GPUDrawPushConstants pushConstants;
         pushConstants.WorldMatrix = projection * view * model;
        
-        m_Pyramid.Draw(cmd, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerNearest, pushConstants);
+        m_Model.Draw(cmd, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerNearest, pushConstants);
 
         vkCmdEndRendering(cmd);
     }

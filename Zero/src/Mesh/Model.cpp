@@ -118,11 +118,11 @@ namespace Zero {
             aiString path;
             mat->GetTexture(type, i, &path);
             bool skip = false;
-            for (unsigned int j = 0; j < textures_loaded.size(); j++)
+            for (unsigned int j = 0; j < LoadedTextures.size(); j++)
             {
-                if (textures_loaded[j].GetPath() == path.C_Str())
+                if (LoadedTextures[j].GetPath() == path.C_Str())
                 {
-                    textures.push_back(textures_loaded[j]);
+                    textures.push_back(LoadedTextures[j]);
                     skip = true;
                     break;
                 }
@@ -137,7 +137,7 @@ namespace Zero {
                 OpenGLTexture texture = OpenGLTexture(pathStr.c_str(), typeName.c_str(), i, GL_UNSIGNED_BYTE);
 
                 textures.push_back(texture);
-                textures_loaded.push_back(texture);
+                LoadedTextures.push_back(texture);
             }
         }
         return textures;
