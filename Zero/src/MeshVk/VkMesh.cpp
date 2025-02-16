@@ -5,7 +5,7 @@
 
 namespace Zero {
 
-    VkMesh::VkMesh(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices, std::vector<AllocatedImage> textures)
+    VkMesh::VkMesh(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices, std::vector<VulkanTexture> textures)
     {
         auto renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
 
@@ -32,7 +32,7 @@ namespace Zero {
 				renderer->GetDevice(), renderer->GetSingleImageDescriptorLayout());
 			{
 				DescriptorWriter descriptorWriter;
-				descriptorWriter.WriteImage(0, texture.ImageView, sampler,
+				descriptorWriter.WriteImage(0, texture.GetImage().ImageView, sampler,
 					VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
 					VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 

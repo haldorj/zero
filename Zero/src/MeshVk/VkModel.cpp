@@ -53,7 +53,7 @@ namespace Zero {
 	{
 		std::vector<Vertex> vertices;
 		std::vector<uint32_t> indices;
-		std::vector<AllocatedImage> textures;
+		std::vector<VulkanTexture> textures;
 
 		for (size_t i = 0; i < mesh->mNumVertices; i++)
 		{
@@ -99,10 +99,10 @@ namespace Zero {
 		if (mesh->mMaterialIndex >= 0)
 		{
 			aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-			std::vector<AllocatedImage> diffuseMaps = LoadMaterialTextures(material,
+			std::vector<VulkanTexture> diffuseMaps = LoadMaterialTextures(material,
 				aiTextureType_DIFFUSE, "texture_diffuse");
 			textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-			std::vector<AllocatedImage> specularMaps = LoadMaterialTextures(material,
+			std::vector<VulkanTexture> specularMaps = LoadMaterialTextures(material,
 				aiTextureType_SPECULAR, "texture_specular");
 			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 		}
@@ -110,11 +110,11 @@ namespace Zero {
 		return VkMesh(vertices, indices, textures);
 	}
 
-	std::vector<AllocatedImage> VkModel::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
+	std::vector<VulkanTexture> VkModel::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
 	{
 		auto renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
 
-		std::vector<AllocatedImage> textures;
+		std::vector<VulkanTexture> textures;
 		//for (size_t i = 0; i < mat->GetTextureCount(type); i++)
 		//{
 		//	aiString path;

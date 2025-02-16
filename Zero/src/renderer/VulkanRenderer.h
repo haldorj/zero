@@ -10,6 +10,7 @@
 
 #include "EnumModes/RendererMode.hpp"
 #include <MeshVk/VkMesh.h>
+#include "Vulkan/VulkanTexture.h"
 
 namespace Zero
 {
@@ -63,14 +64,15 @@ namespace Zero
         void DrawGeometry(VkCommandBuffer cmd);
         void DrawGeometryTextured(VkCommandBuffer cmd);
 
+        void ImmediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function);
+
         GPUMeshBuffers UploadMesh(std::span<uint32_t> indices, std::span<Vertex> vertices);
 
         FrameData& GetCurrentFrame() { return m_Frames[m_FrameNumber % FRAME_OVERLAP]; }
 
-        VkDevice GetDevice() const { return m_Device; }
-        VkSampler GetDefaultSamplerNearest() const { return m_DefaultSamplerNearest; }
-        VkSampler GetDefaultSamplerLinear() const { return m_DefaultSamplerLinear; }
+        VkDevice& GetDevice() { return m_Device; }
         VkDescriptorSetLayout GetSingleImageDescriptorLayout() const { return m_SingleImageDescriptorLayout; }
+        VmaAllocator& GetAllocator() { return m_Allocator; }
 
     private:
         void InitVulkan();
@@ -87,13 +89,6 @@ namespace Zero
         void DestroySwapchain() const;
         void ResizeSwapchain();
 
-        void ImmediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function);
-
-        AllocatedImage CreateImage(VkExtent3D size, VkFormat format, VkImageUsageFlags usage, bool mipmapped = false);
-        AllocatedImage CreateImage(void* data, VkExtent3D size, VkFormat format, VkImageUsageFlags usage,
-                                   bool mipmapped = false);
-        AllocatedImage CreateImageFromFile(const std::string& filePath, VkFormat format, VkImageUsageFlags usage,
-                                           bool mipmapped);
         void DestroyImage(const AllocatedImage& image) const;
 
 
@@ -145,8 +140,8 @@ namespace Zero
         VkCommandBuffer m_ImmCommandBuffer{};
         VkCommandPool m_ImmCommandPool{};
 
-        AllocatedImage m_ErrorCheckerboardImage;
-        AllocatedImage m_Texture;
+        VulkanTexture m_ErrorCheckerboardImage;
+        VulkanTexture m_Texture;
 
         VkSampler m_DefaultSamplerLinear = nullptr;
         VkSampler m_DefaultSamplerNearest = nullptr;
