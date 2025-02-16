@@ -50,16 +50,23 @@ namespace Zero
 
     void VulkanRenderer::InitObject(std::span<uint32_t> indices, std::span<Vertex> vertices)
     {
-        m_Rectangle = UploadMesh(indices, vertices);
+        //m_Rectangle = UploadMesh(indices, vertices);
 
-        //delete the rectangle data on engine shutdown
-        m_MainDeletionQueue.PushFunction([&]()
-        {
-            VulkanBufferManager::DestroyBuffer(m_Allocator, m_Rectangle.IndexBuffer);
-            VulkanBufferManager::DestroyBuffer(m_Allocator, m_Rectangle.VertexBuffer);
-        });
+        ////delete the rectangle data on engine shutdown
+        //m_MainDeletionQueue.PushFunction([&]()
+        //{
+        //    VulkanBufferManager::DestroyBuffer(m_Allocator, m_Rectangle.IndexBuffer);
+        //    VulkanBufferManager::DestroyBuffer(m_Allocator, m_Rectangle.VertexBuffer);
+        //});
 
         InitTextures();
+        m_Pyramid = VkMesh(vertices, indices, m_Texture, UploadMesh(indices, vertices));
+        
+        m_MainDeletionQueue.PushFunction([&]()
+        {
+            VulkanBufferManager::DestroyBuffer(m_Allocator, m_Pyramid.GetGPUMeshBuffers().IndexBuffer);
+            VulkanBufferManager::DestroyBuffer(m_Allocator, m_Pyramid.GetGPUMeshBuffers().VertexBuffer);
+        });
     }
 
     void VulkanRenderer::InitTextures()
@@ -78,7 +85,7 @@ namespace Zero
         m_ErrorCheckerboardImage = CreateImage(pixels.data(), VkExtent3D{16, 16, 1}, VK_FORMAT_R8G8B8A8_UNORM,
                                                VK_IMAGE_USAGE_SAMPLED_BIT);
 
-        m_DogImage = CreateImageFromFile("../assets/images/brick.png", VK_FORMAT_R8G8B8A8_UNORM,
+        m_Texture = CreateImageFromFile("../assets/images/brick.png", VK_FORMAT_R8G8B8A8_UNORM,
                                          VK_IMAGE_USAGE_SAMPLED_BIT, true);
 
         VkSamplerCreateInfo samplerCreateInfo = {.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO};
@@ -98,7 +105,7 @@ namespace Zero
             vkDestroySampler(m_Device, m_DefaultSamplerLinear, nullptr);
 
             DestroyImage(m_ErrorCheckerboardImage);
-            DestroyImage(m_DogImage);
+            DestroyImage(m_Texture);
         });
     }
 
@@ -313,7 +320,7 @@ namespace Zero
         VkDescriptorSet imageSet = GetCurrentFrame().FrameDescriptors.Allocate(m_Device, m_SingleImageDescriptorLayout);
         {
             DescriptorWriter descriptorWriter;
-            descriptorWriter.WriteImage(0, m_DogImage.ImageView, m_DefaultSamplerNearest,
+            descriptorWriter.WriteImage(0, m_Pyramid.GetTexture().ImageView, m_DefaultSamplerNearest,
                                         VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
                                         VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 
@@ -342,16 +349,16 @@ namespace Zero
 
         GPUDrawPushConstants pushConstants;
         pushConstants.WorldMatrix = projection * view * model;
-        pushConstants.VertexBuffer = m_Rectangle.VertexBufferAddress;
+        pushConstants.VertexBuffer = m_Pyramid.GetGPUMeshBuffers().VertexBufferAddress;
 
         // vkCmdPushConstants(cmd, m_PlainPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants),
         //                    &pushConstants);
 
         vkCmdPushConstants(cmd, m_TexturedPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants),
                            &pushConstants);
-        vkCmdBindIndexBuffer(cmd, m_Rectangle.IndexBuffer.Buffer, 0, VK_INDEX_TYPE_UINT32);
+        vkCmdBindIndexBuffer(cmd, m_Pyramid.GetGPUMeshBuffers().IndexBuffer.Buffer, 0, VK_INDEX_TYPE_UINT32);
 
-        vkCmdDrawIndexed(cmd, 18, 1, 0, 0, 0);
+        vkCmdDrawIndexed(cmd, m_Pyramid.GetIndices().size(), 1, 0, 0, 0);
 
         vkCmdEndRendering(cmd);
     }

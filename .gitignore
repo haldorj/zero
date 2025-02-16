@@ -10,4 +10,3 @@ bin-int/
 !vendor/bin
 .idea/.idea.zero/.idea/workspace.xml
 Zero/src/renderer/.idea/workspace.xml
-Zero/assimp-vc143-mt.dll

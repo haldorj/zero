@@ -9,17 +9,10 @@
 #include <ranges>
 
 #include "EnumModes/RendererMode.hpp"
+#include <MeshVk/VkMesh.h>
 
 namespace Zero
 {
-    struct AllocatedImage
-    {
-        VkImage Image{};
-        VkImageView ImageView{};
-        VmaAllocation Allocation{};
-        VkExtent3D ImageExtent{};
-        VkFormat ImageFormat{};
-    };
 
     struct DeletionQueue
     {
@@ -73,6 +66,11 @@ namespace Zero
         GPUMeshBuffers UploadMesh(std::span<uint32_t> indices, std::span<Vertex> vertices);
 
         FrameData& GetCurrentFrame() { return m_Frames[m_FrameNumber % FRAME_OVERLAP]; }
+
+        VkDevice GetDevice() const { return m_Device; }
+        VkSampler GetDefaultSamplerNearest() const { return m_DefaultSamplerNearest; }
+        VkSampler GetDefaultSamplerLinear() const { return m_DefaultSamplerLinear; }
+        VkDescriptorSetLayout GetSingleImageDescriptorLayout() const { return m_SingleImageDescriptorLayout; }
 
     private:
         void InitVulkan();
@@ -148,11 +146,13 @@ namespace Zero
         VkCommandPool m_ImmCommandPool{};
 
         AllocatedImage m_ErrorCheckerboardImage;
-        AllocatedImage m_DogImage;
+        AllocatedImage m_Texture;
 
         VkSampler m_DefaultSamplerLinear = nullptr;
         VkSampler m_DefaultSamplerNearest = nullptr;
 
         VkDescriptorSetLayout m_SingleImageDescriptorLayout = nullptr;
+
+        VkMesh m_Pyramid;
     };
 }

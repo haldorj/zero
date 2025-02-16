@@ -42,6 +42,15 @@ struct GPUMeshBuffers {
     VkDeviceAddress VertexBufferAddress;
 };
 
+struct AllocatedImage
+{
+    VkImage Image{};
+    VkImageView ImageView{};
+    VmaAllocation Allocation{};
+    VkExtent3D ImageExtent{};
+    VkFormat ImageFormat{};
+};
+
 // push constants for our mesh object draws
 struct GPUDrawPushConstants {
     glm::mat4 WorldMatrix;
