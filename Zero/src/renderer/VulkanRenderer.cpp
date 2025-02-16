@@ -314,51 +314,22 @@ namespace Zero
 
         vkCmdSetScissor(cmd, 0, 1, &scissor);
 
-        // TEXTURES /////////////////////////////////////////////////////////////////////////////////////////////////
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TexturedPipeline);
 
-        VkDescriptorSet imageSet = GetCurrentFrame().FrameDescriptors.Allocate(m_Device, m_SingleImageDescriptorLayout);
-        {
-            DescriptorWriter descriptorWriter;
-            descriptorWriter.WriteImage(0, m_Pyramid.GetTexture().ImageView, m_DefaultSamplerNearest,
-                                        VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-                                        VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
-
-            descriptorWriter.UpdateSet(m_Device, imageSet);
-        }
-
-        vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TexturedPipelineLayout, 0, 1, &imageSet, 0,
-                                nullptr);
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
-        float currentTime = glfwGetTime();
-        if (currentTime - rlastTime >= 1 / 60)
-        {
-            rrotation += 0.5f;
-            rlastTime = currentTime;
-        }
-
-        glm::mat4 model = glm::rotate(glm::mat4{ 1.f }, glm::radians(rrotation), glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::mat4 model = glm::mat4{ 1.f };
 
         glm::mat4 view = Application::Get().GetMainCamera().GetViewMatrix();
         // camera projection
         glm::mat4 projection = glm::perspective(glm::radians(70.f),
-                                                static_cast<float>(m_DrawExtent.width) / static_cast<float>(m_DrawExtent
-                                                    .height), 0.1f, 10000.f);
+            static_cast<float>(m_DrawExtent.width) / static_cast<float>(m_DrawExtent.height), 
+            0.1f, 10000.f);
+
         projection[1][1] *= -1;
 
         GPUDrawPushConstants pushConstants;
         pushConstants.WorldMatrix = projection * view * model;
-        pushConstants.VertexBuffer = m_Pyramid.GetGPUMeshBuffers().VertexBufferAddress;
-
-        // vkCmdPushConstants(cmd, m_PlainPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants),
-        //                    &pushConstants);
-
-        vkCmdPushConstants(cmd, m_TexturedPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants),
-                           &pushConstants);
-        vkCmdBindIndexBuffer(cmd, m_Pyramid.GetGPUMeshBuffers().IndexBuffer.Buffer, 0, VK_INDEX_TYPE_UINT32);
-
-        vkCmdDrawIndexed(cmd, m_Pyramid.GetIndices().size(), 1, 0, 0, 0);
+       
+        m_Pyramid.Draw(cmd, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerNearest, pushConstants);
 
         vkCmdEndRendering(cmd);
     }

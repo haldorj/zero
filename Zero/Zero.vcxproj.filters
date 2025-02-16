@@ -1379,6 +1379,7 @@
     </ClInclude>
     <ClInclude Include="src\EnumModes\RendererMode.hpp" />
     <ClInclude Include="src\MeshVk\VkMesh.h" />
+    <ClInclude Include="VkModel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera\Camera.cpp">
@@ -1442,5 +1443,6 @@
       <Filter>vendor\vk-bootstrap</Filter>
     </ClCompile>
     <ClCompile Include="src\MeshVk\VkMesh.cpp" />
+    <ClCompile Include="VkModel.cpp" />
   </ItemGroup>
 </Project>

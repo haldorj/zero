@@ -53,6 +53,7 @@ namespace Zero
 
         static Application& Get();
 
+        RendererBase* GetRenderer() const { return m_Renderer; }
         GLFWwindow* GetWindow() const { return m_Window; }
         Camera& GetMainCamera() { return m_MainCamera; }
 
