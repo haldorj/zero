@@ -13,6 +13,9 @@
     <Filter Include="src\Mesh">
       <UniqueIdentifier>{092522CF-F5F1-7CDA-1E0B-6B820A37B268}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\MeshVk">
+      <UniqueIdentifier>{CA963F20-B64E-816D-1F56-5AC90B2D1C5E}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Renderer">
       <UniqueIdentifier>{73D1DFBF-5F34-6F64-08BA-A71AF4FB3AE7}</UniqueIdentifier>
     </Filter>
@@ -72,6 +75,12 @@
     <ClInclude Include="src\Mesh\Vertex.h">
       <Filter>src\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="src\MeshVk\VkMesh.h">
+      <Filter>src\MeshVk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MeshVk\VkModel.h">
+      <Filter>src\MeshVk</Filter>
+    </ClInclude>
     <ClInclude Include="src\Renderer\OpenGL\EBO.h">
       <Filter>src\Renderer\OpenGL</Filter>
     </ClInclude>
@@ -94,6 +103,9 @@
       <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Vulkan\VulkanBuffer.h">
+      <Filter>src\Renderer\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\Vulkan\VulkanTexture.h">
       <Filter>src\Renderer\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Vulkan\vk_descriptors.h">
@@ -1377,9 +1389,6 @@
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClInclude>
-    <ClInclude Include="src\EnumModes\RendererMode.hpp" />
-    <ClInclude Include="src\MeshVk\VkMesh.h" />
-    <ClInclude Include="VkModel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera\Camera.cpp">
@@ -1393,6 +1402,12 @@
     </ClCompile>
     <ClCompile Include="src\Mesh\Model.cpp">
       <Filter>src\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MeshVk\VkMesh.cpp">
+      <Filter>src\MeshVk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MeshVk\VkModel.cpp">
+      <Filter>src\MeshVk</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\OpenGL\EBO.cpp">
       <Filter>src\Renderer\OpenGL</Filter>
@@ -1413,6 +1428,9 @@
       <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\Vulkan\VulkanBuffer.cpp">
+      <Filter>src\Renderer\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Vulkan\VulkanTexture.cpp">
       <Filter>src\Renderer\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\Vulkan\vk_descriptors.cpp">
@@ -1442,7 +1460,5 @@
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClCompile>
-    <ClCompile Include="src\MeshVk\VkMesh.cpp" />
-    <ClCompile Include="VkModel.cpp" />
   </ItemGroup>
 </Project>

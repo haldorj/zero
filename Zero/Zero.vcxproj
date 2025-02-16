@@ -140,10 +140,11 @@
     <ClInclude Include="src\Camera\Camera.h" />
     <ClInclude Include="src\Core\Application.h" />
     <ClInclude Include="src\Core\core.h" />
-    <ClInclude Include="src\EnumModes\RendererMode.hpp" />
     <ClInclude Include="src\Mesh\Mesh.h" />
     <ClInclude Include="src\Mesh\Model.h" />
     <ClInclude Include="src\Mesh\Vertex.h" />
+    <ClInclude Include="src\MeshVk\VkMesh.h" />
+    <ClInclude Include="src\MeshVk\VkModel.h" />
     <ClInclude Include="src\Renderer\OpenGL\EBO.h" />
     <ClInclude Include="src\Renderer\OpenGL\OpenGLShader.h" />
     <ClInclude Include="src\Renderer\OpenGL\OpenGLTexture.h" />
@@ -152,6 +153,7 @@
     <ClInclude Include="src\Renderer\OpenGLRenderer.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Renderer\Vulkan\VulkanBuffer.h" />
+    <ClInclude Include="src\Renderer\Vulkan\VulkanTexture.h" />
     <ClInclude Include="src\Renderer\Vulkan\vk_descriptors.h" />
     <ClInclude Include="src\Renderer\Vulkan\vk_images.h" />
     <ClInclude Include="src\Renderer\Vulkan\vk_initializers.h" />
@@ -579,14 +581,14 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrap.h" />
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h" />
-    <ClInclude Include="src\MeshVk\VkMesh.h" />
-    <ClInclude Include="VkModel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera\Camera.cpp" />
     <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Mesh\Mesh.cpp" />
     <ClCompile Include="src\Mesh\Model.cpp" />
+    <ClCompile Include="src\MeshVk\VkMesh.cpp" />
+    <ClCompile Include="src\MeshVk\VkModel.cpp" />
     <ClCompile Include="src\Renderer\OpenGL\EBO.cpp" />
     <ClCompile Include="src\Renderer\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="src\Renderer\OpenGL\OpenGLTexture.cpp" />
@@ -594,6 +596,7 @@
     <ClCompile Include="src\Renderer\OpenGL\VBO.cpp" />
     <ClCompile Include="src\Renderer\OpenGLRenderer.cpp" />
     <ClCompile Include="src\Renderer\Vulkan\VulkanBuffer.cpp" />
+    <ClCompile Include="src\Renderer\Vulkan\VulkanTexture.cpp" />
     <ClCompile Include="src\Renderer\Vulkan\vk_descriptors.cpp" />
     <ClCompile Include="src\Renderer\Vulkan\vk_images.cpp" />
     <ClCompile Include="src\Renderer\Vulkan\vk_initializers.cpp" />
@@ -603,8 +606,6 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="vendor\stb_image\stb_image.cpp" />
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp" />
-    <ClCompile Include="src\MeshVk\VkMesh.cpp" />
-    <ClCompile Include="VkModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

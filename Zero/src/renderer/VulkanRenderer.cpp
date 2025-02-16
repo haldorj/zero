@@ -60,8 +60,13 @@ namespace Zero
         //});
 
         InitTextures();
-        m_Pyramid = VkMesh(vertices, indices, m_Texture, UploadMesh(indices, vertices));
-        
+
+        auto v = std::vector<Vertex>(vertices.begin(), vertices.end());
+        auto i = std::vector<uint32_t>(indices.begin(), indices.end());
+        std::vector<AllocatedImage> t{ m_Texture };
+
+        m_Pyramid = VkMesh(v, i, t);
+     
         m_MainDeletionQueue.PushFunction([&]()
         {
             VulkanBufferManager::DestroyBuffer(m_Allocator, m_Pyramid.GetGPUMeshBuffers().IndexBuffer);

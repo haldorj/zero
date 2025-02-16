@@ -2,16 +2,18 @@
 #include <Renderer/VulkanRenderer.h>
 #include <Core/Application.h>
 #include <glm/ext/matrix_clip_space.hpp>
-#include <Renderer/VulkanRenderer.h>
 
 namespace Zero {
 
-    VkMesh::VkMesh(std::span<Vertex>& vertices, std::span<uint32_t>& indices, AllocatedImage texture, GPUMeshBuffers meshBuffers)
+    VkMesh::VkMesh(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices, std::vector<AllocatedImage> textures)
     {
+        auto renderer = static_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+
         m_Vertices = vertices;
         m_Indices = indices;
-        m_Texture = texture;
-        m_GPUMeshBuffers = meshBuffers;
+        m_Textures = textures;
+
+        m_GPUMeshBuffers = renderer->UploadMesh(indices, vertices);
     }
 
     void VkMesh::Draw(VkCommandBuffer cmd, VkPipelineLayout pipelineLayout, VkExtent2D drawExtent, VkSampler sampler, GPUDrawPushConstants pushConstants)
@@ -24,19 +26,35 @@ namespace Zero {
 		}
 
         //// TEXTURES /////////////////////////////////////////////////////////////////////////////////////////////////
-        VkDescriptorSet imageSet = renderer->GetCurrentFrame().FrameDescriptors.Allocate(
-            renderer->GetDevice(), renderer->GetSingleImageDescriptorLayout());
-        {
-            DescriptorWriter descriptorWriter;
-            descriptorWriter.WriteImage(0, m_Texture.ImageView, sampler,
-                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-                VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+        for (auto& texture : m_Textures)
+		{
+			VkDescriptorSet imageSet = renderer->GetCurrentFrame().FrameDescriptors.Allocate(
+				renderer->GetDevice(), renderer->GetSingleImageDescriptorLayout());
+			{
+				DescriptorWriter descriptorWriter;
+				descriptorWriter.WriteImage(0, texture.ImageView, sampler,
+					VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+					VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 
-            descriptorWriter.UpdateSet(renderer->GetDevice(), imageSet);
-        }
+				descriptorWriter.UpdateSet(renderer->GetDevice(), imageSet);
+			}
 
-        vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &imageSet, 0,
-            nullptr);
+			vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &imageSet, 0,
+				nullptr);
+		}
+        //VkDescriptorSet imageSet = renderer->GetCurrentFrame().FrameDescriptors.Allocate(
+        //    renderer->GetDevice(), renderer->GetSingleImageDescriptorLayout());
+        //{
+        //    DescriptorWriter descriptorWriter;
+        //    descriptorWriter.WriteImage(0, m_Texture.ImageView, sampler,
+        //        VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+        //        VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+
+        //    descriptorWriter.UpdateSet(renderer->GetDevice(), imageSet);
+        //}
+
+        //vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &imageSet, 0,
+        //    nullptr);
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         pushConstants.VertexBuffer = m_GPUMeshBuffers.VertexBufferAddress;

@@ -13,7 +13,7 @@ namespace Zero {
 	{
 	public:
 		VkMesh() = default;
-		VkMesh(std::span <Vertex>& vertices, std::span <uint32_t>& indices, AllocatedImage texture, GPUMeshBuffers meshBuffers);
+		VkMesh(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices, std::vector<AllocatedImage> textures);
 
 		void Draw(VkCommandBuffer cmd, 
 			VkPipelineLayout pipelineLayout, 
@@ -22,15 +22,15 @@ namespace Zero {
 			GPUDrawPushConstants pushConstants
 		);
 
-		std::span<Vertex> GetVertices() const { return m_Vertices; }
-		std::span<uint32_t> GetIndices() const { return m_Indices; }
-		AllocatedImage GetTexture() const { return m_Texture; }
+		std::vector<Vertex> GetVertices() const { return m_Vertices; }
+		std::vector<uint32_t> GetIndices() const { return m_Indices; }
+		std::vector<AllocatedImage> GetTexture() const { return m_Textures; }
 		GPUMeshBuffers GetGPUMeshBuffers() const { return m_GPUMeshBuffers; }
 
 	private:
-		std::span<Vertex> m_Vertices;
-		std::span<uint32_t> m_Indices;
-		AllocatedImage m_Texture;
+		std::vector<Vertex> m_Vertices;
+		std::vector<uint32_t> m_Indices;
+		std::vector<AllocatedImage> m_Textures;
 		GPUMeshBuffers m_GPUMeshBuffers;
 	};
 
