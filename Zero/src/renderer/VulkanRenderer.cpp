@@ -306,20 +306,6 @@ namespace Zero
 
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TexturedPipeline);
 
-        VkDescriptorSet imageSet = GetCurrentFrame().FrameDescriptors.Allocate(
-            m_Device, m_SingleImageDescriptorLayout);
-        {
-            DescriptorWriter descriptorWriter;
-            descriptorWriter.WriteImage(0, m_Texture.GetImage().ImageView, m_DefaultSamplerLinear,
-                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-                VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
-
-            descriptorWriter.UpdateSet(m_Device, imageSet);
-        }
-
-        vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TexturedPipelineLayout, 0, 1, &imageSet, 0,
-            nullptr);
-
         double currentTime = glfwGetTime();
 
         if (currentTime - lastTimevk >= 1 / 60)
@@ -348,8 +334,6 @@ namespace Zero
         {
             m_Model->Draw(cmd, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerLinear, pushConstants);
         }
-
-        // m_Model.Draw(cmd, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerNearest, pushConstants);
 
         vkCmdEndRendering(cmd);
     }

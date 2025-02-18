@@ -11,7 +11,7 @@
 namespace Zero {
 
     // Choose RendererAPI
-    RendererAPI RendererType = RendererAPI::OpenGL;
+    RendererAPI RendererType = RendererAPI::Vulkan;
 
     Application* LoadedEngine = nullptr;
     Application& Application::Get() { return *LoadedEngine; }
