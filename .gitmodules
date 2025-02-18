@@ -1,12 +1,12 @@
-[submodule "Zero/Vendor/GLFW"]
-	path = Zero/Vendor/GLFW
-	url = https://github.com/haldorj/glfw
 [submodule "Zero/Vendor/glm"]
 	path = Zero/Vendor/glm
 	url = https://github.com/g-truc/glm
-[submodule "Zero/Vendor/imgui"]
-	path = Zero/Vendor/imgui
-	url = https://github.com/haldorj/imgui
 [submodule "Zero/Vendor/Assimp"]
 	path = Zero/Vendor/Assimp
 	url = https://github.com/haldorj/assimp
+[submodule "Zero/Vendor/GLFW"]
+	path = Zero/Vendor/GLFW
+	url = https://github.com/haldorj/glfw
+[submodule "Zero/Vendor/imgui"]
+	path = Zero/Vendor/imgui
+	url = https://github.com/haldorj/imgui
