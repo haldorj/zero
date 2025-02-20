@@ -58,6 +58,9 @@
     <Filter Include="src\Camera">
       <UniqueIdentifier>{255F4553-1117-87A0-7A1E-60FC66F52191}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Scene">
+      <UniqueIdentifier>{45c5ecc2-9b96-443a-8894-405ad3ff8aa7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Model\OpenGL\OpenGLMesh.h">
@@ -123,13 +126,13 @@
     <ClInclude Include="src\Renderer\VulkanRenderer.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\camera\Camera.h">
+    <ClInclude Include="src\Camera\Camera.h">
       <Filter>src\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\Application.h">
+    <ClInclude Include="src\Core\Application.h">
       <Filter>src\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\core.h">
+    <ClInclude Include="src\Core\core.h">
       <Filter>src\Core</Filter>
     </ClInclude>
     <ClInclude Include="vendor\VMA\vk_mem_alloc.h">
@@ -1392,6 +1395,8 @@
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClInclude>
+    <ClInclude Include="src\Scene\GameObject.h" />
+    <ClInclude Include="src\Model\Model.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Model\OpenGL\OpenGLMesh.cpp">
@@ -1448,10 +1453,10 @@
     <ClCompile Include="src\Renderer\VulkanRenderer.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\camera\Camera.cpp">
+    <ClCompile Include="src\Camera\Camera.cpp">
       <Filter>src\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\Application.cpp">
+    <ClCompile Include="src\Core\Application.cpp">
       <Filter>src\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
@@ -1463,5 +1468,6 @@
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClCompile>
+    <ClCompile Include="src\Scene\GameObject.cpp" />
   </ItemGroup>
 </Project>

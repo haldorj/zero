@@ -7,14 +7,46 @@
 
 #include <chrono>
 #include <thread>
+#include <Scene/GameObject.h>
+
+
 
 namespace Zero {
 
     // Choose RendererAPI
-    RendererAPI RendererType = RendererAPI::Vulkan;
+    static RendererAPI RendererType = RendererAPI::OpenGL;
 
     Application* LoadedEngine = nullptr;
     Application& Application::Get() { return *LoadedEngine; }
+
+    void Application::InitGameObjects()
+    {
+        std::array<std::string, 2> modelPaths{
+            "../assets/models/black_bison2.fbx",
+            "../assets/models/green_rhino2.fbx",
+        };
+
+        m_GameObjects.reserve(modelPaths.size());
+
+        std::shared_ptr<GameObject> BlackBison = std::make_shared<GameObject>(GameObject::Create());
+        BlackBison->SetModel(ModelFactory::CreateModel(modelPaths[0].c_str(), RendererType));
+        BlackBison->GetTransform().Location = { 0, 0, 0 };
+        BlackBison->GetTransform().Rotation = { 0, 90, 0 };
+        BlackBison->GetTransform().Scale = glm::vec3{ 1.f };
+
+        std::shared_ptr<GameObject> GreenRhino = std::make_shared<GameObject>(GameObject::Create());
+        GreenRhino->SetModel(ModelFactory::CreateModel(modelPaths[1].c_str(), RendererType));
+        GreenRhino->GetTransform().Location = { 0, 5, 0 };
+        GreenRhino->GetTransform().Scale = glm::vec3{ 0.5f };
+
+        m_GameObjects.push_back(BlackBison);
+        m_GameObjects.push_back(GreenRhino);
+
+        for (auto& gameObject : m_GameObjects)
+        {
+            gameObject->Update();
+        }
+    }
 
     void Application::CreateRectangle() const
     {
@@ -57,17 +89,14 @@ namespace Zero {
 
         InitGLFW(RendererType);
 
-        std::vector<std::string> modelPaths{
-            "../assets/models/black_bison2.fbx",
-            "../assets/models/green_rhino2.fbx",
-        };
-
         // Initialize the renderer
         m_Renderer = RendererFactory::CreateRenderer(RendererType);
         m_MainCamera.SetPosition({1, 1, -1});
         m_Renderer->Init();
 
-        m_Renderer->InitObjects(modelPaths);
+        InitGameObjects();
+
+        m_Renderer->InitObjects(m_GameObjects);
 
         // everything went fine
         m_IsInitialized = true;
@@ -88,10 +117,17 @@ namespace Zero {
 
     void Application::Draw()
     {
+        
+        m_GameObjects[0].get()->GetTransform().Rotation.y = std::sin(static_cast<float>(m_FrameCount) / 240.f) * 5;
+        for (auto& gameObject : m_GameObjects)
+        {
+            gameObject->Update();
+        }
+
         const float flash = std::abs(std::sin(static_cast<float>(m_FrameCount) / 240.f));
 
         m_Renderer->SetClearColor({0, 0, flash * 0.5, 1});
-        m_Renderer->Draw(Topology::Triangles);
+        m_Renderer->Draw(m_GameObjects, Topology::Triangles);
 
         m_FrameCount++;
     }
@@ -147,4 +183,4 @@ namespace Zero {
             throw std::runtime_error("Failed to create GLFW window");
         }
     }
-} // namespace Zero
+}

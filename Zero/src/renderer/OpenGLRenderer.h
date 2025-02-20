@@ -8,6 +8,7 @@
 #include "renderer/OpenGL/OpenGLTexture.h"
 #include <Model/OpenGL/OpenGLMesh.h>
 #include <Model/OpenGL/OpenGLModel.h>
+#include <Scene/GameObject.h>
 
 namespace Zero
 {
@@ -15,17 +16,15 @@ namespace Zero
     {
     public:
         void Init() override;
-        void InitObjects(std::vector<std::string>& paths) override;
+        void InitObjects(std::vector<std::shared_ptr<GameObject>>& gameObjects) override;
         void Shutdown() override;
         void SetClearColor(glm::vec4 clearColor) override { m_ClearColor = clearColor; }
-        void Draw(Topology) override;
+        void Draw(std::vector<std::shared_ptr<GameObject>>& gameObjects, Topology) override;
 
     private:
         void InitShaders();
 
         glm::vec4 m_ClearColor = {};
         std::shared_ptr<OpenGLShader> m_ShaderProgram;
-
-        std::vector<std::shared_ptr<OpenGLModel>> m_Models;
     };
 } // namespace Zero

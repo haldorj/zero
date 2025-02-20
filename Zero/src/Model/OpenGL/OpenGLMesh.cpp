@@ -1,4 +1,5 @@
 #include "OpenGLMesh.h"
+#include <glm/gtc/type_ptr.hpp>
 
 namespace Zero {
 	OpenGLMesh::OpenGLMesh(std::vector <Vertex>& vertices, std::vector<GLuint>& indices, std::vector <OpenGLTexture>& textures)
@@ -26,9 +27,12 @@ namespace Zero {
 	}
 
 
-	void OpenGLMesh::Draw(OpenGLShader& shader)
+	void OpenGLMesh::Draw(glm::mat4 matrix, OpenGLShader& shader)
 	{
 		// Bind shader to be able to access uniforms
+		int modelLoc = glGetUniformLocation(shader.GetID(), "model");
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(matrix));
+
 		shader.Activate();
 		m_VAO.Bind();
 

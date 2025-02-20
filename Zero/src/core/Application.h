@@ -21,7 +21,6 @@ namespace Zero
         // Reminder: 
         // If you get the error "attempting to reference a deleted function"
         // Remember to give new objects a default constructor
-
         static Renderer* CreateRenderer(const RendererAPI type)
         {
             switch (type)
@@ -30,6 +29,20 @@ namespace Zero
                 return new OpenGLRenderer();
             case RendererAPI::Vulkan:
                 return new VulkanRenderer();
+            }
+            return nullptr;
+        }
+    };
+
+    class ModelFactory
+    {
+    public:
+        static std::shared_ptr<Model> CreateModel(const char* path, const RendererAPI type)
+        {
+            switch (type)
+            {
+            case RendererAPI::OpenGL: return std::make_shared<OpenGLModel>(path);
+            case RendererAPI::Vulkan: return std::make_shared<VulkanModel>(path);
             }
             return nullptr;
         }
@@ -53,11 +66,15 @@ namespace Zero
 
         void InitGLFW(RendererAPI rendererType);
 
+        void InitGameObjects();
+
         static Application& Get();
 
         Renderer* GetRenderer() const { return m_Renderer; }
         GLFWwindow* GetWindow() const { return m_Window; }
         Camera& GetMainCamera() { return m_MainCamera; }
+
+        std::vector<std::shared_ptr<GameObject>>& GetGameObjects() { return m_GameObjects; }
 
     private:
         Camera m_MainCamera{};
@@ -69,5 +86,7 @@ namespace Zero
 
         GLFWwindow* m_Window = nullptr;
         Renderer* m_Renderer = nullptr;
+
+        std::vector<std::shared_ptr<GameObject>> m_GameObjects;
     };
 } // namespace Zero

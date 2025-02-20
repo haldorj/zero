@@ -48,14 +48,14 @@ namespace Zero
         InitPipelines();
     }
 
-    void VulkanRenderer::InitObjects(std::vector<std::string>& paths)
+    void VulkanRenderer::InitObjects(std::vector<std::shared_ptr<GameObject>>& GameObjects)
     {
         InitTextures();
 
-        for (const auto& filePath : paths)
-        {
-            m_Models.push_back(std::make_shared<VulkanModel>(filePath.c_str()));
-        }
+        //for (const auto& filePath : paths)
+        //{
+        //    m_Models.push_back(std::make_shared<VulkanModel>(filePath.c_str()));
+        //}
         
         // m_Model = VulkanModel("../assets/models/black_bison2.fbx");
     }
@@ -99,7 +99,7 @@ namespace Zero
         });
     }
 
-    void VulkanRenderer::Draw(Topology topology)
+    void VulkanRenderer::Draw(std::vector<std::shared_ptr<GameObject>>& GameObjects, Topology topology)
     {
         if (ResizeRequested)
             ResizeSwapchain();
@@ -151,7 +151,7 @@ namespace Zero
         VkUtil::TransitionImage(cmd, m_DepthImage.Image, VK_IMAGE_LAYOUT_UNDEFINED,
             VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL);
         //DrawGeometry(cmd);
-        DrawGeometryTextured(cmd);
+        DrawGeometryTextured(GameObjects, cmd);
 
         // vkCmdEndRendering(cmd);
 
@@ -274,7 +274,7 @@ namespace Zero
     float rotationvk = 0.0f;
     double lastTimevk = glfwGetTime();
 
-    void VulkanRenderer::DrawGeometryTextured(VkCommandBuffer cmd)
+    void VulkanRenderer::DrawGeometryTextured(std::vector<std::shared_ptr<GameObject>>& GameObjects, VkCommandBuffer cmd)
     {
         //begin a render pass  connected to our draw image
         VkRenderingAttachmentInfo colorAttachment = VkInit::AttachmentInfo(m_DrawImage.ImageView, nullptr,
@@ -330,9 +330,9 @@ namespace Zero
         GPUDrawPushConstants pushConstants;
         pushConstants.WorldMatrix = projection * view * model;
        
-        for (auto& m_Model : m_Models)
+        for (auto& gameObj : GameObjects)
         {
-            m_Model->Draw(cmd, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerLinear, pushConstants);
+            gameObj->GetModel()->Draw(cmd, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerLinear, pushConstants);
         }
 
         vkCmdEndRendering(cmd);
@@ -342,11 +342,9 @@ namespace Zero
     {
         vkDeviceWaitIdle(m_Device);
 
-        // m_Model.DestroyModel();
-
-        for (auto& model : m_Models)
-		{
-			model->DestroyModel();
+        for (auto gameObj : Application::Get().GetGameObjects())
+        {
+			gameObj->GetModel()->DestroyModel();
 		}
 
         // Free per-frame structures and deletion queue

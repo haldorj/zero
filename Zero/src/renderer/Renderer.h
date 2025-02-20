@@ -2,7 +2,7 @@
 
 #include "glm/glm.hpp"
 #include <span>
-#include <Model/Vertex.h>
+#include <Scene/GameObject.h>
 
 namespace Zero
 {
@@ -24,12 +24,12 @@ namespace Zero
 
         virtual void Init() = 0;
 
-        virtual void InitObjects(std::vector<std::string>& paths) = 0;
+        virtual void InitObjects(std::vector<std::shared_ptr<GameObject>>& GameObjects) = 0;
 
         virtual void Shutdown() = 0;
 
         virtual void SetClearColor(glm::vec4 clearColor) = 0;
 
-        virtual void Draw(Topology) = 0;
+        virtual void Draw(std::vector<std::shared_ptr<GameObject>>& gameObjects, Topology) = 0;
     };
 }

@@ -4,7 +4,9 @@
 #include <Renderer/Vulkan/vk_types.h>
 #include "renderer.h"
 #include "core/core.h"
+
 #include "glm/glm.hpp"
+#define GLM_FORCE_RADIANS
 
 #include <ranges>
 
@@ -53,15 +55,15 @@ namespace Zero {
     {
     public:
         void Init() override;
-        void InitObjects(std::vector<std::string>& paths) override;
+        void InitObjects(std::vector<std::shared_ptr<GameObject>>& GameObjects) override;
         void InitTextures();
         void Shutdown() override;
         void SetClearColor(const glm::vec4 clearColor) override { m_ClearColor = clearColor; }
-        void Draw(Topology) override;
+        void Draw(std::vector<std::shared_ptr<GameObject>>& GameObjects, Topology topology) override;
 
         void DrawBackground(VkCommandBuffer cmd);
         void DrawGeometry(VkCommandBuffer cmd);
-        void DrawGeometryTextured(VkCommandBuffer cmd);
+        void DrawGeometryTextured(std::vector<std::shared_ptr<GameObject>>& GameObjects, VkCommandBuffer cmd);
 
         void ImmediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function);
 
@@ -148,8 +150,8 @@ namespace Zero {
 
         VkDescriptorSetLayout m_SingleImageDescriptorLayout = nullptr;
 
-        VulkanMesh m_Pyramid{};
-        // VulkanModel m_Model;
-        std::vector<std::shared_ptr<VulkanModel>> m_Models;
+        // VulkanMesh m_Pyramid{};
+
+        std::vector<std::shared_ptr<GameObject>> m_GameObjects;
     };
 }

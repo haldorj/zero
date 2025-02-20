@@ -17,7 +17,7 @@ namespace Zero {
 	void OpenGLModel::Draw(OpenGLShader& shader)
 	{
 		for (auto& mesh : meshes)
-			mesh.Draw(shader);
+			mesh.Draw(m_Matrix, shader);
 	}
 
 	void OpenGLModel::LoadModel(std::string path)

@@ -39,12 +39,9 @@ namespace Zero
     }
 
 
-    void OpenGLRenderer::InitObjects(std::vector<std::string>& paths)
+    void OpenGLRenderer::InitObjects(std::vector<std::shared_ptr<GameObject>>& gameObjects)
     {
-		for (const auto& filePath : paths)
-		{
-			m_Models.push_back(std::make_shared<OpenGLModel>(filePath.c_str()));
-		}
+
     }
 
     void OpenGLRenderer::Shutdown()
@@ -55,7 +52,7 @@ namespace Zero
     float rotation = 0.0f;
     double lastTime = glfwGetTime();
 
-    void OpenGLRenderer::Draw(Topology topology)
+    void OpenGLRenderer::Draw(std::vector<std::shared_ptr<GameObject>>& gameObjects, Topology topology)
     {
         // Specify the color of the background
         glClearColor(m_ClearColor.r, m_ClearColor.g, m_ClearColor.b, m_ClearColor.a);
@@ -74,8 +71,8 @@ namespace Zero
 
         glm::mat4 model = glm::mat4(1);
 
-        model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
-        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
+        //model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+        //model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
 
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
@@ -84,16 +81,14 @@ namespace Zero
         view = Application::Get().GetMainCamera().GetViewMatrix();
         projection = glm::perspective(glm::radians(70.0f), (float)EXTENT_WIDTH / (float)EXTENT_HEIGHT, 0.1f, 100.0f);
 
-        int modelLoc = glGetUniformLocation(m_ShaderProgram->GetID(), "model");
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         int viewLoc = glGetUniformLocation(m_ShaderProgram->GetID(), "view");
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         int projLoc = glGetUniformLocation(m_ShaderProgram->GetID(), "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-        for (auto& model : m_Models)
+        for (auto& gameObj : gameObjects)
 		{
-			model->Draw(*m_ShaderProgram);
+            gameObj->GetModel()->Draw(*m_ShaderProgram);
 		}
        
         // Draw primitives, number of indices, datatype of indices, index of indices
