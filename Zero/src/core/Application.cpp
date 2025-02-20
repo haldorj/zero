@@ -14,7 +14,7 @@
 namespace Zero {
 
     // Choose RendererAPI
-    static RendererAPI RendererType = RendererAPI::OpenGL;
+    static RendererAPI RendererType = RendererAPI::Vulkan;
 
     Application* LoadedEngine = nullptr;
     Application& Application::Get() { return *LoadedEngine; }
@@ -36,8 +36,8 @@ namespace Zero {
 
         std::shared_ptr<GameObject> GreenRhino = std::make_shared<GameObject>(GameObject::Create());
         GreenRhino->SetModel(ModelFactory::CreateModel(modelPaths[1].c_str(), RendererType));
-        GreenRhino->GetTransform().Location = { 0, 5, 0 };
-        GreenRhino->GetTransform().Scale = glm::vec3{ 0.5f };
+        GreenRhino->GetTransform().Location = { -15, 0, 0 };
+        GreenRhino->GetTransform().Scale = glm::vec3{ 0.8f };
 
         m_GameObjects.push_back(BlackBison);
         m_GameObjects.push_back(GreenRhino);
@@ -117,13 +117,6 @@ namespace Zero {
 
     void Application::Draw()
     {
-        
-        m_GameObjects[0].get()->GetTransform().Rotation.y = std::sin(static_cast<float>(m_FrameCount) / 240.f) * 5;
-        for (auto& gameObject : m_GameObjects)
-        {
-            gameObject->Update();
-        }
-
         const float flash = std::abs(std::sin(static_cast<float>(m_FrameCount) / 240.f));
 
         m_Renderer->SetClearColor({0, 0, flash * 0.5, 1});
@@ -148,6 +141,13 @@ namespace Zero {
             }
             m_MainCamera.ProcessInput(m_Window, 0.02f);
             m_MainCamera.Update();
+
+            m_GameObjects[0].get()->GetTransform().Rotation.y = std::sin(static_cast<float>(m_FrameCount) / 240.f) * 5;
+            for (auto& gameObject : m_GameObjects)
+            {
+                gameObject->Update();
+            }
+
             Draw();
         }
     }

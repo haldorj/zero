@@ -327,11 +327,12 @@ namespace Zero
 
         projection[1][1] *= -1;
 
-        GPUDrawPushConstants pushConstants;
-        pushConstants.WorldMatrix = projection * view * model;
+
        
         for (auto& gameObj : GameObjects)
         {
+            GPUDrawPushConstants pushConstants;
+            pushConstants.WorldMatrix = projection * view * gameObj->GetModel()->GetMatrix();
             gameObj->GetModel()->Draw(cmd, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerLinear, pushConstants);
         }
 
