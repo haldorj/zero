@@ -46,18 +46,12 @@ namespace Zero
         InitSyncStructures();
         InitDescriptors();
         InitPipelines();
+        InitTextures();
     }
 
     void VulkanRenderer::InitObjects(std::vector<std::shared_ptr<GameObject>>& GameObjects)
     {
-        InitTextures();
-
-        //for (const auto& filePath : paths)
-        //{
-        //    m_Models.push_back(std::make_shared<VulkanModel>(filePath.c_str()));
-        //}
-        
-        // m_Model = VulkanModel("../assets/models/black_bison2.fbx");
+        // InitTextures();
     }
 
     void VulkanRenderer::InitTextures()
@@ -76,7 +70,7 @@ namespace Zero
         //m_ErrorCheckerboardImage = CreateImage(pixels.data(), VkExtent3D{16, 16, 1}, VK_FORMAT_R8G8B8A8_UNORM,
         //                                       VK_IMAGE_USAGE_SAMPLED_BIT);
 
-        m_Texture = VulkanTexture("../assets/models/bison_texture.png", "texture_diffuse", true);
+        m_DefaultTexture = VulkanTexture("../assets/images/plain.png", "texture_diffuse", true);
 
         VkSamplerCreateInfo samplerCreateInfo = {.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO};
 
@@ -95,7 +89,7 @@ namespace Zero
             vkDestroySampler(m_Device, m_DefaultSamplerLinear, nullptr);
 
             //DestroyImage(m_ErrorCheckerboardImage);
-            DestroyImage(m_Texture.GetImage());
+            DestroyImage(m_DefaultTexture.GetImage());
         });
     }
 
@@ -332,7 +326,7 @@ namespace Zero
         for (auto& gameObj : GameObjects)
         {
             GPUDrawPushConstants pushConstants;
-            pushConstants.WorldMatrix = projection * view * gameObj->GetModel()->GetMatrix();
+            pushConstants.WorldMatrix = projection * view * gameObj->GetTransform().GetMatrix();
             gameObj->GetModel()->Draw(cmd, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerLinear, pushConstants);
         }
 
@@ -345,7 +339,8 @@ namespace Zero
 
         for (auto gameObj : Application::Get().GetGameObjects())
         {
-			gameObj->GetModel()->DestroyModel();
+            if (gameObj->GetModel())
+			    gameObj->GetModel()->DestroyModel();
 		}
 
         // Free per-frame structures and deletion queue

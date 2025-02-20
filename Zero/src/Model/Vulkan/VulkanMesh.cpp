@@ -14,6 +14,11 @@ namespace Zero {
         m_Indices = indices;
         m_Textures = textures;
 
+        if (m_Textures.size() == 0)
+		{
+			m_Textures.push_back(renderer->GetDefaultTexture());
+		}
+
         m_GPUMeshBuffers = renderer->UploadMesh(indices, vertices);
     }
 

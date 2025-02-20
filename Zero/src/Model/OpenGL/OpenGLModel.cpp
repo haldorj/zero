@@ -14,10 +14,10 @@ namespace Zero {
 		LoadModel(path);
 	}
 
-	void OpenGLModel::Draw(OpenGLShader& shader)
+	void OpenGLModel::Draw(OpenGLShader& shader, glm::mat4& matrix)
 	{
 		for (auto& mesh : meshes)
-			mesh.Draw(m_Matrix, shader);
+			mesh.Draw(shader, matrix);
 	}
 
 	void OpenGLModel::LoadModel(std::string path)

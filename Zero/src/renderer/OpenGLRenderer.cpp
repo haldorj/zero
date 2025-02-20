@@ -69,17 +69,13 @@ namespace Zero
             lastTime = currentTime;
         }
 
-        glm::mat4 model = glm::mat4(1);
-
-        //model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
-        //model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
-
+        glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
 
         // model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
         view = Application::Get().GetMainCamera().GetViewMatrix();
-        projection = glm::perspective(glm::radians(70.0f), (float)EXTENT_WIDTH / (float)EXTENT_HEIGHT, 0.1f, 100.0f);
+        projection = glm::perspective(glm::radians(70.0f), (float)EXTENT_WIDTH / (float)EXTENT_HEIGHT, 0.1f, 10000.0f);
 
         int viewLoc = glGetUniformLocation(m_ShaderProgram->GetID(), "view");
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
@@ -88,7 +84,8 @@ namespace Zero
 
         for (auto& gameObj : gameObjects)
 		{
-            gameObj->GetModel()->Draw(*m_ShaderProgram);
+            model = gameObj->GetTransform().GetMatrix();
+            gameObj->GetModel()->Draw(*m_ShaderProgram, model);
 		}
        
         // Draw primitives, number of indices, datatype of indices, index of indices

@@ -15,7 +15,7 @@ namespace Zero {
 	{
 	public:
 		OpenGLMesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::vector <OpenGLTexture>& textures);
-		void Draw(glm::mat4 matrix, OpenGLShader& shader);
+		void Draw(OpenGLShader& shader, glm::mat4& matrix);
 
 	private:
 		VAO m_VAO;

@@ -8,6 +8,13 @@ namespace Zero {
 		m_Indices = indices;
 		m_Textures = textures;
 
+		if (m_Textures.size() <= 0)
+		{
+			// If no textures are loaded, load a default texture
+			OpenGLTexture defaultTexture("../assets/images/plain.png", "texture_diffuse", 0, GL_UNSIGNED_BYTE);
+			m_Textures.push_back(defaultTexture);
+		}
+
 		m_VAO.Bind();
 		// Generates Vertex Buffer Object and links it to vertices
 		VBO VBO(m_Vertices);
@@ -27,7 +34,7 @@ namespace Zero {
 	}
 
 
-	void OpenGLMesh::Draw(glm::mat4 matrix, OpenGLShader& shader)
+	void OpenGLMesh::Draw(OpenGLShader& shader, glm::mat4& matrix)
 	{
 		// Bind shader to be able to access uniforms
 		int modelLoc = glGetUniformLocation(shader.GetID(), "model");

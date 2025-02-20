@@ -76,6 +76,8 @@ namespace Zero {
         VmaAllocator& GetAllocator() { return m_Allocator; }
         DeletionQueue& GetMainDeletionQueue() { return m_MainDeletionQueue; }
 
+        VulkanTexture& GetDefaultTexture() { return m_DefaultTexture; }
+
     private:
         void InitVulkan();
         void InitSwapchain();
@@ -143,7 +145,7 @@ namespace Zero {
         VkCommandPool m_ImmCommandPool{};
 
         // VulkanTexture m_ErrorCheckerboardImage;
-        VulkanTexture m_Texture;
+        VulkanTexture m_DefaultTexture;
 
         VkSampler m_DefaultSamplerLinear = nullptr;
         VkSampler m_DefaultSamplerNearest = nullptr;

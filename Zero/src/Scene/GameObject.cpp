@@ -1,16 +1,13 @@
 #include "GameObject.h"
+#include "Core/core.h"
 
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/transform.hpp>
-
-void Zero::GameObject::Update() const
+void Zero::GameObject::Update(float dt)
 {
-	if (m_Model)
-	{
-		m_Model->SetMatrix(glm::translate(glm::mat4(1.0f), m_Transform.Location) *
-			glm::rotate(glm::mat4(1.0f), m_Transform.Rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
-			glm::rotate(glm::mat4(1.0f), m_Transform.Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
-			glm::rotate(glm::mat4(1.0f), m_Transform.Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
-			glm::scale(glm::mat4(1.0f), m_Transform.Scale));
-	}
+	if (!EnablePhysics) return;
+
+	m_Dynamics.Force = m_Dynamics.Mass * GRAVITY;
+	m_Dynamics.Velocity += (m_Dynamics.Force / m_Dynamics.Mass) * dt;
+	m_Transform.Location += m_Dynamics.Velocity * dt;
+
+	m_Dynamics.Force = glm::vec3(0.0f);
 }

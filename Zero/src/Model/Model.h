@@ -11,18 +11,11 @@ namespace Zero {
 	{
 	public:
 		// OpenGL
-		virtual void Draw(OpenGLShader& shader) {};
+		virtual void Draw(OpenGLShader& shader, glm::mat4& matrix) {};
 
 		// Vulkan
 		virtual void Draw(VkCommandBuffer& cmd, VkPipelineLayout& pipelineLayout, VkExtent2D drawExtent, VkSampler& sampler, GPUDrawPushConstants& pushConstants) {};
-
 		virtual void DestroyModel() const {};
-
-		glm::mat4 GetMatrix() const { return m_Matrix; }
-		void SetMatrix(const glm::mat4& matrix) { m_Matrix = matrix; }
-
-	protected:
-		glm::mat4 m_Matrix{ 1.0f };
 	};
 
 }

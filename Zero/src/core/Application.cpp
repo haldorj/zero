@@ -21,9 +21,10 @@ namespace Zero {
 
     void Application::InitGameObjects()
     {
-        std::array<std::string, 2> modelPaths{
+        std::array<std::string, 3> modelPaths{
             "../assets/models/black_bison2.fbx",
             "../assets/models/green_rhino2.fbx",
+            "../assets/models/plane.glb",
         };
 
         m_GameObjects.reserve(modelPaths.size());
@@ -38,14 +39,24 @@ namespace Zero {
         GreenRhino->SetModel(ModelFactory::CreateModel(modelPaths[1].c_str(), RendererType));
         GreenRhino->GetTransform().Location = { -15, 0, 0 };
         GreenRhino->GetTransform().Scale = glm::vec3{ 0.8f };
+        GreenRhino->EnablePhysics = true;
+
+        std::shared_ptr<GameObject> Plane = std::make_shared<GameObject>(GameObject::Create());
+        Plane->SetModel(ModelFactory::CreateModel(modelPaths[2].c_str(), RendererType));
+        Plane->GetTransform().Location = { 0, -2, 0 };
+        Plane->GetTransform().Scale = glm::vec3{ 50.f };
 
         m_GameObjects.push_back(BlackBison);
         m_GameObjects.push_back(GreenRhino);
+        m_GameObjects.push_back(Plane);
 
-        for (auto& gameObject : m_GameObjects)
-        {
-            gameObject->Update();
-        }
+        glm::vec3 Direction = { 0, 1, -0.5 };
+        Direction = glm::normalize(Direction);
+
+        float Force = 20;
+        glm::vec3 ForceVector = Direction * Force;
+
+        m_GameObjects[1]->GetDynamics().AddImpulse(ForceVector);
     }
 
     void Application::CreateRectangle() const
@@ -91,11 +102,10 @@ namespace Zero {
 
         // Initialize the renderer
         m_Renderer = RendererFactory::CreateRenderer(RendererType);
-        m_MainCamera.SetPosition({1, 1, -1});
+        m_MainCamera.SetPosition({1, 10, -5});
         m_Renderer->Init();
 
         InitGameObjects();
-
         m_Renderer->InitObjects(m_GameObjects);
 
         // everything went fine
@@ -142,11 +152,12 @@ namespace Zero {
             m_MainCamera.ProcessInput(m_Window, 0.02f);
             m_MainCamera.Update();
 
-            m_GameObjects[0].get()->GetTransform().Rotation.y = std::sin(static_cast<float>(m_FrameCount) / 240.f) * 5;
             for (auto& gameObject : m_GameObjects)
-            {
-                gameObject->Update();
-            }
+			{
+				gameObject->Update(0.02);
+			}
+
+            m_GameObjects[0].get()->GetTransform().Rotation.y = std::sin(static_cast<float>(m_FrameCount) / 240.f) * 5;
 
             Draw();
         }

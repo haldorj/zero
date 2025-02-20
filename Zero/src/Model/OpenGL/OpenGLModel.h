@@ -14,7 +14,7 @@ namespace Zero {
     public:
         OpenGLModel() = default;
         OpenGLModel(const char* path);
-        void Draw(OpenGLShader& shader);
+        void Draw(OpenGLShader& shader, glm::mat4& matrix) override;
 
     private:
         void LoadModel(std::string path);
