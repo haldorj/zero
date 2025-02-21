@@ -67,6 +67,8 @@ namespace Zero
 
         void InitGLFW(RendererAPI rendererType);
 
+        float GetRandomFloat(float min, float max);
+
         void InitGameObjects();
 
         void SpawnSphere();

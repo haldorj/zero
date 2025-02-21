@@ -13,13 +13,14 @@
 #include <ImGui/imgui_impl_glfw.h>
 #include <ImGui/imgui_impl_vulkan.h>
 #include <ImGui/imgui_impl_opengl3.h>
+#include <random>
 
 
 
 namespace Zero {
 
     // Choose RendererAPI
-    static RendererAPI RendererType = RendererAPI::Vulkan;
+    static RendererAPI RendererType = RendererAPI::OpenGL;
 
     Application* LoadedEngine = nullptr;
     Application& Application::Get() { return *LoadedEngine; }
@@ -53,7 +54,7 @@ namespace Zero {
         std::shared_ptr<GameObject> Plane = std::make_shared<GameObject>(GameObject::Create());
         Plane->SetModel(ModelFactory::CreateModel(modelPaths[2].c_str(), RendererType));
         Plane->GetTransform().Location = { 0, -2, 0 };
-        Plane->GetTransform().Scale = glm::vec3{ 50.f };
+        Plane->GetTransform().Scale = glm::vec3{ 500.f };
 
         m_GameObjects.push_back(BlackBison);
         m_GameObjects.push_back(GreenRhino);
@@ -70,15 +71,17 @@ namespace Zero {
 
     void Application::SpawnSphere()
     {
+        float x = GetRandomFloat(0.5, 3);
+
         std::shared_ptr<GameObject> Sphere = std::make_shared<GameObject>(GameObject::Create());
 		Sphere->SetModel(ModelFactory::CreateModel("../assets/models/sphere.glb", RendererType));
 		Sphere->GetTransform().Location = m_MainCamera.GetPosition();
-		Sphere->GetTransform().Scale = glm::vec3{ 0.5f };
-		Sphere->GetDynamics().Mass = 2;
+		Sphere->GetTransform().Scale = glm::vec3{ x };
+		Sphere->GetDynamics().Mass = x;
 		Sphere->EnablePhysics = true;
 
         glm::vec3 Direction = m_MainCamera.GetForwardVector();
-        Sphere->GetDynamics().AddImpulse(Direction * 20.0f);
+        Sphere->GetDynamics().AddImpulse(Direction * 50.0f);
 
 		m_GameObjects.push_back(Sphere);
     }
@@ -261,5 +264,17 @@ namespace Zero {
             glfwTerminate();
             throw std::runtime_error("Failed to create GLFW window");
         }
+    }
+
+    float  Application::GetRandomFloat(float min, float max) {
+        // Create a random device and a Mersenne Twister engine
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        // Define the distribution range
+        std::uniform_real_distribution<float> dis(min, max);
+
+        // Generate and return the random float
+        return dis(gen);
     }
 }

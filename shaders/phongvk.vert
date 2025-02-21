@@ -38,7 +38,7 @@ void main()
 	//output data
 	gl_Position = PushConstants.viewproj * PushConstants.model * vec4(v.position, 1.0f);
 
-	outNormal = (PushConstants.viewproj * PushConstants.model * vec4(v.normal, 0.f)).xyz;
+	outNormal = v.normal.xyz;
 	outColor = v.color.xyz;
 	outUV.x = v.uv_x;
 	outUV.y = v.uv_y;
