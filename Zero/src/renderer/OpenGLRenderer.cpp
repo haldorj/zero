@@ -30,7 +30,7 @@ namespace Zero
 
         glViewport(0, 0, EXTENT_WIDTH, EXTENT_HEIGHT);
 
-        glfwSwapInterval(1); // vsync on
+        glfwSwapInterval(1); // vsync
 
         const GLubyte* renderer = glGetString(GL_RENDERER);
         std::cout << "Chosen GPU: " << "\n";
@@ -57,11 +57,6 @@ namespace Zero
     }
 
 
-    void OpenGLRenderer::InitObjects(std::vector<std::shared_ptr<GameObject>>& gameObjects)
-    {
-
-    }
-
     void OpenGLRenderer::Shutdown()
     {
         ImGui_ImplOpenGL3_Shutdown();
@@ -70,8 +65,6 @@ namespace Zero
 
         m_ShaderProgram->Delete();
     }
-
-
 
     void OpenGLRenderer::Draw(std::vector<std::shared_ptr<GameObject>>& gameObjects, Topology topology)
     {
@@ -88,9 +81,12 @@ namespace Zero
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
 
+        glfwGetWindowSize(Application::Get().GetWindow(), &m_Width, &m_Height);
+
         // model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
         view = Application::Get().GetMainCamera().GetViewMatrix();
-        projection = glm::perspective(glm::radians(70.0f), (float)EXTENT_WIDTH / (float)EXTENT_HEIGHT, 0.1f, 10000.0f);
+        projection = glm::perspective(glm::radians(Application::Get().GetMainCamera().GetFOV()), 
+            (float)m_Width / (float)m_Height, 0.1f, 10000.0f);
 
         int viewLoc = glGetUniformLocation(m_ShaderProgram->GetID(), "view");
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
@@ -116,7 +112,7 @@ namespace Zero
     void OpenGLRenderer::InitShaders()
     {
         // Create Shader object
-        m_ShaderProgram = std::make_unique<OpenGLShader>("../shaders/default.vert", "../shaders/default.frag");
+        m_ShaderProgram = std::make_unique<OpenGLShader>("../shaders/phong.vert", "../shaders/phong.frag");
     }
 
     // Checks if the different Shaders have compiled properly

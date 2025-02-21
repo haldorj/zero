@@ -69,6 +69,8 @@ namespace Zero
 
         void InitGameObjects();
 
+        void SpawnSphere();
+
         static Application& Get();
 
         Renderer* GetRenderer() const { return m_Renderer; }
@@ -79,6 +81,7 @@ namespace Zero
 
     private:
         Camera m_MainCamera{};
+        float FOV{ 0.0f };
 
         bool m_IsInitialized{false};
         bool m_StopRendering{false};
@@ -86,10 +89,14 @@ namespace Zero
         int32_t m_FrameCount{0};
 
         GLFWwindow* m_Window = nullptr;
+
         Renderer* m_Renderer = nullptr;
 
+        float m_Time{0.0f};
+        float m_DeltaTime{0.0f};
         float m_LastFrameTime{0.0f};
 
         std::vector<std::shared_ptr<GameObject>> m_GameObjects;
+
     };
 } // namespace Zero

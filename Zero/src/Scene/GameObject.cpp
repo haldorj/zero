@@ -11,8 +11,8 @@ void Zero::GameObject::Update(float dt)
 
 	m_Dynamics.Force = glm::vec3(0.0f);
 
-	if (m_Transform.Location.y < -2.0f)
+	if (m_Transform.Location.y <= -2.f)
 	{
-		EnablePhysics = false;
+		m_Dynamics.Velocity.y = -m_Dynamics.Velocity.y;
 	}
 }

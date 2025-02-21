@@ -10,14 +10,13 @@
 #include <Model/OpenGL/OpenGLModel.h>
 #include <Scene/GameObject.h>
 
-namespace Zero
-{
+namespace Zero {
+
     class OpenGLRenderer : public Renderer
     {
     public:
         void Init() override;
         void InitImGui() override;
-        void InitObjects(std::vector<std::shared_ptr<GameObject>>& gameObjects) override;
         void Shutdown() override;
         void SetClearColor(glm::vec4 clearColor) override { m_ClearColor = clearColor; }
         void Draw(std::vector<std::shared_ptr<GameObject>>& gameObjects, Topology) override;
@@ -27,5 +26,9 @@ namespace Zero
 
         glm::vec4 m_ClearColor = {};
         std::shared_ptr<OpenGLShader> m_ShaderProgram;
+
+        int m_Width{};
+        int m_Height{};
     };
-} // namespace Zero
+
+} 

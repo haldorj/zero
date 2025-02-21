@@ -26,12 +26,12 @@ namespace Zero
 
         virtual void InitImGui() = 0;
 
-        virtual void InitObjects(std::vector<std::shared_ptr<GameObject>>& GameObjects) = 0;
-
         virtual void Shutdown() = 0;
 
         virtual void SetClearColor(glm::vec4 clearColor) = 0;
 
         virtual void Draw(std::vector<std::shared_ptr<GameObject>>& gameObjects, Topology) = 0;
+
+        // bool VSync = true;
     };
 }

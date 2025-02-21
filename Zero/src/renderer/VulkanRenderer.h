@@ -56,7 +56,6 @@ namespace Zero {
     public:
         void Init() override;
         void InitImGui() override;
-        void InitObjects(std::vector<std::shared_ptr<GameObject>>& GameObjects) override;
         void InitTextures();
         void Shutdown() override;
         void SetClearColor(const glm::vec4 clearColor) override { m_ClearColor = clearColor; }

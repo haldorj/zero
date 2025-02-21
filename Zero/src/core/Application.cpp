@@ -19,13 +19,16 @@
 namespace Zero {
 
     // Choose RendererAPI
-    static RendererAPI RendererType = RendererAPI::OpenGL;
+    static RendererAPI RendererType = RendererAPI::Vulkan;
 
     Application* LoadedEngine = nullptr;
     Application& Application::Get() { return *LoadedEngine; }
 
     void Application::InitGameObjects()
     {
+        m_MainCamera.SetPosition({ 10, 10, -5 });
+        FOV = m_MainCamera.GetFOV();
+
         std::array<std::string, 3> modelPaths{
             "../assets/models/black_bison2.fbx",
             "../assets/models/green_rhino2.fbx",
@@ -42,10 +45,10 @@ namespace Zero {
 
         std::shared_ptr<GameObject> GreenRhino = std::make_shared<GameObject>(GameObject::Create());
         GreenRhino->SetModel(ModelFactory::CreateModel(modelPaths[1].c_str(), RendererType));
-        GreenRhino->GetTransform().Location = { -15, 5, 0 };
+        GreenRhino->GetTransform().Location = { -15, 0, 0 };
         GreenRhino->GetTransform().Scale = glm::vec3{ 0.5f };
         GreenRhino->GetDynamics().Mass = 2;
-        GreenRhino->EnablePhysics = true;
+        // GreenRhino->EnablePhysics = true;
 
         std::shared_ptr<GameObject> Plane = std::make_shared<GameObject>(GameObject::Create());
         Plane->SetModel(ModelFactory::CreateModel(modelPaths[2].c_str(), RendererType));
@@ -63,6 +66,21 @@ namespace Zero {
         glm::vec3 ForceVector = Direction * Force;
 
         m_GameObjects[1]->GetDynamics().AddImpulse(ForceVector);
+    }
+
+    void Application::SpawnSphere()
+    {
+        std::shared_ptr<GameObject> Sphere = std::make_shared<GameObject>(GameObject::Create());
+		Sphere->SetModel(ModelFactory::CreateModel("../assets/models/sphere.glb", RendererType));
+		Sphere->GetTransform().Location = m_MainCamera.GetPosition();
+		Sphere->GetTransform().Scale = glm::vec3{ 0.5f };
+		Sphere->GetDynamics().Mass = 2;
+		Sphere->EnablePhysics = true;
+
+        glm::vec3 Direction = m_MainCamera.GetForwardVector();
+        Sphere->GetDynamics().AddImpulse(Direction * 20.0f);
+
+		m_GameObjects.push_back(Sphere);
     }
 
     void Application::CreateRectangle() const
@@ -108,12 +126,10 @@ namespace Zero {
 
         // Initialize the renderer
         m_Renderer = RendererFactory::CreateRenderer(RendererType);
-        m_MainCamera.SetPosition({10, 10, -5});
         m_Renderer->Init();
         m_Renderer->InitImGui();
 
         InitGameObjects();
-        m_Renderer->InitObjects(m_GameObjects);
 
         // everything went fine
         m_IsInitialized = true;
@@ -132,14 +148,29 @@ namespace Zero {
         LoadedEngine = nullptr;
     }
 
+    bool pressed = false;
     void Application::Run()
     {
         // main loop
         while (!glfwWindowShouldClose(m_Window))
         {
-            float time = static_cast<float>(glfwGetTime());
-            float deltaTime = time - m_LastFrameTime;
-            m_LastFrameTime = time;
+            // Spawn Sphere
+            if (glfwGetKey(m_Window, GLFW_KEY_Q) == GLFW_PRESS)
+			{
+                if (!pressed)
+                {
+                    SpawnSphere();
+                    pressed = true;
+                }
+			}
+			else
+			{
+				pressed = false;
+			}
+
+            m_Time = static_cast<float>(glfwGetTime());
+            m_DeltaTime = m_Time - m_LastFrameTime;
+            m_LastFrameTime = m_Time;
 
             // Poll and handle events
             glfwPollEvents();
@@ -150,37 +181,54 @@ namespace Zero {
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 continue;
             }
-            m_MainCamera.ProcessInput(m_Window, deltaTime);
-            m_MainCamera.Update();
+            m_MainCamera.ProcessInput(m_Window, m_DeltaTime);
+            m_MainCamera.Update(m_DeltaTime);
 
             for (auto& gameObject : m_GameObjects)
             {
-                gameObject->Update(deltaTime);
+                gameObject->Update(m_DeltaTime);
             }
 
-            m_GameObjects[0].get()->GetTransform().Rotation.y = std::sin(static_cast<float>(m_FrameCount) / 240.f) * 5;
+            m_GameObjects[0].get()->GetTransform().Rotation.y += m_DeltaTime * 1;
             Draw();
         }
     }
 
     void Application::Draw()
     {
-        const float flash = std::abs(std::sin(static_cast<float>(m_FrameCount) / 240.f));
-
-        m_Renderer->SetClearColor({0, 0, flash * 0.5, 1});
+        m_Renderer->SetClearColor({0.05, 0, 0.32, 1});
         m_Renderer->Draw(m_GameObjects, Topology::Triangles);
 
         m_FrameCount++;
     }
 
-    bool TestBool = true;
-
     void Application::UpdateImGui()
     {
-        ImGui::Begin("ZeroEngine");
-        ImGui::Text("Hello, world!");
-        ImGui::Checkbox("Test Checkbox", &TestBool);
+        ImGui::Begin("Zero");
+
+        switch (RendererType)
+		{
+        case RendererAPI::OpenGL:
+            ImGui::Text("OpenGL");
+				break;
+            case RendererAPI::Vulkan:
+			ImGui::Text("Vulkan");
+                break;
+            default:
+                break;
+        }
+        ImGui::Text("FPS: %i", static_cast<int>(1.0f / m_DeltaTime));
+        //ImGui::Checkbox("VSync ", &m_Renderer->VSync);
         ImGui::End();
+
+        ImGui::Begin("Camera");
+        ImGui::Text("Camera Position: { %.2f, %.2f, %.2f }", m_MainCamera.GetPosition().x, m_MainCamera.GetPosition().y, m_MainCamera.GetPosition().z);
+        ImGui::Text("Camera Direction: { %.2f, %.2f, %.2f }", m_MainCamera.GetDirection().x, m_MainCamera.GetDirection().y, m_MainCamera.GetDirection().z);
+        ImGui::SliderFloat("Camera FOV: ", &FOV, 1.0f, 120.0f);
+        m_MainCamera.SetFOV(FOV);
+        //ImGui::Checkbox("Test Checkbox", &TestBool);
+        ImGui::End();
+
     }
 
     void Application::InitGLFW(const RendererAPI rendererType)

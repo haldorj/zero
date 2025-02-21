@@ -118,27 +118,8 @@ namespace Zero
             });
     }
 
-    void VulkanRenderer::InitObjects(std::vector<std::shared_ptr<GameObject>>& GameObjects)
-    {
-        // InitTextures();
-    }
-
     void VulkanRenderer::InitTextures()
     {
-        // Checkerboard image
-        //const uint32_t black = glm::packUnorm4x8(glm::vec4(0, 0, 0, 0));
-        //const uint32_t magenta = glm::packUnorm4x8(glm::vec4(1, 0, 1, 1));
-        //std::array<uint32_t, static_cast<uint32_t>(16 * 16)> pixels; //for 16x16 checkerboard texture
-        //for (int x = 0; x < 16; x++)
-        //{
-        //    for (int y = 0; y < 16; y++)
-        //    {
-        //        pixels[y * 16 + x] = ((x % 2) ^ (y % 2)) ? magenta : black;
-        //    }
-        //}
-        //m_ErrorCheckerboardImage = CreateImage(pixels.data(), VkExtent3D{16, 16, 1}, VK_FORMAT_R8G8B8A8_UNORM,
-        //                                       VK_IMAGE_USAGE_SAMPLED_BIT);
-
         m_DefaultTexture = VulkanTexture("../assets/images/plain.png", "texture_diffuse", true);
 
         VkSamplerCreateInfo samplerCreateInfo = {.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO};
@@ -321,14 +302,14 @@ namespace Zero
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_PlainPipeline);
 
         glm::mat4 view = Application::Get().GetMainCamera().GetViewMatrix();
-        // camera projection
-        glm::mat4 projection = glm::perspective(glm::radians(70.f),
+        glm::mat4 projection = glm::perspective(glm::radians(Application::Get().GetMainCamera().GetFOV()),
                                                 (float)m_DrawExtent.width / (float)m_DrawExtent.height, 0.1f, 10000.f);
 
         projection[1][1] *= -1;
 
         GPUDrawPushConstants pushConstants;
-        pushConstants.WorldMatrix = view * projection;
+        pushConstants.ModelMatrix = {1};
+        pushConstants.WorldViewProjMatrix = projection * view;
         pushConstants.VertexBuffer = m_Rectangle.VertexBufferAddress;
 
         vkCmdPushConstants(cmd, m_PlainPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants),
@@ -375,33 +356,17 @@ namespace Zero
 
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TexturedPipeline);
 
-        double currentTime = glfwGetTime();
-
-        if (currentTime - lastTimevk >= 1 / 60)
-        {
-            rotationvk += 0.5f;
-            lastTimevk = currentTime;
-        }
-
-        glm::mat4 model = glm::mat4(1);
-
-        model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
-        model = glm::rotate(model, glm::radians(rotationvk), glm::vec3(0.0f, 1.0f, 0.0f));
-
         glm::mat4 view = Application::Get().GetMainCamera().GetViewMatrix();
-        // camera projection
-        glm::mat4 projection = glm::perspective(glm::radians(70.f),
-            static_cast<float>(m_DrawExtent.width) / static_cast<float>(m_DrawExtent.height), 
-            0.1f, 10000.f);
+        glm::mat4 projection = glm::perspective(glm::radians(Application::Get().GetMainCamera().GetFOV()),
+            (float)m_DrawExtent.width / (float)m_DrawExtent.height, 0.1f, 10000.f);
 
         projection[1][1] *= -1;
 
-
-       
         for (auto& gameObj : GameObjects)
         {
             GPUDrawPushConstants pushConstants;
-            pushConstants.WorldMatrix = projection * view * gameObj->GetTransform().GetMatrix();
+            pushConstants.ModelMatrix = gameObj->GetTransform().GetMatrix();
+            pushConstants.WorldViewProjMatrix = projection * view;
             gameObj->GetModel()->Draw(cmd, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerLinear, pushConstants);
         }
 
@@ -809,7 +774,7 @@ namespace Zero
     void VulkanRenderer::InitTexturedPipeline()
     {
         VkShaderModule triangleFragShader;
-        if (!VkUtil::LoadShaderModule("../shaders/compiled/textured.frag.spv", m_Device, &triangleFragShader))
+        if (!VkUtil::LoadShaderModule("../shaders/compiled/phongvk.frag.spv", m_Device, &triangleFragShader))
         {
             printf("Error when building the triangle fragment shader module \n");
         }
@@ -819,7 +784,7 @@ namespace Zero
         }
 
         VkShaderModule triangleVertexShader;
-        if (!VkUtil::LoadShaderModule("../shaders/compiled/textured.vert.spv", m_Device, &triangleVertexShader))
+        if (!VkUtil::LoadShaderModule("../shaders/compiled/phongvk.vert.spv", m_Device, &triangleVertexShader))
         {
             printf("Error when building the triangle vertex shader module \n");
         }
