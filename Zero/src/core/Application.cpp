@@ -33,12 +33,13 @@ namespace Zero {
         BlackBison->SetModel(ModelFactory::CreateModel(modelPaths[0].c_str(), RendererType));
         BlackBison->GetTransform().Location = { 0, 0, 0 };
         BlackBison->GetTransform().Rotation = { 0, 90, 0 };
-        BlackBison->GetTransform().Scale = glm::vec3{ 1.f };
+        BlackBison->GetTransform().Scale = glm::vec3{ 0.5f };
 
         std::shared_ptr<GameObject> GreenRhino = std::make_shared<GameObject>(GameObject::Create());
         GreenRhino->SetModel(ModelFactory::CreateModel(modelPaths[1].c_str(), RendererType));
-        GreenRhino->GetTransform().Location = { -15, 0, 0 };
-        GreenRhino->GetTransform().Scale = glm::vec3{ 0.8f };
+        GreenRhino->GetTransform().Location = { -15, 5, 0 };
+        GreenRhino->GetTransform().Scale = glm::vec3{ 0.5f };
+        GreenRhino->GetDynamics().Mass = 2;
         GreenRhino->EnablePhysics = true;
 
         std::shared_ptr<GameObject> Plane = std::make_shared<GameObject>(GameObject::Create());
@@ -102,7 +103,7 @@ namespace Zero {
 
         // Initialize the renderer
         m_Renderer = RendererFactory::CreateRenderer(RendererType);
-        m_MainCamera.SetPosition({1, 10, -5});
+        m_MainCamera.SetPosition({10, 10, -5});
         m_Renderer->Init();
 
         InitGameObjects();
@@ -140,6 +141,10 @@ namespace Zero {
         // main loop
         while (!glfwWindowShouldClose(m_Window))
         {
+            float time = static_cast<float>(glfwGetTime());
+            float deltaTime = time - m_LastFrameTime;
+            m_LastFrameTime = time;
+
             // Poll and handle events
             glfwPollEvents();
 
@@ -149,12 +154,12 @@ namespace Zero {
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 continue;
             }
-            m_MainCamera.ProcessInput(m_Window, 0.02f);
+            m_MainCamera.ProcessInput(m_Window, deltaTime);
             m_MainCamera.Update();
 
             for (auto& gameObject : m_GameObjects)
 			{
-				gameObject->Update(0.02);
+				gameObject->Update(deltaTime);
 			}
 
             m_GameObjects[0].get()->GetTransform().Rotation.y = std::sin(static_cast<float>(m_FrameCount) / 240.f) * 5;

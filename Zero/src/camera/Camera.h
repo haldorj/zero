@@ -24,7 +24,7 @@ namespace Zero
         glm::vec3 m_Velocity = {};
         glm::vec3 m_Position = {};
 
-        float m_MovementSpeed = 3.f;
-        float m_RotationSpeed = 0.15f;
+        float m_MovementSpeed = 30.f;
+        float m_RotationSpeed = 0.4f;
     };
 } // namespace Zero

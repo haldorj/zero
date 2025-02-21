@@ -49,8 +49,7 @@ namespace Zero
         m_ShaderProgram->Delete();
     }
 
-    float rotation = 0.0f;
-    double lastTime = glfwGetTime();
+
 
     void OpenGLRenderer::Draw(std::vector<std::shared_ptr<GameObject>>& gameObjects, Topology topology)
     {
@@ -58,16 +57,6 @@ namespace Zero
         glClearColor(m_ClearColor.r, m_ClearColor.g, m_ClearColor.b, m_ClearColor.a);
         // Clean the back buffer and assign the new color to it
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        // Tell OpenGL which Shader Program we want to use
-   /*     shaderProgram->Activate();*/
-
-        double currentTime = glfwGetTime();
-
-        if (currentTime - lastTime >= 1 / 60)
-        {
-            rotation += 0.5f;
-            lastTime = currentTime;
-        }
 
         glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = glm::mat4(1.0f);
@@ -87,22 +76,6 @@ namespace Zero
             model = gameObj->GetTransform().GetMatrix();
             gameObj->GetModel()->Draw(*m_ShaderProgram, model);
 		}
-       
-        // Draw primitives, number of indices, datatype of indices, index of indices
-        // 
-        //switch (topology)
-        //{
-        //case Topology::None:
-        //    glDrawElements(GL_NONE, static_cast<GLsizei>(RectIndeces.size()), GL_UNSIGNED_INT, 0);
-        //    break;
-        //case Topology::Lines:
-        //    glDrawElements(GL_LINES, static_cast<GLsizei>(RectIndeces.size()), GL_UNSIGNED_INT, 0);
-        //    break;
-        //case Topology::Triangles:
-        //    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(RectIndeces.size()), GL_UNSIGNED_INT, 0);
-        //    break;
-        //default: ;
-        //}
         
         // Swap the back buffer with the front buffer
         glfwSwapBuffers(Application::Get().GetWindow());

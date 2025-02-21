@@ -87,6 +87,8 @@ namespace Zero
         GLFWwindow* m_Window = nullptr;
         Renderer* m_Renderer = nullptr;
 
+        float m_LastFrameTime{0.0f};
+
         std::vector<std::shared_ptr<GameObject>> m_GameObjects;
     };
 } // namespace Zero
