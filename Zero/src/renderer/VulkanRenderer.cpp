@@ -164,6 +164,8 @@ namespace Zero
 
     void VulkanRenderer::Draw(std::vector<std::shared_ptr<GameObject>>& GameObjects, Topology topology)
     {
+        NewFrameImGui();
+
         if (ResizeRequested)
             ResizeSwapchain();
 
@@ -404,6 +406,18 @@ namespace Zero
         }
 
         vkCmdEndRendering(cmd);
+    }
+
+    void VulkanRenderer::NewFrameImGui()
+    {
+        ImGui_ImplVulkan_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        Application::Get().UpdateImGui();
+
+        //make imgui calculate internal draw structures
+        ImGui::Render();
     }
 
     void VulkanRenderer::DrawImGui(VkCommandBuffer cmd, VkImageView targetImageView)

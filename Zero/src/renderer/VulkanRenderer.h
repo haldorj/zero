@@ -66,6 +66,7 @@ namespace Zero {
         void DrawGeometry(VkCommandBuffer cmd);
         void DrawGeometryTextured(std::vector<std::shared_ptr<GameObject>>& GameObjects, VkCommandBuffer cmd);
 
+        void NewFrameImGui();
         void DrawImGui(VkCommandBuffer cmd, VkImageView targetImageView);
 
         void ImmediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function);

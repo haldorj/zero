@@ -12,13 +12,14 @@
 #include <imgui.h>
 #include <ImGui/imgui_impl_glfw.h>
 #include <ImGui/imgui_impl_vulkan.h>
+#include <ImGui/imgui_impl_opengl3.h>
 
 
 
 namespace Zero {
 
     // Choose RendererAPI
-    static RendererAPI RendererType = RendererAPI::Vulkan;
+    static RendererAPI RendererType = RendererAPI::OpenGL;
 
     Application* LoadedEngine = nullptr;
     Application& Application::Get() { return *LoadedEngine; }
@@ -158,8 +159,6 @@ namespace Zero {
             }
 
             m_GameObjects[0].get()->GetTransform().Rotation.y = std::sin(static_cast<float>(m_FrameCount) / 240.f) * 5;
-
-            DrawImGui();
             Draw();
         }
     }
@@ -174,19 +173,14 @@ namespace Zero {
         m_FrameCount++;
     }
 
-    void Application::DrawImGui()
+    bool TestBool = true;
+
+    void Application::UpdateImGui()
     {
-        // imgui new frame
-        if (RendererType == RendererAPI::Vulkan)
-            ImGui_ImplVulkan_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        //some imgui UI to test
-        ImGui::ShowDemoWindow();
-
-        //make imgui calculate internal draw structures
-        ImGui::Render();
+        ImGui::Begin("ZeroEngine");
+        ImGui::Text("Hello, world!");
+        ImGui::Checkbox("Test Checkbox", &TestBool);
+        ImGui::End();
     }
 
     void Application::InitGLFW(const RendererAPI rendererType)

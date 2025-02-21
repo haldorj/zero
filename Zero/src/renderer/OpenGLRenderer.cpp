@@ -6,6 +6,10 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <imgui.h>
+#include <ImGui/imgui_impl_glfw.h>
+#include <ImGui/imgui_impl_opengl3.h>
+
 std::vector<Vertex> RectVertices;
 std::vector<GLuint> RectIndeces;
 
@@ -38,6 +42,20 @@ namespace Zero
         glEnable(GL_DEPTH_TEST);
     }
 
+    void OpenGLRenderer::InitImGui()
+    {
+        // Setup Dear ImGui context
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		// Setup Platform/Renderer bindings
+		ImGui_ImplGlfw_InitForOpenGL(Application::Get().GetWindow(), true);
+        // GLSL ver. 450
+		ImGui_ImplOpenGL3_Init("#version 450");
+		// Setup Dear ImGui style
+		ImGui::StyleColorsDark();
+    }
+
 
     void OpenGLRenderer::InitObjects(std::vector<std::shared_ptr<GameObject>>& gameObjects)
     {
@@ -46,6 +64,10 @@ namespace Zero
 
     void OpenGLRenderer::Shutdown()
     {
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
+
         m_ShaderProgram->Delete();
     }
 
@@ -57,6 +79,10 @@ namespace Zero
         glClearColor(m_ClearColor.r, m_ClearColor.g, m_ClearColor.b, m_ClearColor.a);
         // Clean the back buffer and assign the new color to it
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
 
         glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = glm::mat4(1.0f);
@@ -76,6 +102,12 @@ namespace Zero
             model = gameObj->GetTransform().GetMatrix();
             gameObj->GetModel()->Draw(*m_ShaderProgram, model);
 		}
+
+        Application::Get().UpdateImGui();
+
+        //make imgui calculate internal draw structures
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         
         // Swap the back buffer with the front buffer
         glfwSwapBuffers(Application::Get().GetWindow());
