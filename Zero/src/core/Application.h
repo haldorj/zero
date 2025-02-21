@@ -61,6 +61,7 @@ namespace Zero
         void Cleanup() const;
         //draw loop
         void Draw();
+        void DrawImGui();
         //run main loop
         void Run();
 

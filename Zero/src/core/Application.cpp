@@ -9,6 +9,10 @@
 #include <thread>
 #include <Scene/GameObject.h>
 
+#include <imgui.h>
+#include <ImGui/imgui_impl_glfw.h>
+#include <ImGui/imgui_impl_vulkan.h>
+
 
 
 namespace Zero {
@@ -105,6 +109,7 @@ namespace Zero {
         m_Renderer = RendererFactory::CreateRenderer(RendererType);
         m_MainCamera.SetPosition({10, 10, -5});
         m_Renderer->Init();
+        m_Renderer->InitImGui();
 
         InitGameObjects();
         m_Renderer->InitObjects(m_GameObjects);
@@ -124,16 +129,6 @@ namespace Zero {
         }
 
         LoadedEngine = nullptr;
-    }
-
-    void Application::Draw()
-    {
-        const float flash = std::abs(std::sin(static_cast<float>(m_FrameCount) / 240.f));
-
-        m_Renderer->SetClearColor({0, 0, flash * 0.5, 1});
-        m_Renderer->Draw(m_GameObjects, Topology::Triangles);
-
-        m_FrameCount++;
     }
 
     void Application::Run()
@@ -158,14 +153,40 @@ namespace Zero {
             m_MainCamera.Update();
 
             for (auto& gameObject : m_GameObjects)
-			{
-				gameObject->Update(deltaTime);
-			}
+            {
+                gameObject->Update(deltaTime);
+            }
 
             m_GameObjects[0].get()->GetTransform().Rotation.y = std::sin(static_cast<float>(m_FrameCount) / 240.f) * 5;
 
+            DrawImGui();
             Draw();
         }
+    }
+
+    void Application::Draw()
+    {
+        const float flash = std::abs(std::sin(static_cast<float>(m_FrameCount) / 240.f));
+
+        m_Renderer->SetClearColor({0, 0, flash * 0.5, 1});
+        m_Renderer->Draw(m_GameObjects, Topology::Triangles);
+
+        m_FrameCount++;
+    }
+
+    void Application::DrawImGui()
+    {
+        // imgui new frame
+        if (RendererType == RendererAPI::Vulkan)
+            ImGui_ImplVulkan_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        //some imgui UI to test
+        ImGui::ShowDemoWindow();
+
+        //make imgui calculate internal draw structures
+        ImGui::Render();
     }
 
     void Application::InitGLFW(const RendererAPI rendererType)

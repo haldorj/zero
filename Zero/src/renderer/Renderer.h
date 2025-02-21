@@ -24,6 +24,8 @@ namespace Zero
 
         virtual void Init() = 0;
 
+        virtual void InitImGui() = 0;
+
         virtual void InitObjects(std::vector<std::shared_ptr<GameObject>>& GameObjects) = 0;
 
         virtual void Shutdown() = 0;

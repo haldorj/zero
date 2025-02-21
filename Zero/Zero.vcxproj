@@ -140,6 +140,8 @@
     <ClInclude Include="src\Camera\Camera.h" />
     <ClInclude Include="src\Core\Application.h" />
     <ClInclude Include="src\Core\core.h" />
+    <ClInclude Include="src\ImGui\imgui_impl_glfw.h" />
+    <ClInclude Include="src\ImGui\imgui_impl_vulkan.h" />
     <ClInclude Include="src\Model\Model.h" />
     <ClInclude Include="src\Model\OpenGL\OpenGLMesh.h" />
     <ClInclude Include="src\Model\OpenGL\OpenGLModel.h" />
@@ -587,6 +589,8 @@
   <ItemGroup>
     <ClCompile Include="src\Camera\Camera.cpp" />
     <ClCompile Include="src\Core\Application.cpp" />
+    <ClCompile Include="src\ImGui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\ImGui\imgui_impl_vulkan.cpp" />
     <ClCompile Include="src\Model\OpenGL\OpenGLMesh.cpp" />
     <ClCompile Include="src\Model\OpenGL\OpenGLModel.cpp" />
     <ClCompile Include="src\Model\Vulkan\VulkanMesh.cpp" />

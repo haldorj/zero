@@ -55,6 +55,7 @@ namespace Zero {
     {
     public:
         void Init() override;
+        void InitImGui() override;
         void InitObjects(std::vector<std::shared_ptr<GameObject>>& GameObjects) override;
         void InitTextures();
         void Shutdown() override;
@@ -64,6 +65,8 @@ namespace Zero {
         void DrawBackground(VkCommandBuffer cmd);
         void DrawGeometry(VkCommandBuffer cmd);
         void DrawGeometryTextured(std::vector<std::shared_ptr<GameObject>>& GameObjects, VkCommandBuffer cmd);
+
+        void DrawImGui(VkCommandBuffer cmd, VkImageView targetImageView);
 
         void ImmediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function);
 
