@@ -1,5 +1,4 @@
 #include "OpenGLRenderer.h"
-#include <core/core.h>
 #include <core/Application.h>
 #include <iostream>
 #define GLM_ENABLE_EXPERIMENTAL
@@ -15,22 +14,32 @@ std::vector<GLuint> RectIndeces;
 
 namespace Zero
 {
+    // Callback function to handle window resizing
+    void FramebufferSizeCallback(GLFWwindow* window, int width, int height) {
+        // Adjusts the viewport to the new window dimensions
+        glViewport(0, 0, width, height);
+    }
+
     void OpenGLRenderer::Init()
     {
         std::cout << "ZeroEngine OpenGL \n";
 
         glfwMakeContextCurrent(Application::Get().GetWindow());
 
-        // Why c-style cast ?, reinterpret_cast?
-        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+        glfwSetFramebufferSizeCallback(Application::Get().GetWindow(), FramebufferSizeCallback);
+
+        if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
         {
             std::cout << "Failed to initialize GLAD" << '\n';
             return;
         }
 
-        glViewport(0, 0, EXTENT_WIDTH, EXTENT_HEIGHT);
+        m_Width = EXTENT_WIDTH; m_Height = EXTENT_HEIGHT;
 
-        glfwSwapInterval(1); // vsync
+        glfwGetFramebufferSize(Application::Get().GetWindow(), &m_Width, &m_Height);
+        glViewport(0, 0, m_Width, m_Height);
+
+        glfwSwapInterval(0); // vsync
 
         const GLubyte* renderer = glGetString(GL_RENDERER);
         std::cout << "Chosen GPU: " << "\n";
@@ -92,11 +101,15 @@ namespace Zero
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         int projLoc = glGetUniformLocation(m_ShaderProgram->GetID(), "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+        int viewPos = glGetUniformLocation(m_ShaderProgram->GetID(), "viewPos");
+        glUniform3fv(viewPos, 1, glm::value_ptr(Application::Get().GetMainCamera().GetPosition()));
 
         for (auto& gameObj : gameObjects)
 		{
             model = gameObj->GetTransform().GetMatrix();
-            gameObj->GetModel()->Draw(*m_ShaderProgram, model);
+
+            if (gameObj->GetModel())
+                gameObj->GetModel()->Draw(*m_ShaderProgram, model);
 		}
 
         Application::Get().UpdateImGui();

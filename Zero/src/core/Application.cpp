@@ -18,7 +18,6 @@
 
 
 namespace Zero {
-
     // Choose RendererAPI
     static RendererAPI RendererType = RendererAPI::OpenGL;
 
