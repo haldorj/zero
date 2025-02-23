@@ -367,6 +367,7 @@ namespace Zero
             GPUDrawPushConstants pushConstants;
             pushConstants.ModelMatrix = gameObj->GetTransform().GetMatrix();
             pushConstants.WorldViewProjMatrix = projection * view;
+            pushConstants.cameraPos = Application::Get().GetMainCamera().GetPosition();
             gameObj->GetModel()->Draw(cmd, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerLinear, pushConstants);
         }
 

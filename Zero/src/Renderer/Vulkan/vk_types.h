@@ -56,5 +56,6 @@ struct GPUDrawPushConstants {
     // glm::mat4 WorldMatrix;
     glm::mat4 ModelMatrix;
 	glm::mat4 WorldViewProjMatrix;
+    glm::vec3 cameraPos;
     VkDeviceAddress VertexBuffer;
 };

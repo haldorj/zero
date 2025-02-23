@@ -5,6 +5,7 @@ layout (location = 0) out vec3 outNormal;
 layout (location = 1) out vec3 outColor;
 layout (location = 2) out vec2 outUV;
 layout (location = 3) out vec3 outPosition;
+layout (location = 4) out vec3 outCameraPos;
 
 struct Vertex {
 
@@ -27,6 +28,7 @@ layout( push_constant ) uniform constants
 {	
 	mat4 model;
 	mat4 viewproj;
+	vec3 cameraPos;
 	VertexBuffer vertexBuffer;
 } PushConstants;
 
@@ -42,6 +44,8 @@ void main()
 	outColor = v.color.xyz;
 	outUV.x = v.uv_x;
 	outUV.y = v.uv_y;
+
+	outCameraPos = PushConstants.cameraPos;
 
 	outPosition = vec3(PushConstants.model * vec4(v.position, 1.0));
 }
