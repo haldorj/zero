@@ -85,39 +85,6 @@ namespace Zero {
 		m_GameObjects.push_back(Sphere);
     }
 
-    void Application::CreateRectangle() const
-    {
-        std::array<Vertex, 4> rectVertices{};
-
-        rectVertices[0].Position = {0.5, -0.5, 0};
-        rectVertices[0].UvX = 1; rectVertices[0].UvY = 0;
-        rectVertices[1].Position = {0.5, 0.5, 0};
-        rectVertices[1].UvX = 1; rectVertices[1].UvY = 1;
-        rectVertices[2].Position = {-0.5, -0.5, 0};
-        rectVertices[2].UvX = 0; rectVertices[2].UvY = 0;
-        rectVertices[3].Position = {-0.5, 0.5, 0};
-        rectVertices[3].UvX = 0; rectVertices[3].UvY = 1;
-
-        rectVertices[0].Color = {.2, .8, .2, 1};
-        rectVertices[1].Color = {.8, .8, .2, 1};
-        rectVertices[2].Color = {.8, .2, .2, 1};
-        rectVertices[3].Color = {.2, .2, .8, 1};
-
-        std::array<uint32_t, 6> rectIndices{};
-
-        rectIndices[0] = 0;
-        rectIndices[1] = 1;
-        rectIndices[2] = 2;
-
-        rectIndices[3] = 2;
-        rectIndices[4] = 1;
-        rectIndices[5] = 3;
-
-        // Mesh* Rectangle = new Mesh(rectVertices, rectIndices);
-
-        // m_Renderer->InitObject();
-    }
-
     void Application::Init()
     {
         // Only one engine initialization is allowed with the application.
@@ -191,7 +158,7 @@ namespace Zero {
                 gameObject->Update(m_DeltaTime);
             }
 
-            m_GameObjects[1].get()->GetTransform().Rotation.y += m_DeltaTime * 1;
+            m_GameObjects[0].get()->GetTransform().Rotation.y += m_DeltaTime * 1;
             Draw();
         }
     }

@@ -30,10 +30,10 @@
 
 namespace Zero
 {
-#ifdef NDEBUG
-    constexpr bool UseValidationLayers = false;
-#else
+#ifdef _DEBUG
     constexpr bool UseValidationLayers = true;
+#else
+    constexpr bool UseValidationLayers = false;
 #endif
 
 
