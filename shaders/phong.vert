@@ -23,7 +23,7 @@ void main()
 	gl_Position = projection * view * model * vec4(Pos, 1.0);
 
 	position = vec3(model * vec4(Pos, 1.0));
-	normal = Normal;
+	normal = mat3(transpose(inverse(model))) * Normal;
 	texCoord = vec2(UV_x, UV_y);
 	color = Color;
 	

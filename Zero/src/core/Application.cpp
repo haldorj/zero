@@ -191,7 +191,7 @@ namespace Zero {
                 gameObject->Update(m_DeltaTime);
             }
 
-            m_GameObjects[0].get()->GetTransform().Rotation.y += m_DeltaTime * 1;
+            m_GameObjects[1].get()->GetTransform().Rotation.y += m_DeltaTime * 1;
             Draw();
         }
     }
