@@ -54,7 +54,6 @@ namespace Zero
     class Application
     {
     public:
-        void CreateRectangle() const;
         //initializes everything in the engine
         void Init();
         //shuts down the engine
@@ -67,7 +66,7 @@ namespace Zero
 
         void InitGLFW(RendererAPI rendererType);
 
-        float GetRandomFloat(float min, float max);
+        static float GetRandomFloat(float min, float max);
 
         void InitGameObjects();
 
@@ -93,6 +92,8 @@ namespace Zero
         GLFWwindow* m_Window = nullptr;
 
         Renderer* m_Renderer = nullptr;
+
+        PhysicsWorld m_PhysicsWorld{};
 
         float m_Time{0.0f};
         float m_DeltaTime{0.0f};

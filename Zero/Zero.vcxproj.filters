@@ -1419,6 +1419,10 @@
     <ClInclude Include="Heightmap.h">
       <Filter>src\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="src\Physics\Physics.h" />
+    <ClInclude Include="src\Physics\Collision.h" />
+    <ClInclude Include="src\Scene\Transform.h" />
+    <ClInclude Include="src\Physics\Solver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera\Camera.cpp">
@@ -1505,5 +1509,8 @@
     <ClCompile Include="Heightmap.cpp">
       <Filter>src\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\Physics\Physics.cpp" />
+    <ClCompile Include="src\Physics\Collision.cpp" />
+    <ClCompile Include="src\Physics\Solver.cpp" />
   </ItemGroup>
 </Project>

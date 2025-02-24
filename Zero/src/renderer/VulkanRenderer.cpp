@@ -42,6 +42,7 @@ namespace Zero
     void VulkanRenderer::Init()
     {
         std::cout << "ZeroEngine Vulkan \n";
+        UseValidationLayers ? std::cout << "Validation Layers Enabled \n" : std::cout << "Validation Layers Disabled \n";
 
         InitVulkan();
         InitSwapchain();
@@ -69,15 +70,15 @@ namespace Zero
             { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000 },
             { VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 1000 } };
 
-        VkDescriptorPoolCreateInfo pool_info = {};
-        pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-        pool_info.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
-        pool_info.maxSets = 1000;
-        pool_info.poolSizeCount = (uint32_t)std::size(pool_sizes);
-        pool_info.pPoolSizes = pool_sizes;
+        VkDescriptorPoolCreateInfo poolInfo = {};
+        poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+        poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+        poolInfo.maxSets = 1000;
+        poolInfo.poolSizeCount = static_cast<uint32_t>(std::size(pool_sizes));
+        poolInfo.pPoolSizes = pool_sizes;
 
         VkDescriptorPool imguiPool;
-        VK_CHECK(vkCreateDescriptorPool(m_Device, &pool_info, nullptr, &imguiPool));
+        VK_CHECK(vkCreateDescriptorPool(m_Device, &poolInfo, nullptr, &imguiPool));
 
         // 2: initialize imgui library
 
@@ -89,25 +90,25 @@ namespace Zero
         ImGui_ImplGlfw_InitForVulkan(window, true);
 
         // this initializes imgui for Vulkan
-        ImGui_ImplVulkan_InitInfo init_info = {};
-        init_info.Instance = m_Instance;
-        init_info.PhysicalDevice = m_PhysicalDevice;
-        init_info.Device = m_Device;
-        init_info.Queue = m_GraphicsQueue;
-        init_info.DescriptorPool = imguiPool;
-        init_info.MinImageCount = 3;
-        init_info.ImageCount = 3;
-        init_info.UseDynamicRendering = true;
+        ImGui_ImplVulkan_InitInfo initInfo = {};
+        initInfo.Instance = m_Instance;
+        initInfo.PhysicalDevice = m_PhysicalDevice;
+        initInfo.Device = m_Device;
+        initInfo.Queue = m_GraphicsQueue;
+        initInfo.DescriptorPool = imguiPool;
+        initInfo.MinImageCount = 3;
+        initInfo.ImageCount = 3;
+        initInfo.UseDynamicRendering = true;
 
         //dynamic rendering parameters for imgui to use
-        init_info.PipelineRenderingCreateInfo = { .sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO };
-        init_info.PipelineRenderingCreateInfo.colorAttachmentCount = 1;
-        init_info.PipelineRenderingCreateInfo.pColorAttachmentFormats = &m_SwapchainImageFormat;
+        initInfo.PipelineRenderingCreateInfo = { .sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO };
+        initInfo.PipelineRenderingCreateInfo.colorAttachmentCount = 1;
+        initInfo.PipelineRenderingCreateInfo.pColorAttachmentFormats = &m_SwapchainImageFormat;
 
 
-        init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
+        initInfo.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
 
-        ImGui_ImplVulkan_Init(&init_info);
+        ImGui_ImplVulkan_Init(&initInfo);
 
         ImGui_ImplVulkan_CreateFontsTexture();
 

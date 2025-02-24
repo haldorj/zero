@@ -10,6 +10,7 @@ namespace Zero {
 	class Model
 	{
 	public:
+		virtual ~Model() = default;
 		// OpenGL
 		virtual void Draw(OpenGLShader& shader, glm::mat4& matrix) {};
 

@@ -24,22 +24,22 @@ namespace Zero {
 
         void DestroyModel() const override;
 
-        std::vector<VulkanTexture> GetLoadedTextures() const { return LoadedTextures; }
+        std::vector<VulkanTexture> GetLoadedTextures() const { return m_LoadedTextures; }
 
     private:
-        void LoadModel(std::string path);
-        void ProcessNode(aiNode* node, const aiScene* scene);
-        VulkanMesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
-        std::vector<VulkanTexture> LoadMaterialTextures(aiMaterial* mat, aiTextureType type,
-            std::string typeName);
+        void LoadModel(const std::string& path);
+        void ProcessNode(const aiNode* node, const aiScene* scene);
+        VulkanMesh ProcessMesh(const aiMesh* mesh, const aiScene* scene);
+        std::vector<VulkanTexture> LoadMaterialTextures(const aiMaterial* mat, aiTextureType type,
+                                                        const std::string& typeName);
 
         // model data
-        std::vector<class VulkanMesh> meshes;
-        std::string directory;
+        std::vector<class VulkanMesh> m_Meshes;
+        std::string m_Directory;
 
-        std::vector<VulkanTexture> LoadedTextures;
+        std::vector<VulkanTexture> m_LoadedTextures;
 
-        const aiScene* scene;
+        const aiScene* m_Scene;
 
 
     };

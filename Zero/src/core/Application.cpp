@@ -10,9 +10,6 @@
 #include <Scene/GameObject.h>
 
 #include <imgui.h>
-#include <ImGui/imgui_impl_glfw.h>
-#include <ImGui/imgui_impl_vulkan.h>
-#include <ImGui/imgui_impl_opengl3.h>
 #include <random>
 
 
@@ -29,7 +26,7 @@ namespace Zero {
         m_MainCamera.SetPosition({ 10, 10, -5 });
         FOV = m_MainCamera.GetFOV();
 
-        std::array<std::string, 3> modelPaths{
+        const std::array<std::string, 3> modelPaths{
             "../assets/models/black_bison2.fbx",
             "../assets/models/green_rhino2.fbx",
             "../assets/models/plane.glb",
@@ -37,52 +34,53 @@ namespace Zero {
 
         m_GameObjects.reserve(modelPaths.size());
 
-        std::shared_ptr<GameObject> BlackBison = std::make_shared<GameObject>(GameObject::Create());
-        BlackBison->SetModel(ModelFactory::CreateModel(modelPaths[0].c_str(), RendererType));
-        BlackBison->GetTransform().Location = { 0, 0, 0 };
-        BlackBison->GetTransform().Rotation = { 0, 90, 0 };
-        BlackBison->GetTransform().Scale = glm::vec3{ 0.5f };
+        std::shared_ptr<GameObject> blackBison = std::make_shared<GameObject>(GameObject::Create());
+        blackBison->SetModel(ModelFactory::CreateModel(modelPaths[0].c_str(), RendererType));
+        blackBison->GetTransform().Location = { 15, 0, 0 };
+        blackBison->GetTransform().Scale = glm::vec3{ 0.5f };
 
-        std::shared_ptr<GameObject> GreenRhino = std::make_shared<GameObject>(GameObject::Create());
-        GreenRhino->SetModel(ModelFactory::CreateModel(modelPaths[1].c_str(), RendererType));
-        GreenRhino->GetTransform().Location = { -15, 0, 0 };
-        GreenRhino->GetTransform().Scale = glm::vec3{ 0.5f };
-        GreenRhino->GetDynamics().Mass = 2;
+        std::shared_ptr<GameObject> greenRhino = std::make_shared<GameObject>(GameObject::Create());
+        greenRhino->SetModel(ModelFactory::CreateModel(modelPaths[1].c_str(), RendererType));
+        greenRhino->GetTransform().Location = { -15, 0, 0 };
+        greenRhino->GetTransform().Scale = glm::vec3{ 0.5f };
+        greenRhino->GetDynamics().Mass = 2;
         // GreenRhino->EnablePhysics = true;
 
-        std::shared_ptr<GameObject> Plane = std::make_shared<GameObject>(GameObject::Create());
-        Plane->SetModel(ModelFactory::CreateModel(modelPaths[2].c_str(), RendererType));
-        Plane->GetTransform().Location = { 0, -2, 0 };
-        Plane->GetTransform().Scale = glm::vec3{ 500.f };
+        std::shared_ptr<GameObject> plane = std::make_shared<GameObject>(GameObject::Create());
+        plane->SetModel(ModelFactory::CreateModel(modelPaths[2].c_str(), RendererType));
+        plane->GetTransform().Location = { 0, -2, 0 };
+        plane->GetTransform().Scale = glm::vec3{ 500.f };
+        plane->SetCollider(new PlaneCollider(plane->GetTransform().Location, 500.f));
 
-        m_GameObjects.push_back(BlackBison);
-        m_GameObjects.push_back(GreenRhino);
-        m_GameObjects.push_back(Plane);
+        m_GameObjects.emplace_back(blackBison);
+        m_GameObjects.emplace_back(greenRhino);
+        m_GameObjects.emplace_back(plane);
 
-        glm::vec3 Direction = { 0, 1, -0.5 };
-        Direction = glm::normalize(Direction);
+        glm::vec3 direction = { 0, 1, -0.5 };
+        direction = glm::normalize(direction);
 
-        float Force = 20;
-        glm::vec3 ForceVector = Direction * Force;
+        constexpr float force = 20;
+        const glm::vec3 forceVector = direction * force;
 
-        m_GameObjects[1]->GetDynamics().AddImpulse(ForceVector);
+        m_GameObjects[1]->GetDynamics().AddImpulse(forceVector);
     }
 
     void Application::SpawnSphere()
     {
-        float x = GetRandomFloat(0.5, 3);
+        const float x = GetRandomFloat(0.5, 3);
 
-        std::shared_ptr<GameObject> Sphere = std::make_shared<GameObject>(GameObject::Create());
-		Sphere->SetModel(ModelFactory::CreateModel("../assets/models/sphere.glb", RendererType));
-		Sphere->GetTransform().Location = m_MainCamera.GetPosition();
-		Sphere->GetTransform().Scale = glm::vec3{ x };
-		Sphere->GetDynamics().Mass = x;
-		Sphere->EnablePhysics = true;
+        const auto sphere = std::make_shared<GameObject>(GameObject::Create());
+		sphere->SetModel(ModelFactory::CreateModel("../assets/models/sphere.glb", RendererType));
+		sphere->GetTransform().Location = m_MainCamera.GetPosition();
+		sphere->GetTransform().Scale = glm::vec3{ x };
+		sphere->GetDynamics().Mass = x;
+        sphere->SetCollider(new SphereCollider(sphere->GetTransform().Location, x));
+		sphere->EnableGravity = true;
 
-        glm::vec3 Direction = m_MainCamera.GetForwardVector();
-        Sphere->GetDynamics().AddImpulse(Direction * 50.0f);
+        const glm::vec3 direction = m_MainCamera.GetForwardVector();
+        sphere->GetDynamics().AddImpulse(direction * 50.0f);
 
-		m_GameObjects.push_back(Sphere);
+		m_GameObjects.push_back(sphere);
     }
 
     void Application::Init()
@@ -117,7 +115,7 @@ namespace Zero {
         LoadedEngine = nullptr;
     }
 
-    bool pressed = false;
+    bool Pressed = false;
     void Application::Run()
     {
         // main loop
@@ -126,15 +124,15 @@ namespace Zero {
             // Spawn Sphere
             if (glfwGetKey(m_Window, GLFW_KEY_Q) == GLFW_PRESS)
 			{
-                if (!pressed)
+                if (!Pressed)
                 {
                     SpawnSphere();
-                    pressed = true;
+                    Pressed = true;
                 }
 			}
 			else
 			{
-				pressed = false;
+				Pressed = false;
 			}
 
             m_Time = static_cast<float>(glfwGetTime());
@@ -153,12 +151,9 @@ namespace Zero {
             m_MainCamera.ProcessInput(m_Window, m_DeltaTime);
             m_MainCamera.Update(m_DeltaTime);
 
-            for (auto& gameObject : m_GameObjects)
-            {
-                gameObject->Update(m_DeltaTime);
-            }
+            m_PhysicsWorld.Step(m_DeltaTime, m_GameObjects);
 
-            m_GameObjects[0].get()->GetTransform().Rotation.y += m_DeltaTime * 1;
+            m_GameObjects[0]->GetTransform().Rotation.y += m_DeltaTime * 1;
             Draw();
         }
     }
@@ -232,13 +227,13 @@ namespace Zero {
         }
     }
 
-    float  Application::GetRandomFloat(float min, float max) {
+    float  Application::GetRandomFloat(const float min, const float max) {
         // Create a random device and a Mersenne Twister engine
         std::random_device rd;
         std::mt19937 gen(rd());
 
         // Define the distribution range
-        std::uniform_real_distribution<float> dis(min, max);
+        std::uniform_real_distribution dis(min, max);
 
         // Generate and return the random float
         return dis(gen);
