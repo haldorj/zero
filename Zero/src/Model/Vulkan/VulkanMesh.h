@@ -14,16 +14,16 @@ namespace Zero {
 	{
 	public:
 		VulkanMesh() = default;
-		VulkanMesh(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices, std::vector<VulkanTexture> textures);
+		VulkanMesh(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices, const std::vector<VulkanTexture>& textures);
 
-		void Draw(VkCommandBuffer& cmd,
-			VkPipelineLayout& pipelineLayout,
-			VkExtent2D drawExtent, 
-			VkSampler& sampler,
-			GPUDrawPushConstants& pushConstants
-		);
+		void Draw(const VkCommandBuffer& cmd,
+		          const VkPipelineLayout& pipelineLayout,
+		          VkExtent2D drawExtent,
+		          const VkSampler& sampler,
+		          GPUDrawPushConstants& pushConstants
+		) const;
 
-		void DestroyMesh();
+		void DestroyMesh() const;
 
 		std::vector<Vertex> GetVertices() const { return m_Vertices; }
 		std::vector<uint32_t> GetIndices() const { return m_Indices; }

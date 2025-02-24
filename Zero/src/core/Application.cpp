@@ -16,7 +16,7 @@
 
 namespace Zero {
     // Choose RendererAPI
-    static RendererAPI RendererType = RendererAPI::Vulkan;
+    static RendererAPI RendererType = RendererAPI::OpenGL;
 
     Application* LoadedEngine = nullptr;
     Application& Application::Get() { return *LoadedEngine; }
@@ -24,7 +24,7 @@ namespace Zero {
     void Application::InitGameObjects()
     {
         m_MainCamera.SetPosition({ 10, 10, -5 });
-        FOV = m_MainCamera.GetFOV();
+        m_Fov = m_MainCamera.GetFOV();
 
         const std::array<std::string, 3> modelPaths{
             "../assets/models/black_bison2.fbx",
@@ -188,8 +188,8 @@ namespace Zero {
         ImGui::Begin("Camera");
         ImGui::Text("Camera Position: { %.2f, %.2f, %.2f }", m_MainCamera.GetPosition().x, m_MainCamera.GetPosition().y, m_MainCamera.GetPosition().z);
         ImGui::Text("Camera Direction: { %.2f, %.2f, %.2f }", m_MainCamera.GetDirection().x, m_MainCamera.GetDirection().y, m_MainCamera.GetDirection().z);
-        ImGui::SliderFloat("Camera FOV: ", &FOV, 1.0f, 120.0f);
-        m_MainCamera.SetFOV(FOV);
+        ImGui::SliderFloat("Camera FOV: ", &m_Fov, 1.0f, 120.0f);
+        m_MainCamera.SetFOV(m_Fov);
         //ImGui::Checkbox("Test Checkbox", &TestBool);
         ImGui::End();
 

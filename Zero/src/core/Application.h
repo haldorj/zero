@@ -82,7 +82,7 @@ namespace Zero
 
     private:
         Camera m_MainCamera{};
-        float FOV{ 0.0f };
+        float m_Fov{ 0.0f };
 
         bool m_IsInitialized{false};
         bool m_StopRendering{false};
