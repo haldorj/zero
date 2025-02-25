@@ -144,7 +144,7 @@ namespace Zero
         });
     }
 
-    void VulkanRenderer::Draw(std::vector<std::shared_ptr<GameObject>>& GameObjects, Topology topology)
+    void VulkanRenderer::Draw(std::vector<std::shared_ptr<GameObject>>& gameObjects, Topology topology)
     {
         NewFrameImGui();
 
@@ -198,7 +198,7 @@ namespace Zero
         VkUtil::TransitionImage(cmd, m_DepthImage.Image, VK_IMAGE_LAYOUT_UNDEFINED,
             VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL);
         //DrawGeometry(cmd);
-        DrawGeometryTextured(GameObjects, cmd);
+        DrawGeometryTextured(gameObjects, cmd);
 
         // vkCmdEndRendering(cmd);
 
@@ -325,7 +325,7 @@ namespace Zero
     float rotationvk = 0.0f;
     double lastTimevk = glfwGetTime();
 
-    void VulkanRenderer::DrawGeometryTextured(std::vector<std::shared_ptr<GameObject>>& GameObjects, VkCommandBuffer cmd)
+    void VulkanRenderer::DrawGeometryTextured(std::vector<std::shared_ptr<GameObject>>& gameObjects, VkCommandBuffer cmd)
     {
         //begin a render pass  connected to our draw image
         VkRenderingAttachmentInfo colorAttachment = VkInit::AttachmentInfo(m_DrawImage.ImageView, nullptr,
@@ -363,7 +363,7 @@ namespace Zero
 
         projection[1][1] *= -1;
 
-        for (auto& gameObj : GameObjects)
+        for (auto& gameObj : gameObjects)
         {
             GPUDrawPushConstants pushConstants;
             pushConstants.ModelMatrix = gameObj->GetTransform().GetMatrix();

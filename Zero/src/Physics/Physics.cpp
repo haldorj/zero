@@ -10,7 +10,7 @@ namespace Zero {
 	{
 		ResolveCollisions(dt, gameObjects);
 
-		for (auto& obj : gameObjects)
+		for (const auto& obj : gameObjects)
 		{
 			if (!obj->EnableGravity) 
 			{
@@ -30,7 +30,7 @@ namespace Zero {
 		std::vector<Collision> collisions;
 		for (auto& obj : gameObjects)
 		{
-			for (auto solver : m_Solvers)
+			for (const auto& solver : m_Solvers)
 			{
 				solver->Solve(collisions, dt);
 			}

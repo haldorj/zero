@@ -38,32 +38,23 @@ namespace Zero {
 		virtual ~Collider() = default;
 	};
 
-	// namespace Algo {
-	//
-	// 	CollisionPoints FindSphereToSphereCollision(
-	// 		const SphereCollider* sphereA, const Transform* transformA,
-	// 		const SphereCollider* sphereB, const Transform* transformB)
-	// 	{
-	// 		return CollisionPoints();
-	// 	}
-	//
-	// 	CollisionPoints FindSphereToPlaneCollision(
-	// 		const SphereCollider* sphere, const Transform* transform,
-	// 		const PlaneCollider* plane, const Transform* otherTransform)
-	// 	{
-	// 		return CollisionPoints();
-	// 	}
-	//
-	// 	CollisionPoints FindPlaneToSphereCollision(
-	// 		const PlaneCollider* plane, const Transform* transform,
-	// 		const SphereCollider* sphere, const Transform* otherTransform)
-	// 	{
-	// 		return CollisionPoints();
-	// 	}
-	//
-	// }
+	namespace Algo {
+	
+		CollisionPoints FindSphereToSphereCollision(
+			const SphereCollider* sphereA, const Transform* transformA,
+			const SphereCollider* sphereB, const Transform* transformB);
+	
+		CollisionPoints FindSphereToPlaneCollision(
+			const SphereCollider* sphere, const Transform* transform,
+			const PlaneCollider* plane, const Transform* otherTransform);
+	
+		CollisionPoints FindPlaneToSphereCollision(
+			const PlaneCollider* plane, const Transform* transform,
+			const SphereCollider* sphere, const Transform* otherTransform);
+		
+	}
 
-	struct SphereCollider : public Collider
+	struct SphereCollider : Collider
 	{
 		SphereCollider() = default;
 		SphereCollider(glm::vec3 center, float radius)
@@ -83,7 +74,7 @@ namespace Zero {
 			const Transform* otherTransform) const override
 		{
 			printf("Testing Sphere to Sphere Collision\n");
-			return {}; //Algo::FindSphereToSphereCollision(this, transform, collider, otherTransform);
+			return Algo::FindSphereToSphereCollision(this, transform, collider, otherTransform);
 		}
 
 		CollisionPoints TestCollision(
@@ -92,14 +83,14 @@ namespace Zero {
 			const Transform* otherTransform) const override
 		{
 			printf("Testing Sphere to Plane Collision\n");
-			return {}; //Algo::FindSphereToPlaneCollision(this, transform, collider, otherTransform);
+			return Algo::FindSphereToPlaneCollision(this, transform, collider, otherTransform);
 		}
 
 		glm::vec3 Center{ 0.0f };
 		float Radius{ 1.0f };
 	};
 
-	struct PlaneCollider : public Collider
+	struct PlaneCollider : Collider
 	{
 		PlaneCollider() = default;
 		PlaneCollider(glm::vec3 plane, float distance)
@@ -120,7 +111,7 @@ namespace Zero {
 			const Transform* otherTransform) const override
 		{
 			printf("Testing Sphere to Plane Collision\n");
-			return {}; //Algo::FindPlaneToSphereCollision(this, transform, collider, otherTransform);
+			return Algo::FindPlaneToSphereCollision(this, transform, collider, otherTransform);
 		}
 
 		CollisionPoints TestCollision(
@@ -128,7 +119,7 @@ namespace Zero {
 			const PlaneCollider* collider,
 			const Transform* otherTransform) const override
 		{
-			return CollisionPoints();
+			return {};
 		}
 
 		glm::vec3 Plane;

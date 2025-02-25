@@ -1,22 +1,19 @@
 ﻿#include "Application.h"
-#include "core/core.h"
-
-#include <Renderer/Vulkan/vk_types.h>
-
-#include "VkBootstrap.h"
 
 #include <chrono>
-#include <thread>
-#include <Scene/GameObject.h>
-
 #include <imgui.h>
 #include <random>
+#include <thread>
+#include <Renderer/Vulkan/vk_types.h>
+#include <Scene/GameObject.h>
 
+#include "VkBootstrap.h"
+#include "core/core.h"
 
 
 namespace Zero {
     // Choose RendererAPI
-    static RendererAPI RendererType = RendererAPI::OpenGL;
+    static RendererAPI RendererType = RendererAPI::Vulkan;
 
     Application* LoadedEngine = nullptr;
     Application& Application::Get() { return *LoadedEngine; }
@@ -80,7 +77,7 @@ namespace Zero {
         const glm::vec3 direction = m_MainCamera.GetForwardVector();
         sphere->GetDynamics().AddImpulse(direction * 50.0f);
 
-		m_GameObjects.push_back(sphere);
+		m_GameObjects.emplace_back(sphere);
     }
 
     void Application::Init()
@@ -190,14 +187,12 @@ namespace Zero {
         ImGui::Text("Camera Direction: { %.2f, %.2f, %.2f }", m_MainCamera.GetDirection().x, m_MainCamera.GetDirection().y, m_MainCamera.GetDirection().z);
         ImGui::SliderFloat("Camera FOV: ", &m_Fov, 1.0f, 120.0f);
         m_MainCamera.SetFOV(m_Fov);
-        //ImGui::Checkbox("Test Checkbox", &TestBool);
         ImGui::End();
 
     }
 
     void Application::InitGLFW(const RendererAPI rendererType)
     {
-        // Initialize GLFW
         if (!glfwInit())
         {
             throw std::runtime_error("Failed to initialize GLFW");
@@ -210,15 +205,13 @@ namespace Zero {
         }
         if (rendererType == RendererAPI::OpenGL)
         {
-            // Tell GLFW what version of OpenGL we are using 
-            // In this case we are using OpenGL 4.6
+
+            // OpenGL v. 4.6
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-            // Tell GLFW we are using the CORE profile
-            // So that means we only have the modern functions
+            // CORE PROFILE: modern OpenGL
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         }
-        // Create a GLFW window
         m_Window = glfwCreateWindow(EXTENT_WIDTH, EXTENT_HEIGHT, "ZeroEngine", nullptr, nullptr);
         if (!m_Window)
         {

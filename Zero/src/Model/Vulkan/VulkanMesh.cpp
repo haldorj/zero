@@ -17,7 +17,7 @@ namespace Zero
 
         if (m_Textures.empty())
         {
-            m_Textures.push_back(renderer->GetDefaultTexture());
+            m_Textures.emplace_back(renderer->GetDefaultTexture());
         }
 
         m_GPUMeshBuffers = renderer->UploadMesh(indices, vertices);

@@ -59,11 +59,11 @@ namespace Zero {
         void InitTextures();
         void Shutdown() override;
         void SetClearColor(const glm::vec4 clearColor) override { m_ClearColor = clearColor; }
-        void Draw(std::vector<std::shared_ptr<GameObject>>& GameObjects, Topology topology) override;
+        void Draw(std::vector<std::shared_ptr<GameObject>>& gameObjects, Topology topology) override;
 
         void DrawBackground(VkCommandBuffer cmd);
         void DrawGeometry(VkCommandBuffer cmd);
-        void DrawGeometryTextured(std::vector<std::shared_ptr<GameObject>>& GameObjects, VkCommandBuffer cmd);
+        void DrawGeometryTextured(std::vector<std::shared_ptr<GameObject>>& gameObjects, VkCommandBuffer cmd);
 
         void NewFrameImGui();
         void DrawImGui(VkCommandBuffer cmd, VkImageView targetImageView);

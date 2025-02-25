@@ -10,18 +10,20 @@
 #include <glad/glad.h>
 #include <Camera/Camera.h>
 
-namespace Zero {
-	class OpenGLMesh
-	{
-	public:
-		OpenGLMesh(const std::vector <Vertex>& vertices, std::vector <GLuint>& indices, const std::vector <OpenGLTexture>& textures);
-		void Draw(OpenGLShader& shader, glm::mat4& matrix);
+namespace Zero
+{
+    class OpenGLMesh
+    {
+    public:
+        OpenGLMesh(const std::vector<Vertex>& vertices, std::vector<GLuint>& indices,
+                   const std::vector<OpenGLTexture>& textures);
+        void Draw(OpenGLShader& shader, glm::mat4& matrix);
 
-	private:
-		VAO m_VAO;
+    private:
+        VAO m_VAO;
 
-		std::vector <Vertex> m_Vertices;
-		std::vector <GLuint> m_Indices;
-		std::vector <OpenGLTexture> m_Textures;
-	};
+        std::vector<Vertex> m_Vertices;
+        std::vector<GLuint> m_Indices;
+        std::vector<OpenGLTexture> m_Textures;
+    };
 }
