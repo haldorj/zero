@@ -73,7 +73,6 @@ namespace Zero {
 			const SphereCollider* collider,
 			const Transform* otherTransform) const override
 		{
-			printf("Testing Sphere to Sphere Collision\n");
 			return Algo::FindSphereToSphereCollision(this, transform, collider, otherTransform);
 		}
 
@@ -82,7 +81,6 @@ namespace Zero {
 			const PlaneCollider* collider,
 			const Transform* otherTransform) const override
 		{
-			printf("Testing Sphere to Plane Collision\n");
 			return Algo::FindSphereToPlaneCollision(this, transform, collider, otherTransform);
 		}
 
@@ -101,7 +99,6 @@ namespace Zero {
 			const Collider* collider,
 			const Transform* otherTransform) const override
 		{
-			printf("Testing Plane to Sphere Collision\n");
 			return collider->TestCollision(otherTransform, this, transform);
 		}
 
@@ -110,7 +107,6 @@ namespace Zero {
 			const SphereCollider* collider,
 			const Transform* otherTransform) const override
 		{
-			printf("Testing Sphere to Plane Collision\n");
 			return Algo::FindPlaneToSphereCollision(this, transform, collider, otherTransform);
 		}
 

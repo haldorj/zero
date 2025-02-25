@@ -19,6 +19,24 @@ namespace Zero {
 				glm::rotate(glm::mat4(1.0f), Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
 				glm::scale(glm::mat4(1.0f), Scale);
 		}
+
+		glm::vec3 GetUpVector() const
+		{
+			return glm::vec3(
+				glm::rotate(glm::mat4(1.0f), Rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
+				glm::rotate(glm::mat4(1.0f), Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
+				glm::rotate(glm::mat4(1.0f), Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
+				glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+		}
+
+		glm::vec3 GetRightVector() const
+		{
+			return glm::vec3(
+				glm::rotate(glm::mat4(1.0f), Rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
+				glm::rotate(glm::mat4(1.0f), Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
+				glm::rotate(glm::mat4(1.0f), Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
+				glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+		}
 	};
 
 }

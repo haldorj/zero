@@ -47,7 +47,7 @@ namespace Zero {
         plane->SetModel(ModelFactory::CreateModel(modelPaths[2].c_str(), RendererType));
         plane->GetTransform().Location = { 0, -2, 0 };
         plane->GetTransform().Scale = glm::vec3{ 500.f };
-        plane->SetCollider(new PlaneCollider(plane->GetTransform().Location, 500.f));
+        plane->SetCollider(new PlaneCollider(plane->GetTransform().GetUpVector(), 0));
 
         m_GameObjects.emplace_back(blackBison);
         m_GameObjects.emplace_back(greenRhino);
@@ -88,6 +88,8 @@ namespace Zero {
 
         InitGLFW(RendererType);
 
+        m_PhysicsWorld.Init();
+        
         // Initialize the renderer
         m_Renderer = RendererFactory::CreateRenderer(RendererType);
         m_Renderer->Init();
@@ -145,12 +147,13 @@ namespace Zero {
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 continue;
             }
+            
             m_MainCamera.ProcessInput(m_Window, m_DeltaTime);
             m_MainCamera.Update(m_DeltaTime);
-
+            
             m_PhysicsWorld.Step(m_DeltaTime, m_GameObjects);
-
             m_GameObjects[0]->GetTransform().Rotation.y += m_DeltaTime * 1;
+            
             Draw();
         }
     }
@@ -188,6 +191,16 @@ namespace Zero {
         ImGui::SliderFloat("Camera FOV: ", &m_Fov, 1.0f, 120.0f);
         m_MainCamera.SetFOV(m_Fov);
         ImGui::End();
+
+        ImGui::Begin("Objects");
+        for (const auto& obj : m_GameObjects)
+        {
+            ImGui::Text("Object Position: { %.2f, %.2f, %.2f }", obj->GetTransform().Location.x, obj->GetTransform().Location.y, obj->GetTransform().Location.z);
+            ImGui::Text("Object Rotation: { %.2f, %.2f, %.2f }", obj->GetTransform().Rotation.x, obj->GetTransform().Rotation.y, obj->GetTransform().Rotation.z);
+            ImGui::Text("Object Scale: { %.2f, %.2f, %.2f }", obj->GetTransform().Scale.x, obj->GetTransform().Scale.y, obj->GetTransform().Scale.z);
+        }
+        ImGui::End();
+
 
     }
 

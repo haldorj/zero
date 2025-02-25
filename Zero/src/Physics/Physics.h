@@ -16,6 +16,7 @@ namespace Zero {
 		PhysicsWorld() = default;
 		~PhysicsWorld() = default;
 
+		void Init();
 		void Step(float dt, std::vector<std::shared_ptr<GameObject>>& gameObjects);
 		void ResolveCollisions(float dt, std::vector<std::shared_ptr<GameObject>>& gameObjects);
 

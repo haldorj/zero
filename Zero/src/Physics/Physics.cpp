@@ -5,6 +5,11 @@
 #include <Physics/Collision.h>
 
 namespace Zero {
+	void PhysicsWorld::Init()
+	{
+		const auto impulseSolver = new ImpulseSolver();
+		m_Solvers.emplace_back(std::shared_ptr<Solver>(impulseSolver));
+	}
 
 	void PhysicsWorld::Step(float dt, std::vector<std::shared_ptr<GameObject>>& gameObjects)
 	{
@@ -18,7 +23,7 @@ namespace Zero {
 			}
 
 			obj->GetDynamics().Force = obj->GetDynamics().Mass * GRAVITY;
-			obj->GetDynamics().Velocity += (obj->GetDynamics().Force / obj->GetDynamics().Mass) * dt;
+			obj->GetDynamics().Velocity += obj->GetDynamics().Force / obj->GetDynamics().Mass * dt;
 			obj->GetTransform().Location += obj->GetDynamics().Velocity * dt;
 
 			obj->GetDynamics().Force = glm::vec3(0.0f);
