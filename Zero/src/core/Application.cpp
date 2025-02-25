@@ -12,9 +12,6 @@
 
 
 namespace Zero {
-    // Choose RendererAPI
-    static RendererAPI RendererType = RendererAPI::Vulkan;
-
     Application* LoadedEngine = nullptr;
     Application& Application::Get() { return *LoadedEngine; }
 
@@ -32,22 +29,22 @@ namespace Zero {
         m_GameObjects.reserve(modelPaths.size());
 
         std::shared_ptr<GameObject> blackBison = std::make_shared<GameObject>(GameObject::Create());
-        blackBison->SetModel(ModelFactory::CreateModel(modelPaths[0].c_str(), RendererType));
+        blackBison->SetModel(ModelFactory::CreateModel(modelPaths[0].c_str(), m_RendererType));
         blackBison->GetTransform().Location = { 15, 0, 0 };
         blackBison->GetTransform().Scale = glm::vec3{ 0.5f };
 
         std::shared_ptr<GameObject> greenRhino = std::make_shared<GameObject>(GameObject::Create());
-        greenRhino->SetModel(ModelFactory::CreateModel(modelPaths[1].c_str(), RendererType));
+        greenRhino->SetModel(ModelFactory::CreateModel(modelPaths[1].c_str(), m_RendererType));
         greenRhino->GetTransform().Location = { -15, 0, 0 };
         greenRhino->GetTransform().Scale = glm::vec3{ 0.5f };
         greenRhino->GetDynamics().Mass = 2;
         // GreenRhino->EnablePhysics = true;
 
         std::shared_ptr<GameObject> plane = std::make_shared<GameObject>(GameObject::Create());
-        plane->SetModel(ModelFactory::CreateModel(modelPaths[2].c_str(), RendererType));
+        plane->SetModel(ModelFactory::CreateModel(modelPaths[2].c_str(), m_RendererType));
         plane->GetTransform().Location = { 0, -2, 0 };
         plane->GetTransform().Scale = glm::vec3{ 500.f };
-        plane->SetCollider(new PlaneCollider(plane->GetTransform().GetUpVector(), 0));
+        plane->SetCollider(std::make_shared<PlaneCollider>(plane->GetTransform().GetUpVector(), 0));
 
         m_GameObjects.emplace_back(blackBison);
         m_GameObjects.emplace_back(greenRhino);
@@ -67,11 +64,11 @@ namespace Zero {
         const float x = GetRandomFloat(0.5, 3);
 
         const auto sphere = std::make_shared<GameObject>(GameObject::Create());
-		sphere->SetModel(ModelFactory::CreateModel("../assets/models/sphere.glb", RendererType));
+		sphere->SetModel(ModelFactory::CreateModel("../assets/models/sphere.glb", m_RendererType));
 		sphere->GetTransform().Location = m_MainCamera.GetPosition();
 		sphere->GetTransform().Scale = glm::vec3{ x };
 		sphere->GetDynamics().Mass = x;
-        sphere->SetCollider(new SphereCollider(sphere->GetTransform().Location, x));
+        sphere->SetCollider(std::make_shared<SphereCollider>(sphere->GetTransform().Location, x));
 		sphere->EnableGravity = true;
 
         const glm::vec3 direction = m_MainCamera.GetForwardVector();
@@ -80,18 +77,32 @@ namespace Zero {
 		m_GameObjects.emplace_back(sphere);
     }
 
+    void Application::DestroyGameObject(GameObject::IdT objectID)
+    {
+        for (auto it = m_GameObjects.begin(); it != m_GameObjects.end(); ++it)
+        {
+            if ((*it)->GetID() == objectID)
+            {
+                (*it)->Destroy();
+                m_GameObjects.erase(it);
+                
+                break;
+            }
+        }
+    }
+
     void Application::Init()
     {
         // Only one engine initialization is allowed with the application.
         assert(LoadedEngine == nullptr);
         LoadedEngine = this;
 
-        InitGLFW(RendererType);
+        InitGLFW(m_RendererType);
 
         m_PhysicsWorld.Init();
         
         // Initialize the renderer
-        m_Renderer = RendererFactory::CreateRenderer(RendererType);
+        m_Renderer = RendererFactory::CreateRenderer(m_RendererType);
         m_Renderer->Init();
         m_Renderer->InitImGui();
 
@@ -170,7 +181,7 @@ namespace Zero {
     {
         ImGui::Begin("Zero");
 
-        switch (RendererType)
+        switch (m_RendererType)
 		{
         case RendererAPI::OpenGL:
             ImGui::Text("OpenGL");

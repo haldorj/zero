@@ -1,4 +1,6 @@
 #include "Physics.h"
+
+#include <memory>
 #include <Core/core.h>
 #include <Scene/GameObject.h>
 
@@ -7,11 +9,11 @@
 namespace Zero {
 	void PhysicsWorld::Init()
 	{
-		const auto impulseSolver = new ImpulseSolver();
-		m_Solvers.emplace_back(std::shared_ptr<Solver>(impulseSolver));
+		const auto impulseSolver = std::make_shared<ImpulseSolver>();
+		m_Solvers.emplace_back(impulseSolver);
 	}
 
-	void PhysicsWorld::Step(float dt, std::vector<std::shared_ptr<GameObject>>& gameObjects)
+	void PhysicsWorld::Step(const float dt, std::vector<std::shared_ptr<GameObject>>& gameObjects) const
 	{
 		ResolveCollisions(dt, gameObjects);
 
@@ -30,7 +32,7 @@ namespace Zero {
 		}
 	}
 
-	void PhysicsWorld::ResolveCollisions(float dt, std::vector<std::shared_ptr<GameObject>>& gameObjects)
+	void PhysicsWorld::ResolveCollisions(const float dt, std::vector<std::shared_ptr<GameObject>>& gameObjects) const
 	{
 		std::vector<Collision> collisions;
 		for (auto& obj : gameObjects)
@@ -42,6 +44,10 @@ namespace Zero {
 
 			for (auto& other : gameObjects)
 			{
+				if (!obj)
+				{
+					break;
+				}
 				if (obj == other)
 				{
 					break;
@@ -51,7 +57,9 @@ namespace Zero {
 					continue;
 				}
 
-				CollisionPoints collisionPoints = obj->GetCollider()->TestCollision(&obj->GetTransform(), other->GetCollider(), &other->GetTransform());
+				CollisionPoints collisionPoints = obj->GetCollider()->TestCollision(&obj->GetTransform(),
+					other->GetCollider().get(), &other->GetTransform());
+				
 				if (collisionPoints.HasCollision)
 				{
 					collisions.emplace_back(obj, other, collisionPoints);

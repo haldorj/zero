@@ -17,8 +17,8 @@ namespace Zero {
 		~PhysicsWorld() = default;
 
 		void Init();
-		void Step(float dt, std::vector<std::shared_ptr<GameObject>>& gameObjects);
-		void ResolveCollisions(float dt, std::vector<std::shared_ptr<GameObject>>& gameObjects);
+		void Step(float dt, std::vector<std::shared_ptr<GameObject>>& gameObjects) const;
+		void ResolveCollisions(float dt, std::vector<std::shared_ptr<GameObject>>& gameObjects) const;
 
 	private:
 		std::vector<std::shared_ptr<Solver>> m_Solvers;

@@ -22,6 +22,9 @@
     <Filter Include="src\Model\Vulkan">
       <UniqueIdentifier>{0D3B3720-F933-5672-2266-3BF70EBE357E}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Physics">
+      <UniqueIdentifier>{9F8B9316-0B41-0C0C-9435-06E300EA0210}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Renderer">
       <UniqueIdentifier>{73D1DFBF-5F34-6F64-08BA-A71AF4FB3AE7}</UniqueIdentifier>
     </Filter>
@@ -105,6 +108,15 @@
     <ClInclude Include="src\Model\Vulkan\VulkanModel.h">
       <Filter>src\Model\Vulkan</Filter>
     </ClInclude>
+    <ClInclude Include="src\Physics\Collision.h">
+      <Filter>src\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Physics\Physics.h">
+      <Filter>src\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Physics\Solver.h">
+      <Filter>src\Physics</Filter>
+    </ClInclude>
     <ClInclude Include="src\Renderer\OpenGL\EBO.h">
       <Filter>src\Renderer\OpenGL</Filter>
     </ClInclude>
@@ -154,6 +166,9 @@
       <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Scene\GameObject.h">
+      <Filter>src\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\Transform.h">
       <Filter>src\Scene</Filter>
     </ClInclude>
     <ClInclude Include="vendor\VMA\vk_mem_alloc.h">
@@ -1416,13 +1431,6 @@
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClInclude>
-    <ClInclude Include="Heightmap.h">
-      <Filter>src\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Physics\Physics.h" />
-    <ClInclude Include="src\Physics\Collision.h" />
-    <ClInclude Include="src\Scene\Transform.h" />
-    <ClInclude Include="src\Physics\Solver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera\Camera.cpp">
@@ -1451,6 +1459,15 @@
     </ClCompile>
     <ClCompile Include="src\Model\Vulkan\VulkanModel.cpp">
       <Filter>src\Model\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Physics\Collision.cpp">
+      <Filter>src\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Physics\Physics.cpp">
+      <Filter>src\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Physics\Solver.cpp">
+      <Filter>src\Physics</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\OpenGL\EBO.cpp">
       <Filter>src\Renderer\OpenGL</Filter>
@@ -1506,11 +1523,5 @@
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClCompile>
-    <ClCompile Include="Heightmap.cpp">
-      <Filter>src\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Physics\Physics.cpp" />
-    <ClCompile Include="src\Physics\Collision.cpp" />
-    <ClCompile Include="src\Physics\Solver.cpp" />
   </ItemGroup>
 </Project>

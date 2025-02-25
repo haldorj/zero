@@ -71,10 +71,12 @@ namespace Zero
         void InitGameObjects();
 
         void SpawnSphere();
+        void DestroyGameObject(GameObject::IdT objectID);
 
         static Application& Get();
 
         Renderer* GetRenderer() const { return m_Renderer; }
+        RendererAPI GetRendererType() const { return m_RendererType; }
         GLFWwindow* GetWindow() const { return m_Window; }
         Camera& GetMainCamera() { return m_MainCamera; }
 
@@ -92,6 +94,7 @@ namespace Zero
         GLFWwindow* m_Window = nullptr;
 
         Renderer* m_Renderer = nullptr;
+        RendererAPI m_RendererType{RendererAPI::Vulkan};
 
         PhysicsWorld m_PhysicsWorld{};
 

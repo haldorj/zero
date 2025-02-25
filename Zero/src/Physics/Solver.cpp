@@ -1,5 +1,6 @@
 #include "Solver.h"
 
+#include "Core/Application.h"
 #include "Scene/GameObject.h"
 
 namespace Zero
@@ -11,8 +12,7 @@ namespace Zero
             if (!Points.HasCollision)
                 continue;
 
-            A->GetDynamics().AddImpulse(Points.Normal * Points.Depth);
-            B->GetDynamics().AddImpulse(-Points.Normal * Points.Depth);
+            Application::Get().DestroyGameObject(A->GetID());
         }
     }
 }

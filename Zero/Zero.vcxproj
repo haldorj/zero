@@ -137,10 +137,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Physics\Solver.h" />
-    <ClInclude Include="src\Physics\Collision.h" />
-    <ClInclude Include="Heightmap.h" />
-    <ClInclude Include="src\Physics\Physics.h" />
     <ClInclude Include="src\Camera\Camera.h" />
     <ClInclude Include="src\Core\Application.h" />
     <ClInclude Include="src\Core\core.h" />
@@ -154,7 +150,9 @@
     <ClInclude Include="src\Model\Vertex.h" />
     <ClInclude Include="src\Model\Vulkan\VulkanMesh.h" />
     <ClInclude Include="src\Model\Vulkan\VulkanModel.h" />
-    <ClInclude Include="src\Scene\Transform.h" />
+    <ClInclude Include="src\Physics\Collision.h" />
+    <ClInclude Include="src\Physics\Physics.h" />
+    <ClInclude Include="src\Physics\Solver.h" />
     <ClInclude Include="src\Renderer\OpenGL\EBO.h" />
     <ClInclude Include="src\Renderer\OpenGL\OpenGLShader.h" />
     <ClInclude Include="src\Renderer\OpenGL\OpenGLTexture.h" />
@@ -172,6 +170,7 @@
     <ClInclude Include="src\Renderer\Vulkan\vk_types.h" />
     <ClInclude Include="src\Renderer\VulkanRenderer.h" />
     <ClInclude Include="src\Scene\GameObject.h" />
+    <ClInclude Include="src\Scene\Transform.h" />
     <ClInclude Include="vendor\VMA\vk_mem_alloc.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
@@ -594,10 +593,6 @@
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Physics\Solver.cpp" />
-    <ClCompile Include="src\Physics\Collision.cpp" />
-    <ClCompile Include="Heightmap.cpp" />
-    <ClCompile Include="src\Physics\Physics.cpp" />
     <ClCompile Include="src\Camera\Camera.cpp" />
     <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\ImGui\imgui_impl_glfw.cpp" />
@@ -607,6 +602,9 @@
     <ClCompile Include="src\Model\OpenGL\OpenGLModel.cpp" />
     <ClCompile Include="src\Model\Vulkan\VulkanMesh.cpp" />
     <ClCompile Include="src\Model\Vulkan\VulkanModel.cpp" />
+    <ClCompile Include="src\Physics\Collision.cpp" />
+    <ClCompile Include="src\Physics\Physics.cpp" />
+    <ClCompile Include="src\Physics\Solver.cpp" />
     <ClCompile Include="src\Renderer\OpenGL\EBO.cpp" />
     <ClCompile Include="src\Renderer\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="src\Renderer\OpenGL\OpenGLTexture.cpp" />
