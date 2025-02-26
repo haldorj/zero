@@ -15,8 +15,8 @@ namespace Zero {
 		virtual void Draw(OpenGLShader& shader, glm::mat4& matrix) {};
 
 		// Vulkan
-		virtual void Draw(VkCommandBuffer& cmd, VkPipelineLayout& pipelineLayout, VkExtent2D drawExtent, VkSampler& sampler, GPUDrawPushConstants& pushConstants) {};
-		virtual void DestroyModel() const {};
+		virtual void Draw(VkCommandBuffer& cmd, VkPipelineLayout& pipelineLayout, VkExtent2D drawExtent, VkSampler& sampler, GPUDrawPushConstants& pushConstants) {}
+		virtual void DestroyModel() const {}
 	};
 
 }

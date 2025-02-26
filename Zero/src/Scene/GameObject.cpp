@@ -3,8 +3,27 @@
 #include "Core/Application.h"
 #include "Core/core.h"
 
-void Zero::GameObject::Destroy()
-{
-    m_Collider = nullptr;
-    m_Model->DestroyModel();
+
+namespace Zero {
+
+    GameObject GameObject::Create()
+    {
+        static IdType currentID = 0;
+        return {currentID++};
+    }
+
+    void GameObject::Destroy() const
+    {
+        if (Application::Get().GetRendererType() == RendererAPI::OpenGL)
+        {
+            return;
+        }
+        
+        if (m_Model)
+        {
+            m_Model->DestroyModel();
+        }
+    }
+    
 }
+

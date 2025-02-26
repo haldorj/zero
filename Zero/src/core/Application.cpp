@@ -32,19 +32,23 @@ namespace Zero {
         blackBison->SetModel(ModelFactory::CreateModel(modelPaths[0].c_str(), m_RendererType));
         blackBison->GetTransform().Location = { 15, 0, 0 };
         blackBison->GetTransform().Scale = glm::vec3{ 0.5f };
+        blackBison->SetCollider(std::make_shared<SphereCollider>(glm::vec3{ 0, 0, 0 }, 5.0f));
+        blackBison->GetDynamics().Mass = 100;
+        blackBison->EnableCollision = true;
 
         std::shared_ptr<GameObject> greenRhino = std::make_shared<GameObject>(GameObject::Create());
         greenRhino->SetModel(ModelFactory::CreateModel(modelPaths[1].c_str(), m_RendererType));
         greenRhino->GetTransform().Location = { -15, 0, 0 };
         greenRhino->GetTransform().Scale = glm::vec3{ 0.5f };
         greenRhino->GetDynamics().Mass = 2;
-        // GreenRhino->EnablePhysics = true;
 
         std::shared_ptr<GameObject> plane = std::make_shared<GameObject>(GameObject::Create());
         plane->SetModel(ModelFactory::CreateModel(modelPaths[2].c_str(), m_RendererType));
         plane->GetTransform().Location = { 0, -2, 0 };
         plane->GetTransform().Scale = glm::vec3{ 500.f };
-        plane->SetCollider(std::make_shared<PlaneCollider>(plane->GetTransform().GetUpVector(), 0));
+        plane->SetCollider(std::make_shared<PlaneCollider>(plane->GetTransform().GetUpVector(), 500.f));
+        plane->EnableGravity = false;
+        plane->EnableCollision = true;
 
         m_GameObjects.emplace_back(blackBison);
         m_GameObjects.emplace_back(greenRhino);
@@ -68,8 +72,9 @@ namespace Zero {
 		sphere->GetTransform().Location = m_MainCamera.GetPosition();
 		sphere->GetTransform().Scale = glm::vec3{ x };
 		sphere->GetDynamics().Mass = x;
-        sphere->SetCollider(std::make_shared<SphereCollider>(sphere->GetTransform().Location, x));
+        sphere->SetCollider(std::make_shared<SphereCollider>(glm::vec3 {0, 0, 0}, x));
 		sphere->EnableGravity = true;
+        sphere->EnableCollision = true;
 
         const glm::vec3 direction = m_MainCamera.GetForwardVector();
         sphere->GetDynamics().AddImpulse(direction * 50.0f);
@@ -77,7 +82,7 @@ namespace Zero {
 		m_GameObjects.emplace_back(sphere);
     }
 
-    void Application::DestroyGameObject(GameObject::IdT objectID)
+    void Application::DestroyGameObject(GameObject::IdType objectID)
     {
         for (auto it = m_GameObjects.begin(); it != m_GameObjects.end(); ++it)
         {
@@ -161,9 +166,9 @@ namespace Zero {
             
             m_MainCamera.ProcessInput(m_Window, m_DeltaTime);
             m_MainCamera.Update(m_DeltaTime);
-            
-            m_PhysicsWorld.Step(m_DeltaTime, m_GameObjects);
+
             m_GameObjects[0]->GetTransform().Rotation.y += m_DeltaTime * 1;
+            m_PhysicsWorld.Step(m_DeltaTime, m_GameObjects);
             
             Draw();
         }
@@ -204,15 +209,8 @@ namespace Zero {
         ImGui::End();
 
         ImGui::Begin("Objects");
-        for (const auto& obj : m_GameObjects)
-        {
-            ImGui::Text("Object Position: { %.2f, %.2f, %.2f }", obj->GetTransform().Location.x, obj->GetTransform().Location.y, obj->GetTransform().Location.z);
-            ImGui::Text("Object Rotation: { %.2f, %.2f, %.2f }", obj->GetTransform().Rotation.x, obj->GetTransform().Rotation.y, obj->GetTransform().Rotation.z);
-            ImGui::Text("Object Scale: { %.2f, %.2f, %.2f }", obj->GetTransform().Scale.x, obj->GetTransform().Scale.y, obj->GetTransform().Scale.z);
-        }
+        ImGui::Text("Number of Objects: %i", m_GameObjects.size());
         ImGui::End();
-
-
     }
 
     void Application::InitGLFW(const RendererAPI rendererType)

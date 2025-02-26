@@ -5,56 +5,52 @@
 #include <Model/Model.h>
 #include <Model/Vulkan/VulkanModel.h>
 #include <Physics/Physics.h>
-#include <Physics/Collision.h>
+#include <Physics/Collision/Collider.h>
+#include <Scene/Transform.h>
 
-namespace Zero {
+namespace Zero
+{
+    class GameObject
+    {
+    public:
+        using IdType = uint64_t;
 
-	class GameObject
-	{
-	public:
-		using IdT = uint64_t;
+        GameObject() = default;
+        // Delete copy constructor and assignment operator
+        // to prevent duplicating/copying of GameObjects
+        GameObject(const GameObject&) = delete;
+        GameObject& operator=(const GameObject&) = delete;
+        // Enable move constructor and assignment operator
+        GameObject(GameObject&&) = default;
+        GameObject& operator=(GameObject&&) = default;
 
-		GameObject() = default;
-		
-		static GameObject Create() 
-		{ 
-			static IdT currentID = 0;
-			return {currentID++};
-		}
+        static GameObject Create();
+        void Destroy() const;
 
-		IdT GetID() const { return m_ObjectID; }
-		
-		Transform& GetTransform() { return m_Transform; }
-		
-		std::shared_ptr<Collider> GetCollider() { return m_Collider; }
-		void SetCollider(const std::shared_ptr<Collider>& collider) { m_Collider = collider; }
-		
-		Dynamics& GetDynamics() { return m_Dynamics; }
-		void SetModel(const std::shared_ptr<Model>& model) { m_Model = model; }
-		
-		std::shared_ptr<Model> GetModel() const { return m_Model; }
+        IdType GetID() const { return m_ObjectID; }
+        Transform& GetTransform() { return m_Transform; }
 
-		// Delete copy constructor and assignment operator
-		// to prevent duplicating/copying of GameObjects
-		GameObject(const GameObject&) = delete;
-		GameObject& operator=(const GameObject&) = delete;
-		// Enable move constructor and assignment operator
-		GameObject(GameObject&&) = default;
-		GameObject& operator=(GameObject&&) = default;
+        std::shared_ptr<Collider> GetCollider() { return m_Collider; }
+        void SetCollider(const std::shared_ptr<Collider>& collider) { m_Collider = collider; }
 
-		void Destroy();
+        Dynamics& GetDynamics() { return m_Dynamics; }
+        void SetModel(const std::shared_ptr<Model>& model) { m_Model = model; }
 
-		bool EnableGravity{false};
+        std::shared_ptr<Model> GetModel() const { return m_Model; }
 
-	private:
-		GameObject(IdT objectID) : m_ObjectID(objectID) {}
+        bool EnableGravity{false};
+        bool EnableCollision{false};
 
-		IdT m_ObjectID{};
+    private:
+        GameObject(IdType objectID) : m_ObjectID(objectID)
+        {
+        }
 
-		std::shared_ptr<Model> m_Model{};
-		std::shared_ptr<Collider> m_Collider{};
-		Transform m_Transform{};
-		Dynamics m_Dynamics{};
-	};
+        IdType m_ObjectID{};
 
+        std::shared_ptr<Model> m_Model{};
+        std::shared_ptr<Collider> m_Collider{nullptr};
+        Transform m_Transform{};
+        Dynamics m_Dynamics{};
+    };
 }

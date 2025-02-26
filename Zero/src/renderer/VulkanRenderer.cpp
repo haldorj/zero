@@ -405,6 +405,8 @@ namespace Zero
 
         for (auto gameObj : Application::Get().GetGameObjects())
         {
+            if (!gameObj)
+                continue;
             if (gameObj->GetModel())
 			    gameObj->GetModel()->DestroyModel();
 		}

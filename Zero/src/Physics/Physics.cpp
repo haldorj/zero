@@ -1,22 +1,22 @@
-#include "Physics.h"
+﻿#include "Physics.h"
 
 #include <memory>
 #include <Core/core.h>
 #include <Scene/GameObject.h>
 
-#include <Physics/Collision.h>
+#include <Physics/Collision/Collider.h>
+
+#include "Collision/TestCollision.h"
 
 namespace Zero {
 	void PhysicsWorld::Init()
 	{
-		const auto impulseSolver = std::make_shared<ImpulseSolver>();
-		m_Solvers.emplace_back(impulseSolver);
+		m_Solvers.emplace_back(std::make_shared<TestSolver>());
 	}
 
-	void PhysicsWorld::Step(const float dt, std::vector<std::shared_ptr<GameObject>>& gameObjects) const
+	void PhysicsWorld::Step(const float dt, const std::vector<std::shared_ptr<GameObject>>& gameObjects) const
 	{
 		ResolveCollisions(dt, gameObjects);
-
 		for (const auto& obj : gameObjects)
 		{
 			if (!obj->EnableGravity) 
@@ -32,39 +32,44 @@ namespace Zero {
 		}
 	}
 
-	void PhysicsWorld::ResolveCollisions(const float dt, std::vector<std::shared_ptr<GameObject>>& gameObjects) const
+	void PhysicsWorld::ResolveCollisions(const float dt, const std::vector<std::shared_ptr<GameObject>>& gameObjects) const
 	{
 		std::vector<Collision> collisions;
-		for (auto& obj : gameObjects)
-		{
-			for (const auto& solver : m_Solvers)
-			{
-				solver->Solve(collisions, dt);
-			}
 
-			for (auto& other : gameObjects)
+		for (const auto& a : gameObjects)
+		{
+			for (const auto& b : gameObjects) 
 			{
-				if (!obj)
+				if (a == b)
 				{
 					break;
 				}
-				if (obj == other)
-				{
-					break;
-				}
-				if (!obj->GetCollider() || !other->GetCollider())
+				
+				if (!a->GetCollider() || !b->GetCollider())
 				{
 					continue;
 				}
 
-				CollisionPoints collisionPoints = obj->GetCollider()->TestCollision(&obj->GetTransform(),
-					other->GetCollider().get(), &other->GetTransform());
-				
-				if (collisionPoints.HasCollision)
+				if (!a->EnableCollision || !b->EnableCollision)
 				{
-					collisions.emplace_back(obj, other, collisionPoints);
+					continue;
+				}
+				
+				CollisionPoints points = TestCollision(
+					a->GetCollider().get(), &a->GetTransform(),
+					b->GetCollider().get(), &b->GetTransform()
+				);
+
+				if (points.HasCollision)
+				{
+					collisions.emplace_back(a, b, points);
 				}
 			}
+		}
+
+		for (const auto& solver : m_Solvers)
+		{
+			solver->Solve(collisions, dt);
 		}
 	}
 

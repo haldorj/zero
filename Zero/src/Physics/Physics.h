@@ -1,10 +1,10 @@
-#pragma once
+﻿#pragma once
 
 #include <glm/glm.hpp>
 #include <memory>
 
 #include <Scene/Transform.h>
-#include <Physics/Solver.h>
+#include <Physics/Solvers/Solver.h>
 
 namespace Zero {
 
@@ -17,8 +17,8 @@ namespace Zero {
 		~PhysicsWorld() = default;
 
 		void Init();
-		void Step(float dt, std::vector<std::shared_ptr<GameObject>>& gameObjects) const;
-		void ResolveCollisions(float dt, std::vector<std::shared_ptr<GameObject>>& gameObjects) const;
+		void Step(float dt, const std::vector<std::shared_ptr<GameObject>>& gameObjects) const;
+		void ResolveCollisions(float dt, const std::vector<std::shared_ptr<GameObject>>& gameObjects) const;
 
 	private:
 		std::vector<std::shared_ptr<Solver>> m_Solvers;

@@ -71,7 +71,7 @@ namespace Zero
         void InitGameObjects();
 
         void SpawnSphere();
-        void DestroyGameObject(GameObject::IdT objectID);
+        void DestroyGameObject(GameObject::IdType objectID);
 
         static Application& Get();
 

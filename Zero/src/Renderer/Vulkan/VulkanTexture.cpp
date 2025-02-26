@@ -216,6 +216,8 @@ namespace Zero {
     void VulkanTexture::DestroyImage()
     {
         VulkanRenderer* renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+        vkDeviceWaitIdle(renderer->GetDevice());
+        
 		vkDestroyImageView(renderer->GetDevice(), m_Image.ImageView, nullptr);
 		vmaDestroyImage(renderer->GetAllocator(), m_Image.Image, m_Image.Allocation);
     }

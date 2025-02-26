@@ -1,6 +1,7 @@
-#pragma once
+﻿#pragma once
 #include <vector>
-#include <Physics/Collision.h>
+
+#include "Physics/Collision/Collider.h"
 
 namespace Zero {
 
@@ -12,11 +13,11 @@ namespace Zero {
 				std::vector<Collision>& collisions,
 				float dt) = 0;
 	};
-
-	class ImpulseSolver : public Solver
+	
+	class TestSolver : public Solver
 	{
 		public:
-			void Solve(
+		void Solve(
 				std::vector<Collision>& collisions,
 				float dt) override;
 	};

@@ -66,7 +66,8 @@ namespace Zero
     void VulkanMesh::DestroyMesh() const
     {
         const auto renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
-
+        vkDeviceWaitIdle(renderer->GetDevice());
+        
         VulkanBufferManager::DestroyBuffer(renderer->GetAllocator(), m_GPUMeshBuffers.IndexBuffer);
         VulkanBufferManager::DestroyBuffer(renderer->GetAllocator(), m_GPUMeshBuffers.VertexBuffer);
     }
