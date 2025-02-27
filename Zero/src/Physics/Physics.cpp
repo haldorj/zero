@@ -11,7 +11,8 @@
 namespace Zero {
 	void PhysicsWorld::Init()
 	{
-		m_Solvers.emplace_back(std::make_shared<TestSolver>());
+		m_Solvers.emplace_back(std::make_shared<PositionSolver>());
+		m_Solvers.emplace_back(std::make_shared<ImpulseSolver>());
 	}
 
 	void PhysicsWorld::Step(const float dt, const std::vector<std::shared_ptr<GameObject>>& gameObjects) const

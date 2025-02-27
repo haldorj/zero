@@ -5,41 +5,34 @@
 
 namespace Zero
 {
-    void TestSolver::Solve(std::vector<Collision>& collisions, float dt)
+    void ImpulseSolver::Solve(std::vector<Collision>& collisions, float dt)
     {
         for (auto& [ObjA, ObjB, Points] : collisions)
         {
             // Calculate the relative velocity
-            glm::vec3 RelativeVelocity = ObjB->GetDynamics().Velocity - ObjA->GetDynamics().Velocity;
+            glm::vec3 relativeVelocity = ObjB->GetDynamics().Velocity - ObjA->GetDynamics().Velocity;
             
             // Calculate the relative velocity in terms of the normal direction
-            float VelocityAlongNormal = glm::dot(RelativeVelocity, Points.Normal);
+            const float velocityAlongNormal = glm::dot(relativeVelocity, Points.Normal);
+            
+            if (ObjA->EnableGravity)
+                ObjA->GetDynamics().AddImpulse(Points.Normal * velocityAlongNormal);
+            if (ObjB->EnableGravity)
+                ObjB->GetDynamics().AddImpulse(-Points.Normal * velocityAlongNormal);
+        }
+    }
 
-            ObjA->GetDynamics().AddImpulse(Points.Normal * VelocityAlongNormal);
-            ObjB->GetDynamics().AddImpulse(-Points.Normal * VelocityAlongNormal);
-
-            // Solve the position error
-            if (Points.Depth > -0.01f)
+    void PositionSolver::Solve(std::vector<Collision>& collisions, float dt)
+    {
+        for (auto& [ObjA, ObjB, Points] : collisions)
+        {
+            if (ObjA->EnableGravity)
             {
-                if (ObjA->EnableGravity)
-                {
-                    ObjA->GetTransform().Location += Points.Normal * Points.Depth;
-                }
-                if (ObjB->EnableGravity)
-                {
-                    ObjB->GetTransform().Location -= Points.Normal * Points.Depth;
-                }
+                ObjA->GetTransform().Location += Points.Normal * Points.Depth;
             }
-            else if (Points.Depth < 0.01f)
+            if (ObjB->EnableGravity)
             {
-                if (ObjA->EnableGravity)
-                {
-                    ObjA->GetTransform().Location -= Points.Normal * Points.Depth;
-                }
-                if (ObjB->EnableGravity)
-                {
-                    ObjB->GetTransform().Location += Points.Normal * Points.Depth;
-                }
+                ObjB->GetTransform().Location -= Points.Normal * Points.Depth;
             }
         }
     }

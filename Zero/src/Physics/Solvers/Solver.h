@@ -14,7 +14,15 @@ namespace Zero {
 				float dt) = 0;
 	};
 	
-	class TestSolver : public Solver
+	class ImpulseSolver : public Solver
+	{
+		public:
+		void Solve(
+				std::vector<Collision>& collisions,
+				float dt) override;
+	};
+
+	class PositionSolver : public Solver
 	{
 		public:
 		void Solve(

@@ -71,6 +71,7 @@ namespace Zero
         void InitGameObjects();
 
         void SpawnSphere();
+        void SpawnSphereAtLocation(glm::vec3 location, float scale);
         void DestroyGameObject(GameObject::IdType objectID);
 
         static Application& Get();

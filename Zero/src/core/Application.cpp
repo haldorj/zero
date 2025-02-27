@@ -32,9 +32,9 @@ namespace Zero {
         blackBison->SetModel(ModelFactory::CreateModel(modelPaths[0].c_str(), m_RendererType));
         blackBison->GetTransform().Location = { 15, 0, 0 };
         blackBison->GetTransform().Scale = glm::vec3{ 0.5f };
-        blackBison->SetCollider(std::make_shared<SphereCollider>(glm::vec3{ 0, 0, 0 }, 5.0f));
         blackBison->GetDynamics().Mass = 100;
-        blackBison->EnableCollision = true;
+        blackBison->SetCollider(std::make_shared<SphereCollider>(glm::vec3{ 0, 0, 0 }, 5.0f));
+        blackBison->EnableCollision = false;
 
         std::shared_ptr<GameObject> greenRhino = std::make_shared<GameObject>(GameObject::Create());
         greenRhino->SetModel(ModelFactory::CreateModel(modelPaths[1].c_str(), m_RendererType));
@@ -50,9 +50,12 @@ namespace Zero {
         plane->EnableGravity = false;
         plane->EnableCollision = true;
 
+        
+
         m_GameObjects.emplace_back(blackBison);
         m_GameObjects.emplace_back(greenRhino);
         m_GameObjects.emplace_back(plane);
+        SpawnSphereAtLocation({ 0, 0, 20 }, 10.0f);
 
         glm::vec3 direction = { 0, 1, -0.5 };
         direction = glm::normalize(direction);
@@ -80,6 +83,23 @@ namespace Zero {
         sphere->GetDynamics().AddImpulse(direction * 50.0f);
 
 		m_GameObjects.emplace_back(sphere);
+    }
+
+    void Application::SpawnSphereAtLocation(glm::vec3 location, float scale)
+    {
+        const auto sphere = std::make_shared<GameObject>(GameObject::Create());
+        sphere->SetModel(ModelFactory::CreateModel("../assets/models/sphere.glb", m_RendererType));
+        sphere->GetTransform().Location = location;
+        sphere->GetTransform().Scale = glm::vec3{ scale };
+        sphere->GetDynamics().Mass = scale;
+        sphere->SetCollider(std::make_shared<SphereCollider>(glm::vec3 {0, 0, 0}, scale));
+        sphere->EnableGravity = false;
+        sphere->EnableCollision = true;
+
+        const glm::vec3 direction = m_MainCamera.GetForwardVector();
+        sphere->GetDynamics().AddImpulse(direction * 50.0f);
+
+        m_GameObjects.emplace_back(sphere);
     }
 
     void Application::DestroyGameObject(GameObject::IdType objectID)
