@@ -9,14 +9,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c1e6d020-1b85-454d-b55c-363ab39862b5" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.zero/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.zero/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/Physics/Collision/Collider.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/Physics/Collision/Collider.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Zero/src/Physics/Collision/TestCollision.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/Physics/Collision/TestCollision.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/Physics/Collision/TestCollision.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/Physics/Collision/TestCollision.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/Physics/Physics.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/Physics/Physics.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/Physics/Physics.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/Physics/Physics.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/Physics/Solvers/Solver.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/Physics/Solvers/Solver.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/Scene/GameObject.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/Scene/GameObject.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/core/Application.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/core/Application.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -147,7 +140,7 @@
       <workItem from="1740682077254" duration="3216000" />
       <workItem from="1740694276775" duration="1737000" />
       <workItem from="1740790739930" duration="9633000" />
-      <workItem from="1740844787367" duration="7233000" />
+      <workItem from="1740844787367" duration="13093000" />
     </task>
     <servers />
   </component>

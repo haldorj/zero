@@ -20,8 +20,7 @@ namespace Zero
         {
             return points;
         }
-
-        // From A to B
+        
         glm::vec3 normal{};
 
         if (centerA == centerB)
@@ -30,12 +29,12 @@ namespace Zero
         }
         else
         {
-            normal = glm::normalize(centerB - centerA);
+            normal = glm::normalize(centerA - centerB);
         }
 
-        points.ADeep = centerA + normal * sphereA->Radius;
-        points.BDeep = centerB - normal * sphereB->Radius;
-        points.Normal = points.BDeep - points.ADeep;
+        points.ADeep = centerA - normal * sphereA->Radius;
+        points.BDeep = centerB + normal * sphereB->Radius;
+        points.Normal = normal;
         points.Depth = sphereA->Radius + sphereB->Radius - distance;
         points.HasCollision = true;
         return points;
