@@ -7,8 +7,8 @@ namespace Zero {
 
 	struct CollisionPoints
 	{
-		glm::vec3 A;		// Furthest point of object A Into B
-		glm::vec3 B;		// Furthest point of object B Into A
+		glm::vec3 ADeep;		// Furthest point of object A Into B
+		glm::vec3 BDeep;		// Furthest point of object B Into A
 		glm::vec3 Normal;	// Normal of the collision
 		float Depth;		// Depth of the collision
 		bool HasCollision;
@@ -27,6 +27,7 @@ namespace Zero {
 	struct Collider
 	{
 		Collider() = default;
+		virtual ~Collider() = default;
 		ColliderType Type;
 	};
 

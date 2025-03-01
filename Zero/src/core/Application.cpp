@@ -32,7 +32,7 @@ namespace Zero {
         blackBison->SetModel(ModelFactory::CreateModel(modelPaths[0].c_str(), m_RendererType));
         blackBison->GetTransform().Location = { 15, 0, 0 };
         blackBison->GetTransform().Scale = glm::vec3{ 0.5f };
-        blackBison->GetDynamics().Mass = 100;
+        blackBison->GetRigidBody().Mass = 100;
         blackBison->SetCollider(std::make_shared<SphereCollider>(glm::vec3{ 0, 0, 0 }, 5.0f));
         blackBison->EnableCollision = false;
 
@@ -40,7 +40,7 @@ namespace Zero {
         greenRhino->SetModel(ModelFactory::CreateModel(modelPaths[1].c_str(), m_RendererType));
         greenRhino->GetTransform().Location = { -15, 0, 0 };
         greenRhino->GetTransform().Scale = glm::vec3{ 0.5f };
-        greenRhino->GetDynamics().Mass = 2;
+        greenRhino->GetRigidBody().Mass = 2;
 
         std::shared_ptr<GameObject> plane = std::make_shared<GameObject>(GameObject::Create());
         plane->SetModel(ModelFactory::CreateModel(modelPaths[2].c_str(), m_RendererType));
@@ -63,7 +63,7 @@ namespace Zero {
         constexpr float force = 20;
         const glm::vec3 forceVector = direction * force;
 
-        m_GameObjects[1]->GetDynamics().AddImpulse(forceVector);
+        m_GameObjects[1]->GetRigidBody().AddImpulse(forceVector);
     }
 
     void Application::SpawnSphere()
@@ -74,13 +74,13 @@ namespace Zero {
 		sphere->SetModel(ModelFactory::CreateModel("../assets/models/sphere.glb", m_RendererType));
 		sphere->GetTransform().Location = m_MainCamera.GetPosition();
 		sphere->GetTransform().Scale = glm::vec3{ x };
-		sphere->GetDynamics().Mass = x;
+		sphere->GetRigidBody().Mass = x;
         sphere->SetCollider(std::make_shared<SphereCollider>(glm::vec3 {0, 0, 0}, x));
 		sphere->EnableGravity = true;
         sphere->EnableCollision = true;
 
         const glm::vec3 direction = m_MainCamera.GetForwardVector();
-        sphere->GetDynamics().AddImpulse(direction * 50.0f);
+        sphere->GetRigidBody().AddImpulse(direction * 50.0f);
 
 		m_GameObjects.emplace_back(sphere);
     }
@@ -91,13 +91,13 @@ namespace Zero {
         sphere->SetModel(ModelFactory::CreateModel("../assets/models/sphere.glb", m_RendererType));
         sphere->GetTransform().Location = location;
         sphere->GetTransform().Scale = glm::vec3{ scale };
-        sphere->GetDynamics().Mass = scale;
+        sphere->GetRigidBody().Mass = scale;
         sphere->SetCollider(std::make_shared<SphereCollider>(glm::vec3 {0, 0, 0}, scale));
         sphere->EnableGravity = false;
         sphere->EnableCollision = true;
 
         const glm::vec3 direction = m_MainCamera.GetForwardVector();
-        sphere->GetDynamics().AddImpulse(direction * 50.0f);
+        sphere->GetRigidBody().AddImpulse(direction * 50.0f);
 
         m_GameObjects.emplace_back(sphere);
     }

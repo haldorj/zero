@@ -25,11 +25,11 @@ namespace Zero {
 				continue;
 			}
 
-			obj->GetDynamics().Force = obj->GetDynamics().Mass * GRAVITY;
-			obj->GetDynamics().Velocity += obj->GetDynamics().Force / obj->GetDynamics().Mass * dt;
-			obj->GetTransform().Location += obj->GetDynamics().Velocity * dt;
+			obj->GetRigidBody().Force = obj->GetRigidBody().Mass * GRAVITY;
+			obj->GetRigidBody().Velocity += obj->GetRigidBody().Force / obj->GetRigidBody().Mass * dt;
+			obj->GetTransform().Location += obj->GetRigidBody().Velocity * dt;
 
-			obj->GetDynamics().Force = glm::vec3(0.0f);
+			obj->GetRigidBody().Force = glm::vec3(0.0f);
 		}
 	}
 

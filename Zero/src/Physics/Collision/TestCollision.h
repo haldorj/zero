@@ -47,7 +47,7 @@ namespace Zero
         // results consistent, we need to swap the points
         if (swap)
         {
-            std::swap(points.A, points.B);
+            std::swap(points.ADeep, points.BDeep);
             points.Normal = -points.Normal;
         }
 

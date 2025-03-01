@@ -10,15 +10,19 @@ namespace Zero
         for (auto& [ObjA, ObjB, Points] : collisions)
         {
             // Calculate the relative velocity
-            glm::vec3 relativeVelocity = ObjB->GetDynamics().Velocity - ObjA->GetDynamics().Velocity;
-            
+            glm::vec3 relativeVelocity = ObjA->GetRigidBody().Velocity - ObjB->GetRigidBody().Velocity;
+
             // Calculate the relative velocity in terms of the normal direction
             const float velocityAlongNormal = glm::dot(relativeVelocity, Points.Normal);
-            
+
+            // Do not resolve if objects are separating
+            if (velocityAlongNormal >= 0)
+                continue;
+
             if (ObjA->EnableGravity)
-                ObjA->GetDynamics().AddImpulse(Points.Normal * velocityAlongNormal);
+                ObjA->GetRigidBody().AddImpulse(-Points.Normal * velocityAlongNormal);
             if (ObjB->EnableGravity)
-                ObjB->GetDynamics().AddImpulse(-Points.Normal * velocityAlongNormal);
+                ObjB->GetRigidBody().AddImpulse(Points.Normal * velocityAlongNormal);
         }
     }
 

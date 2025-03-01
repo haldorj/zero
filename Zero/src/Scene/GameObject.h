@@ -33,7 +33,7 @@ namespace Zero
         std::shared_ptr<Collider> GetCollider() { return m_Collider; }
         void SetCollider(const std::shared_ptr<Collider>& collider) { m_Collider = collider; }
 
-        Dynamics& GetDynamics() { return m_Dynamics; }
+        RigidBody& GetRigidBody() { return m_RigidBody; }
         void SetModel(const std::shared_ptr<Model>& model) { m_Model = model; }
 
         std::shared_ptr<Model> GetModel() const { return m_Model; }
@@ -51,6 +51,6 @@ namespace Zero
         std::shared_ptr<Model> m_Model{};
         std::shared_ptr<Collider> m_Collider{nullptr};
         Transform m_Transform{};
-        Dynamics m_Dynamics{};
+        RigidBody m_RigidBody{};
     };
 }

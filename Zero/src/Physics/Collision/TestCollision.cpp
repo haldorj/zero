@@ -7,8 +7,8 @@ namespace Zero
     CollisionPoints TestSphereToSphere(const Collider* sphereColliderA, const Transform* sphereTransformA,
                                        const Collider* sphereColliderB, const Transform* sphereTransformB)
     {
-        const SphereCollider* sphereA = (SphereCollider*)sphereColliderA;
-        const SphereCollider* sphereB = (SphereCollider*)sphereColliderB;
+        const auto sphereA = dynamic_cast<const SphereCollider*>(sphereColliderA);
+        const auto sphereB = dynamic_cast<const SphereCollider*>(sphereColliderB);
 
         const glm::vec3 centerA = sphereTransformA->Location;
         const glm::vec3 centerB = sphereTransformB->Location;
@@ -21,9 +21,21 @@ namespace Zero
             return points;
         }
 
-        points.A = centerA - points.Normal * sphereA->Radius;
-        points.B = centerB + points.Normal * sphereB->Radius;
-        points.Normal = glm::normalize(centerA - centerB);
+        // From A to B
+        glm::vec3 normal{};
+
+        if (centerA == centerB)
+        {
+            normal = {0.f,1.f,0.f};
+        }
+        else
+        {
+            normal = glm::normalize(centerB - centerA);
+        }
+
+        points.ADeep = centerA + normal * sphereA->Radius;
+        points.BDeep = centerB - normal * sphereB->Radius;
+        points.Normal = points.BDeep - points.ADeep;
         points.Depth = sphereA->Radius + sphereB->Radius - distance;
         points.HasCollision = true;
         return points;
@@ -32,8 +44,8 @@ namespace Zero
     CollisionPoints TestSphereToPlane(const Collider* sphereCollider, const Transform* sphereTransform,
                                       const Collider* planeCollider, const Transform* planeTransform)
     {
-        const SphereCollider* sphere = (SphereCollider*)sphereCollider;
-        const PlaneCollider* plane = (PlaneCollider*)planeCollider;
+        const auto sphere = dynamic_cast<const SphereCollider*>(sphereCollider);
+        const auto plane = dynamic_cast<const PlaneCollider*>(planeCollider);
 
         const glm::vec3 sphereCenter = sphereTransform->Location;
         const glm::vec3 planeNormal = glm::normalize(plane->Normal);
@@ -43,15 +55,14 @@ namespace Zero
         const float distance = glm::dot(sphereCenter - pointOnPlane, planeNormal);
 
         CollisionPoints points{};
-        if (std::abs(distance) < sphere->Radius) // Correct condition check
+        if (distance < sphere->Radius)
         {
-            points.A = sphereCenter - planeNormal * std::abs(distance);
-            points.B = points.A - planeNormal * (sphere->Radius - std::abs(distance));
+            points.ADeep = sphereCenter - planeNormal * sphere->Radius;
+            points.BDeep = sphereCenter - planeNormal * distance;
             points.Normal = planeNormal;
             points.Depth = sphere->Radius - std::abs(distance);
             points.HasCollision = true;
         }
-
         return points;
     }
 }
