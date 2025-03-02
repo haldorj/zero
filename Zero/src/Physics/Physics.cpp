@@ -27,7 +27,7 @@ namespace Zero {
 
 			obj->GetRigidBody().Force = obj->GetRigidBody().Mass * GRAVITY;
 			obj->GetRigidBody().Velocity += obj->GetRigidBody().Force / obj->GetRigidBody().Mass * dt;
-			obj->GetTransform().Location += obj->GetRigidBody().Velocity * dt;
+			obj->GetTransform().Position += obj->GetRigidBody().Velocity * dt;
 
 			obj->GetRigidBody().Force = glm::vec3(0.0f);
 		}

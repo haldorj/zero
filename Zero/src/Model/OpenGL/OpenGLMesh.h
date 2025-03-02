@@ -8,7 +8,7 @@
 #include"Renderer/OpenGL/EBO.h"
 #include"Renderer/OpenGL/OpenGLTexture.h"
 #include <glad/glad.h>
-#include <Camera/Camera.h>
+#include <Camera/EditorCamera.h>
 
 namespace Zero
 {

@@ -10,8 +10,8 @@ namespace Zero
         const auto sphereA = dynamic_cast<const SphereCollider*>(sphereColliderA);
         const auto sphereB = dynamic_cast<const SphereCollider*>(sphereColliderB);
 
-        const glm::vec3 centerA = sphereTransformA->Location;
-        const glm::vec3 centerB = sphereTransformB->Location;
+        const glm::vec3 centerA = sphereTransformA->Position + sphereA->Center;
+        const glm::vec3 centerB = sphereTransformB->Position + sphereB->Center;
 
         const float distance = glm::distance(centerA, centerB);
 
@@ -46,10 +46,10 @@ namespace Zero
         const auto sphere = dynamic_cast<const SphereCollider*>(sphereCollider);
         const auto plane = dynamic_cast<const PlaneCollider*>(planeCollider);
 
-        const glm::vec3 sphereCenter = sphereTransform->Location;
+        const glm::vec3 sphereCenter = sphereTransform->Position + sphere->Center;
         const glm::vec3 planeNormal = glm::normalize(plane->Normal);
 
-        const glm::vec3 pointOnPlane = planeTransform->Location;
+        const glm::vec3 pointOnPlane = planeTransform->Position;
 
         const float distance = glm::dot(sphereCenter - pointOnPlane, planeNormal);
 

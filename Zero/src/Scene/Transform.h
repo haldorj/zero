@@ -3,17 +3,23 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/transform.hpp>
 
+#include "glm/detail/type_quat.hpp"
+
+#define GLM_FORCE_RADIANS
+
 namespace Zero {
 
 	struct Transform
 	{
-		glm::vec3 Location{ 0.0f };
+		glm::vec3 Position{ 0.0f };
 		glm::vec3 Rotation{ 0.0f };
 		glm::vec3 Scale{ 1.0f };
 
+		glm::quat RotationQuat = glm::quat(Rotation);
+
 		glm::mat4 GetMatrix() const
 		{
-			return glm::translate(glm::mat4(1.0f), Location) *
+			return glm::translate(glm::mat4(1.0f), Position) *
 				glm::rotate(glm::mat4(1.0f), Rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
 				glm::rotate(glm::mat4(1.0f), Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
 				glm::rotate(glm::mat4(1.0f), Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
@@ -36,6 +42,15 @@ namespace Zero {
 				glm::rotate(glm::mat4(1.0f), Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
 				glm::rotate(glm::mat4(1.0f), Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
 				glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+		}
+
+		glm::vec3 GetForwardVector() const
+		{
+			return glm::vec3(
+				glm::rotate(glm::mat4(1.0f), Rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
+				glm::rotate(glm::mat4(1.0f), Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
+				glm::rotate(glm::mat4(1.0f), Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
+				glm::vec4(0.0f, 0.0f, -1.0f, 1.0f));
 		}
 	};
 

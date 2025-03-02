@@ -1,0 +1,41 @@
+#pragma once
+#include "Camera.h"
+#include "glm/glm.hpp"
+#include "GLFW/glfw3.h"
+
+namespace Zero
+{
+    class EditorCamera : Camera
+    {
+    public:
+        void Update(float deltaTime);
+        void ProcessInput(GLFWwindow* window, float deltaTime);
+        glm::mat4 GetViewMatrix() const override;
+        glm::mat4 GetRotationMatrix() const override;
+
+        glm::vec3 GetPosition() const override { return m_Transform.Position; }
+        void SetPosition(const glm::vec3& position) { m_Transform.Position = position; }
+        Transform GetTransform() const override { return m_Transform; }
+        
+        glm::vec3 GetForwardVector() const;
+
+        glm::vec3 GetDirection() const { return m_Direction; }
+
+        float GetFOV() const override { return m_FOV; }
+        void SetFOV(float fov) { m_FOV = fov; }
+
+    private:
+        // vertical rotation
+        float m_Pitch{0.f};
+        // horizontal rotation
+        float m_Yaw{180.f};
+
+        glm::vec3 m_Direction = {};
+        float m_FOV = 70.f;
+
+        float m_MovementSpeed = 30.f;
+        float m_RotationSpeed = 0.4f;
+
+        Transform m_Transform = {};
+    };
+} // namespace Zero

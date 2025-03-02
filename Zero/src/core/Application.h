@@ -3,7 +3,8 @@
 #include <GLFW/glfw3.h>
 #include <Renderer/Vulkan/vk_types.h>
 
-#include "camera/Camera.h"
+#include "camera/EditorCamera.h"
+#include "Camera/PerspectiveCamera.h"
 #include "renderer/OpenGLRenderer.h"
 #include "renderer/VulkanRenderer.h"
 
@@ -54,16 +55,13 @@ namespace Zero
     class Application
     {
     public:
-        //initializes everything in the engine
         void Init();
-        //shuts down the engine
         void Cleanup() const;
-        //draw loop
-        void Draw();
-        void UpdateImGui();
-        //run main loop
         void Run();
 
+        void Draw();
+        void UpdateImGui();
+        
         void InitGLFW(RendererAPI rendererType);
 
         static float GetRandomFloat(float min, float max);
@@ -71,22 +69,28 @@ namespace Zero
         void InitGameObjects();
 
         void SpawnSphere();
-        void SpawnSphereAtLocation(glm::vec3 location, float scale);
+        void SpawnSphereAtLocation(const glm::vec3& location, float scale);
         void DestroyGameObject(GameObject::IdType objectID);
+
+        bool IsEditorMode() const { return m_EditorMode; }
 
         static Application& Get();
 
         Renderer* GetRenderer() const { return m_Renderer; }
         RendererAPI GetRendererType() const { return m_RendererType; }
         GLFWwindow* GetWindow() const { return m_Window; }
-        Camera& GetMainCamera() { return m_MainCamera; }
+        Camera& GetActiveCamera() const { return *m_ActiveCamera; }
 
         std::vector<std::shared_ptr<GameObject>>& GetGameObjects() { return m_GameObjects; }
 
     private:
-        Camera m_MainCamera{};
+        Camera* m_ActiveCamera = nullptr;
+        EditorCamera m_EditorCamera{};
+        PerspectiveCamera m_PlayerCamera{};
         float m_Fov{ 0.0f };
 
+        bool m_EditorMode{ true };
+        
         bool m_IsInitialized{false};
         bool m_StopRendering{false};
 

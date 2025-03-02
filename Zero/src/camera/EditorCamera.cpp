@@ -1,19 +1,23 @@
-#include "Camera.h"
+#include "EditorCamera.h"
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/quaternion.hpp>
-#include <iostream>
+
+#include "Core/Application.h"
 
 namespace Zero
 {
-    void Camera::Update(float deltaTime)
+    void EditorCamera::Update(float deltaTime)
     {
         const glm::mat4 cameraRotation = GetRotationMatrix();
-        m_Position += glm::vec3(cameraRotation * glm::vec4(m_Direction * m_MovementSpeed * deltaTime, 0.f));
+        m_Transform.Position += glm::vec3(cameraRotation * glm::vec4(m_Direction * m_MovementSpeed * deltaTime, 0.f));
     }
 
-    void Camera::ProcessInput(GLFWwindow* window, float deltaTime)
+    void EditorCamera::ProcessInput(GLFWwindow* window, float deltaTime)
     {
+        if (!Application::Get().IsEditorMode())
+            return;
+        
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         {
             m_Direction.z = -1;
@@ -74,14 +78,14 @@ namespace Zero
         m_Yaw += static_cast<float>(0.016 * (deltaX * m_RotationSpeed));
     }
     
-    glm::mat4 Camera::GetViewMatrix()
+    glm::mat4 EditorCamera::GetViewMatrix() const
     {
-        const glm::mat4 cameraTranslation = glm::translate(glm::mat4(1.f), m_Position);
+        const glm::mat4 cameraTranslation = glm::translate(glm::mat4(1.f), m_Transform.Position);
         const glm::mat4 cameraRotation = GetRotationMatrix();
         return glm::inverse(cameraTranslation * cameraRotation);
     }
 
-    glm::mat4 Camera::GetRotationMatrix()
+    glm::mat4 EditorCamera::GetRotationMatrix() const
     {
         const glm::quat pitchRotation = glm::angleAxis(m_Pitch, glm::vec3 { 1.f, 0.f, 0.f });
         const glm::quat yawRotation = glm::angleAxis(m_Yaw, glm::vec3 { 0.f, -1.f, 0.f });
@@ -89,7 +93,7 @@ namespace Zero
         return glm::toMat4(yawRotation) * glm::toMat4(pitchRotation);
     }
 
-    glm::vec3 Camera::GetForwardVector()
+    glm::vec3 EditorCamera::GetForwardVector() const
     {
         const glm::mat4 rotation = GetRotationMatrix();
 

@@ -93,8 +93,8 @@ namespace Zero
         glfwGetWindowSize(Application::Get().GetWindow(), &m_Width, &m_Height);
 
         // model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
-        view = Application::Get().GetMainCamera().GetViewMatrix();
-        projection = glm::perspective(glm::radians(Application::Get().GetMainCamera().GetFOV()), 
+        view = Application::Get().GetActiveCamera().GetViewMatrix();
+        projection = glm::perspective(glm::radians(Application::Get().GetActiveCamera().GetFOV()), 
             (float)m_Width / (float)m_Height, 0.1f, 10000.0f);
 
         int viewLoc = glGetUniformLocation(m_ShaderProgram->GetID(), "view");
@@ -102,7 +102,7 @@ namespace Zero
         int projLoc = glGetUniformLocation(m_ShaderProgram->GetID(), "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
         int viewPos = glGetUniformLocation(m_ShaderProgram->GetID(), "viewPos");
-        glUniform3fv(viewPos, 1, glm::value_ptr(Application::Get().GetMainCamera().GetPosition()));
+        glUniform3fv(viewPos, 1, glm::value_ptr(Application::Get().GetActiveCamera().GetPosition()));
 
         for (auto& gameObj : gameObjects)
 		{

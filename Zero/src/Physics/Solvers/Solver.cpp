@@ -32,11 +32,11 @@ namespace Zero
         {
             if (ObjA->EnableGravity)
             {
-                ObjA->GetTransform().Location += Points.Normal * Points.Depth;
+                ObjA->GetTransform().Position += Points.Normal * Points.Depth;
             }
             if (ObjB->EnableGravity)
             {
-                ObjB->GetTransform().Location -= Points.Normal * Points.Depth;
+                ObjB->GetTransform().Position -= Points.Normal * Points.Depth;
             }
         }
     }

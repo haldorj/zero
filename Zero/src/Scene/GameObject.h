@@ -38,8 +38,11 @@ namespace Zero
 
         std::shared_ptr<Model> GetModel() const { return m_Model; }
 
+        void UpdatePlayer(float deltaTime);
+        
         bool EnableGravity{false};
         bool EnableCollision{false};
+        bool IsJumping = false;
 
     private:
         GameObject(IdType objectID) : m_ObjectID(objectID)

@@ -1,7 +1,6 @@
 #include "VulkanMesh.h"
 #include <Renderer/VulkanRenderer.h>
 #include <Core/Application.h>
-#include <glm/ext/matrix_clip_space.hpp>
 #include <Renderer/Vulkan/VulkanBuffer.h>
 
 namespace Zero

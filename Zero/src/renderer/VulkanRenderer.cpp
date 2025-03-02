@@ -302,8 +302,8 @@ namespace Zero
 
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_PlainPipeline);
 
-        glm::mat4 view = Application::Get().GetMainCamera().GetViewMatrix();
-        glm::mat4 projection = glm::perspective(glm::radians(Application::Get().GetMainCamera().GetFOV()),
+        glm::mat4 view = Application::Get().GetActiveCamera().GetViewMatrix();
+        glm::mat4 projection = glm::perspective(glm::radians(Application::Get().GetActiveCamera().GetFOV()),
                                                 (float)m_DrawExtent.width / (float)m_DrawExtent.height, 0.1f, 10000.f);
 
         projection[1][1] *= -1;
@@ -357,8 +357,8 @@ namespace Zero
 
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TexturedPipeline);
 
-        glm::mat4 view = Application::Get().GetMainCamera().GetViewMatrix();
-        glm::mat4 projection = glm::perspective(glm::radians(Application::Get().GetMainCamera().GetFOV()),
+        glm::mat4 view = Application::Get().GetActiveCamera().GetViewMatrix();
+        glm::mat4 projection = glm::perspective(glm::radians(Application::Get().GetActiveCamera().GetFOV()),
             (float)m_DrawExtent.width / (float)m_DrawExtent.height, 0.1f, 10000.f);
 
         projection[1][1] *= -1;
@@ -368,7 +368,7 @@ namespace Zero
             GPUDrawPushConstants pushConstants;
             pushConstants.ModelMatrix = gameObj->GetTransform().GetMatrix();
             pushConstants.WorldViewProjMatrix = projection * view;
-            pushConstants.cameraPos = Application::Get().GetMainCamera().GetPosition();
+            pushConstants.cameraPos = Application::Get().GetActiveCamera().GetPosition();
             gameObj->GetModel()->Draw(cmd, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerLinear, pushConstants);
         }
 
