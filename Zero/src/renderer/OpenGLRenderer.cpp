@@ -129,7 +129,7 @@ namespace Zero
     }
 
     // Checks if the different Shaders have compiled properly
-    void OpenGLShader::compileErrors(unsigned int shader, const char* type)
+    void OpenGLShader::CompileErrors(const unsigned int shader, const char* type)
     {
         // Stores status of compilation
         GLint hasCompiled;

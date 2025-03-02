@@ -151,6 +151,8 @@
     <ClInclude Include="src\Model\Vulkan\VulkanMesh.h" />
     <ClInclude Include="src\Model\Vulkan\VulkanModel.h" />
     <ClInclude Include="src\Physics\Collision\Collider.h" />
+    <ClInclude Include="src\Physics\Collision\GJK\GJK.h" />
+    <ClInclude Include="src\Physics\Collision\GJK\Simplex.h" />
     <ClInclude Include="src\Physics\Collision\TestCollision.h" />
     <ClInclude Include="src\Physics\Physics.h" />
     <ClInclude Include="src\Physics\Solvers\Solver.h" />
@@ -603,6 +605,81 @@
     <ClCompile Include="src\Model\OpenGL\OpenGLModel.cpp" />
     <ClCompile Include="src\Model\Vulkan\VulkanMesh.cpp" />
     <ClCompile Include="src\Model\Vulkan\VulkanModel.cpp" />
+    <ClCompile Include="src\Physics\Collision\GJK\GJK.cpp">
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <SupportJustMyCode>true</SupportJustMyCode>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <AssemblerListingLocation>..\bin-int\Debug-windows-x86_64\Zero\</AssemblerListingLocation>
+      <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
+      <BrowseInformation>false</BrowseInformation>
+      <BrowseInformationFile>..\bin-int\Debug-windows-x86_64\Zero\</BrowseInformationFile>
+      <CompileAs>Default</CompileAs>
+      <ConformanceMode>Default</ConformanceMode>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <ErrorReporting>Prompt</ErrorReporting>
+      <ExpandAttributedSource>false</ExpandAttributedSource>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <EnableASAN>false</EnableASAN>
+      <EnableFuzzer>false</EnableFuzzer>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <GenerateModuleDependencies>false</GenerateModuleDependencies>
+      <GenerateSourceDependencies>false</GenerateSourceDependencies>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>Default</LanguageStandard_C>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ModuleDependenciesFile>..\bin-int\Debug-windows-x86_64\Zero\</ModuleDependenciesFile>
+      <ModuleOutputFile>..\bin-int\Debug-windows-x86_64\Zero\</ModuleOutputFile>
+      <OmitDefaultLibName>false</OmitDefaultLibName>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <ObjectFileName>..\bin-int\Debug-windows-x86_64\Zero\</ObjectFileName>
+      <CallingConvention>Cdecl</CallingConvention>
+      <ProgramDataBaseFileName>..\bin-int\Debug-windows-x86_64\Zero\vc143.pdb</ProgramDataBaseFileName>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>..\bin-int\Debug-windows-x86_64\Zero\Zero.pch</PrecompiledHeaderOutputFile>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessKeepComments>false</PreprocessKeepComments>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <RemoveUnreferencedCodeData>true</RemoveUnreferencedCodeData>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+      <ShowIncludes>false</ShowIncludes>
+      <SourceDependenciesFile>..\bin-int\Debug-windows-x86_64\Zero\</SourceDependenciesFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <SpectreMitigation>false</SpectreMitigation>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <TrackerLogDirectory>..\bin-int\Debug-windows-x86_64\Zero\Zero.tlog\</TrackerLogDirectory>
+      <TranslateIncludes>false</TranslateIncludes>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <UseFullPaths>true</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <XMLDocumentationFileName>..\bin-int\Debug-windows-x86_64\Zero\</XMLDocumentationFileName>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <IntelJCCErratum>false</IntelJCCErratum>
+      <BuildStlModules>false</BuildStlModules>
+      <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+      <TreatExternalTemplatesAsInternal>true</TreatExternalTemplatesAsInternal>
+      <DisableAnalyzeExternal>false</DisableAnalyzeExternal>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;ZERO_DEBUG;_UNICODE;UNICODE;</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;C:\VulkanSDK\1.3.296.0\include;vendor\vk-bootstrap;vendor\VMA;vendor\stb_image;vendor\Assimp\include;</AdditionalIncludeDirectories>
+      <LinkCompiled>true</LinkCompiled>
+    </ClCompile>
+    <ClCompile Include="src\Physics\Collision\GJK\Simplex.cpp" />
     <ClCompile Include="src\Physics\Collision\TestCollision.cpp" />
     <ClCompile Include="src\Physics\Physics.cpp" />
     <ClCompile Include="src\Physics\Solvers\Solver.cpp">

@@ -102,7 +102,7 @@ namespace Zero {
         m_GameObjects.emplace_back(sphere);
     }
 
-    void Application::DestroyGameObject(GameObject::IdType objectID)
+    void Application::DestroyGameObject(const GameObject::IdType objectID)
     {
         for (auto it = m_GameObjects.begin(); it != m_GameObjects.end(); ++it)
         {

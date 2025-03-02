@@ -19,14 +19,14 @@ namespace Zero
 		OpenGLShader(const char* vertexFile, const char* fragmentFile);
 
 		// Activates the Shader Program
-		void Activate();
+		void Activate() const;
 		// Deletes the Shader Program
-		void Delete();
+		void Delete() const;
 
 		GLuint GetID() const { return ID; }
 
 	private:
-		void compileErrors(unsigned int shader, const char* type);
+		static void CompileErrors(unsigned int shader, const char* type);
 
 		// Reference ID of the Shader Program
 		GLuint ID;

@@ -95,7 +95,7 @@ namespace Zero
         GLFWwindow* m_Window = nullptr;
 
         Renderer* m_Renderer = nullptr;
-        RendererAPI m_RendererType{RendererAPI::Vulkan};
+        RendererAPI m_RendererType{RendererAPI::OpenGL};
 
         PhysicsWorld m_PhysicsWorld{};
 

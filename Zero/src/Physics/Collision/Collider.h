@@ -28,6 +28,9 @@ namespace Zero {
 	{
 		Collider() = default;
 		virtual ~Collider() = default;
+
+		virtual glm::vec3 FindFurthestPoint(const glm::vec3& direction) = 0;
+		
 		ColliderType Type;
 	};
 
@@ -37,6 +40,11 @@ namespace Zero {
 			: Center(center), Radius(radius)
 		{
 			Type = ColliderType::Sphere;
+		}
+
+		glm::vec3 FindFurthestPoint(const glm::vec3& direction) override
+		{
+			return {};
 		}
 		
 		glm::vec3 Center;
@@ -50,9 +58,39 @@ namespace Zero {
 		{
 			Type = ColliderType::Plane;
 		}
+
+		glm::vec3 FindFurthestPoint(const glm::vec3& direction) override
+		{
+			return {};
+		}
 		
 		glm::vec3 Normal;
 		float Distance;
+	};
+
+	struct MeshCollider : Collider
+	{
+		MeshCollider() = default;
+
+		glm::vec3 FindFurthestPoint(const glm::vec3& direction) override
+		{
+			glm::vec3 maxPoint{};
+			float maxDistance = -FLT_MAX;
+
+			for (const auto& vertex : Vertices)
+			{
+				const float distance = glm::dot(vertex, direction);
+				if (distance > maxDistance)
+				{
+					maxDistance = distance;
+					maxPoint = vertex;
+				}
+			}
+			
+			return maxPoint;
+		}
+		
+		std::vector <glm::vec3> Vertices;
 	};
 
 	class GameObject;
