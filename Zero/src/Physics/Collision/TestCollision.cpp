@@ -54,10 +54,10 @@ namespace Zero
         const float distance = glm::dot(sphereCenter - pointOnPlane, planeNormal);
 
         CollisionPoints points{};
-        if (distance < sphere->Radius)
+        if (std::abs(distance) < sphere->Radius)
         {
             points.ADeep = sphereCenter - planeNormal * sphere->Radius;
-            points.BDeep = sphereCenter - planeNormal * distance;
+            points.BDeep = sphereCenter - planeNormal * std::abs(distance);
             points.Normal = planeNormal;
             points.Depth = sphere->Radius - std::abs(distance);
             points.HasCollision = true;
