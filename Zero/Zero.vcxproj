@@ -151,6 +151,7 @@
     <ClInclude Include="src\Model\Vulkan\VulkanMesh.h" />
     <ClInclude Include="src\Model\Vulkan\VulkanModel.h" />
     <ClInclude Include="src\Physics\Collision\Collider.h" />
+    <ClInclude Include="src\Physics\Collision\GJK\EPA.h" />
     <ClInclude Include="src\Physics\Collision\GJK\GJK.h" />
     <ClInclude Include="src\Physics\Collision\GJK\Simplex.h" />
     <ClInclude Include="src\Physics\Collision\TestCollision.h" />
@@ -605,6 +606,7 @@
     <ClCompile Include="src\Model\OpenGL\OpenGLModel.cpp" />
     <ClCompile Include="src\Model\Vulkan\VulkanMesh.cpp" />
     <ClCompile Include="src\Model\Vulkan\VulkanModel.cpp" />
+    <ClCompile Include="src\Physics\Collision\GJK\EPA.cpp" />
     <ClCompile Include="src\Physics\Collision\GJK\GJK.cpp">
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>

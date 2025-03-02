@@ -8,17 +8,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c1e6d020-1b85-454d-b55c-363ab39862b5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Zero/src/Physics/Collision/GJK/GJK.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Zero/src/Physics/Collision/GJK/GJK.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Zero/src/Physics/Collision/GJK/Simplex.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Zero/src/Physics/Collision/GJK/Simplex.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Zero/src/Physics/Collision/GJK/EPA.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Zero/src/Physics/Collision/GJK/EPA.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.zero/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.zero/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Zero/Zero.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/Zero.vcxproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/Model/OpenGL/OpenGLModel.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/Model/OpenGL/OpenGLModel.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/Physics/Collision/Collider.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/Physics/Collision/Collider.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/Renderer/OpenGL/OpenGLShader.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/Renderer/OpenGL/OpenGLShader.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/core/Application.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/core/Application.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/renderer/OpenGL/OpenGLShader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/OpenGL/OpenGLShader.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -152,7 +145,7 @@
       <workItem from="1740682077254" duration="3216000" />
       <workItem from="1740694276775" duration="1737000" />
       <workItem from="1740790739930" duration="9633000" />
-      <workItem from="1740844787367" duration="24977000" />
+      <workItem from="1740844787367" duration="28117000" />
     </task>
     <servers />
   </component>
