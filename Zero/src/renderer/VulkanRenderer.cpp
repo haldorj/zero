@@ -1,6 +1,6 @@
 #include "VulkanRenderer.h"
 
-#include "core/Application.h"
+#include "Application.h"
 
 #include <Renderer/Vulkan/vk_initializers.h>
 #include <Renderer/Vulkan/vk_types.h>

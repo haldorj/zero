@@ -1,6 +1,6 @@
 ﻿#include "Solver.h"
 
-#include "Core/Application.h"
+#include "Application.h"
 #include "Scene/GameObject.h"
 
 namespace Zero

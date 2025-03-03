@@ -32,7 +32,7 @@ namespace Zero {
 			obj->GetRigidBody().Force = glm::vec3(0.0f);
 		}
 	}
-
+	
 	void PhysicsWorld::ResolveCollisions(const float dt, const std::vector<std::shared_ptr<GameObject>>& gameObjects) const
 	{
 		std::vector<Collision> collisions;
@@ -43,7 +43,7 @@ namespace Zero {
 			{
 				if (a == b)
 				{
-					break;
+					continue;
 				}
 				
 				if (!a->GetCollider() || !b->GetCollider())

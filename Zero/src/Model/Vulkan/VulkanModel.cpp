@@ -7,7 +7,7 @@
 #include <algorithm>
 
 #include <Renderer/VulkanRenderer.h>
-#include <Core/Application.h>
+#include <Application.h>
 
 namespace Zero
 {

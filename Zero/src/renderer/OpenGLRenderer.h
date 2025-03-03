@@ -26,6 +26,9 @@ namespace Zero {
 
         glm::vec4 m_ClearColor = {};
         std::shared_ptr<OpenGLShader> m_ShaderProgram;
+        std::shared_ptr<OpenGLShader> m_DebugShader;
+
+        std::array<std::shared_ptr<OpenGLShader>, 2> m_ShaderPrograms;
 
         int m_Width{};
         int m_Height{};

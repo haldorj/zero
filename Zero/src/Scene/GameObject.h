@@ -52,7 +52,7 @@ namespace Zero
         IdType m_ObjectID{};
 
         std::shared_ptr<Model> m_Model{};
-        std::shared_ptr<Collider> m_Collider{nullptr};
+        std::shared_ptr<Collider> m_Collider{};
         Transform m_Transform{};
         RigidBody m_RigidBody{};
     };

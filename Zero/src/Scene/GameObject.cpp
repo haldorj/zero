@@ -1,5 +1,5 @@
 #include "GameObject.h"
-#include "Core/Application.h"
+#include "Application.h"
 #include "glm/detail/type_quat.hpp"
 #include "glm/gtc/quaternion.hpp"
 

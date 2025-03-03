@@ -1,5 +1,5 @@
 #include "OpenGLRenderer.h"
-#include <core/Application.h>
+#include <Application.h>
 #include <iostream>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/transform.hpp>
@@ -9,13 +9,16 @@
 #include <ImGui/imgui_impl_glfw.h>
 #include <ImGui/imgui_impl_opengl3.h>
 
+#include "Debug/DebugSphere.h"
+
 std::vector<Vertex> RectVertices;
 std::vector<GLuint> RectIndeces;
 
 namespace Zero
 {
     // Callback function to handle window resizing
-    void FramebufferSizeCallback(GLFWwindow* window, int width, int height) {
+    void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
+    {
         // Adjusts the viewport to the new window dimensions
         glViewport(0, 0, width, height);
     }
@@ -34,7 +37,8 @@ namespace Zero
             return;
         }
 
-        m_Width = EXTENT_WIDTH; m_Height = EXTENT_HEIGHT;
+        m_Width = EXTENT_WIDTH;
+        m_Height = EXTENT_HEIGHT;
 
         glfwGetFramebufferSize(Application::Get().GetWindow(), &m_Width, &m_Height);
         glViewport(0, 0, m_Width, m_Height);
@@ -54,15 +58,16 @@ namespace Zero
     void OpenGLRenderer::InitImGui()
     {
         // Setup Dear ImGui context
-		IMGUI_CHECKVERSION();
-		ImGui::CreateContext();
-		ImGuiIO& io = ImGui::GetIO(); (void)io;
-		// Setup Platform/Renderer bindings
-		ImGui_ImplGlfw_InitForOpenGL(Application::Get().GetWindow(), true);
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO& io = ImGui::GetIO();
+        (void)io;
+        // Setup Platform/Renderer bindings
+        ImGui_ImplGlfw_InitForOpenGL(Application::Get().GetWindow(), true);
         // GLSL ver. 450
-		ImGui_ImplOpenGL3_Init("#version 450");
-		// Setup Dear ImGui style
-		ImGui::StyleColorsDark();
+        ImGui_ImplOpenGL3_Init("#version 450");
+        // Setup Dear ImGui style
+        ImGui::StyleColorsDark();
     }
 
 
@@ -72,7 +77,14 @@ namespace Zero
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
 
-        m_ShaderProgram->Delete();
+        for (const auto& shader : m_ShaderPrograms)
+        {
+            if (shader)
+                shader->Delete();
+        }
+
+
+        // m_ShaderProgram->Delete();
     }
 
     void OpenGLRenderer::Draw(std::vector<std::shared_ptr<GameObject>>& gameObjects, Topology topology)
@@ -94,30 +106,42 @@ namespace Zero
 
         // model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
         view = Application::Get().GetActiveCamera().GetViewMatrix();
-        projection = glm::perspective(glm::radians(Application::Get().GetActiveCamera().GetFOV()), 
-            (float)m_Width / (float)m_Height, 0.1f, 10000.0f);
+        projection = glm::perspective(glm::radians(Application::Get().GetActiveCamera().GetFOV()),
+                                      (float)m_Width / (float)m_Height, 0.1f, 10000.0f);
 
-        int viewLoc = glGetUniformLocation(m_ShaderProgram->GetID(), "view");
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        int projLoc = glGetUniformLocation(m_ShaderProgram->GetID(), "projection");
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-        int viewPos = glGetUniformLocation(m_ShaderProgram->GetID(), "viewPos");
-        glUniform3fv(viewPos, 1, glm::value_ptr(Application::Get().GetActiveCamera().GetPosition()));
+        for (auto& shaderProgram : m_ShaderPrograms)
+        {
+            if (!shaderProgram)
+                continue;
+
+            int viewLoc = glGetUniformLocation(shaderProgram->GetID(), "view");
+            glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+            int projLoc = glGetUniformLocation(shaderProgram->GetID(), "projection");
+            glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+            int viewPos = glGetUniformLocation(shaderProgram->GetID(), "viewPos");
+            glUniform3fv(viewPos, 1, glm::value_ptr(Application::Get().GetActiveCamera().GetPosition()));
+        }
 
         for (auto& gameObj : gameObjects)
-		{
+        {
+            if (!gameObj->GetModel())
+                continue;
+
             model = gameObj->GetTransform().GetMatrix();
 
-            if (gameObj->GetModel())
-                gameObj->GetModel()->Draw(*m_ShaderProgram, model);
-		}
+            gameObj->GetModel()->Draw(*m_ShaderPrograms[0], model);
+            if (gameObj->GetCollider())
+            {
+                
+            }
+        }
 
         Application::Get().UpdateImGui();
 
         //make imgui calculate internal draw structures
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        
+
         // Swap the back buffer with the front buffer
         glfwSwapBuffers(Application::Get().GetWindow());
     }
@@ -126,6 +150,10 @@ namespace Zero
     {
         // Create Shader object
         m_ShaderProgram = std::make_unique<OpenGLShader>("../shaders/phong.vert", "../shaders/phong.frag");
+        // m_DebugShader = std::make_unique<OpenGLShader>("../shaders/debug.vert", "../shaders/debug.frag");
+
+        m_ShaderPrograms[0] = m_ShaderProgram;
+        // m_ShaderPrograms[1] = m_DebugShader;
     }
 
     // Checks if the different Shaders have compiled properly

@@ -9,6 +9,9 @@
 
 #include "VkBootstrap.h"
 #include "core/core.h"
+#include "Physics/Collision/CapsuleCollider.h"
+#include "Physics/Collision/PlaneCollider.h"
+#include "Physics/Collision/SphereCollider.h"
 
 
 namespace Zero
@@ -40,10 +43,11 @@ namespace Zero
 
         std::shared_ptr<GameObject> blackBison = std::make_shared<GameObject>(GameObject::Create());
         blackBison->SetModel(ModelFactory::CreateModel(modelPaths[0].c_str(), m_RendererType));
-        blackBison->GetTransform().Position = {15, 1, 0};
+        blackBison->GetTransform().Position = {15, 10, 0};
         blackBison->GetTransform().Scale = glm::vec3{0.5f};
         blackBison->GetRigidBody().Mass = 5;
-        blackBison->SetCollider(std::make_shared<SphereCollider>(glm::vec3{0, 2, 0}, 2.0f));
+        blackBison->SetCollider(std::make_shared<CapsuleCollider>(glm::vec3{0, 3.5, 0}, 1.0f, 5.0f));
+        // blackBison->SetCollider(std::make_shared<SphereCollider>(glm::vec3{0, 0, 0}, 1.0f));
         blackBison->EnableGravity = true;
         blackBison->EnableCollision = true;
 
@@ -210,8 +214,7 @@ namespace Zero
                 m_PlayerCamera.Update(m_DeltaTime, m_GameObjects[0]->GetTransform().Position);
                 // m_GameObjects[0]->EnableGravity = true;
             }
-
-            // m_GameObjects[0]->GetTransform().Rotation.y += m_DeltaTime * 1;
+            
             if (Loaded)
             {
                 m_GameObjects[0]->UpdatePlayer(m_DeltaTime);

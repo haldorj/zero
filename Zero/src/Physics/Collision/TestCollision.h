@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Collider.h"
+#include "Scene/Transform.h"
 
 namespace Zero
 {
@@ -11,19 +12,32 @@ namespace Zero
         const Collider* sphereCollider, const Transform* sphereTransform,
         const Collider* planeCollider, const Transform* planeTransform);
 
+    CollisionPoints TestCapsuleToCapsule(
+        const Collider* capsuleColliderA, const Transform* capsuleTransformA,
+        const Collider* capsuleColliderB, const Transform* capsuleTransformB);
+
+    CollisionPoints TestPlaneToCapsule(
+        const Collider* planeCollider, const Transform* planeTransform,
+        const Collider* capsuleCollider, const Transform* capsuleTransform);
+
+    CollisionPoints TestSphereToCapsule(
+        const Collider* sphereCollider, const Transform* sphereTransform,
+        const Collider* capsuleCollider, const Transform* capsuleTransform);
+
     using FindContactFunc = CollisionPoints(*)(
-        const Collider*, const Transform*, 
+        const Collider*, const Transform*,
         const Collider*, const Transform*);
 
     inline CollisionPoints TestCollision(
-        const Collider* a, const Transform* at, 
+        const Collider* a, const Transform* at,
         const Collider* b, const Transform* bt)
     {
-        static FindContactFunc tests[2][2] = 
+        static FindContactFunc tests[3][3] =
         {
-            // Sphere             Plane
-            { TestSphereToSphere, TestSphereToPlane }, // Sphere
-            { nullptr,            nullptr           }  // Plane
+            // Sphere                  Plane                   Capsule
+            {TestSphereToSphere,    TestSphereToPlane,      TestSphereToCapsule}, // Sphere
+            {nullptr,               nullptr,                TestPlaneToCapsule},             // Plane
+            {nullptr,               nullptr,                TestCapsuleToCapsule} // Capsule
         };
 
         // If we are passed a Plane vs Sphere, swap the 
