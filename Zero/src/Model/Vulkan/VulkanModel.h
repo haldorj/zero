@@ -16,7 +16,8 @@ namespace Zero {
         VulkanModel(const char* path);
 
         void Draw(
-            VkCommandBuffer& cmd, 
+            VkCommandBuffer& cmd,
+            DescriptorWriter& descriptorWriter,
             VkPipelineLayout& pipelineLayout, 
             VkExtent2D drawExtent, 
             VkSampler& sampler, 

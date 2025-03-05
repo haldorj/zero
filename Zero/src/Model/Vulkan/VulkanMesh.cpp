@@ -22,7 +22,7 @@ namespace Zero
         m_GPUMeshBuffers = renderer->UploadMesh(indices, vertices);
     }
 
-    void VulkanMesh::Draw(const VkCommandBuffer& cmd, const VkPipelineLayout& pipelineLayout, VkExtent2D drawExtent,
+    void VulkanMesh::Draw(const VkCommandBuffer& cmd, DescriptorWriter& descriptorWriter, const VkPipelineLayout& pipelineLayout, VkExtent2D drawExtent,
                           const VkSampler& sampler, GPUDrawPushConstants& pushConstants) const
     {
         const auto renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
@@ -39,8 +39,8 @@ namespace Zero
         {
             for (auto& texture : m_Textures)
             {
-                DescriptorWriter descriptorWriter;
-                descriptorWriter.WriteImage(0, texture.GetImage().ImageView, sampler,
+                // DescriptorWriter descriptorWriter;
+                descriptorWriter.WriteImage(1, texture.GetImage().ImageView, sampler,
                                             VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
                                             VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 

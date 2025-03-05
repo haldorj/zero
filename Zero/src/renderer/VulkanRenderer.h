@@ -49,6 +49,7 @@ namespace Zero {
         DescriptorAllocatorGrowable FrameDescriptors;
     };
 
+
     constexpr unsigned int FRAME_OVERLAP = 2;
 
     class VulkanRenderer : public Renderer
@@ -62,7 +63,6 @@ namespace Zero {
         void Draw(std::vector<std::shared_ptr<GameObject>>& gameObjects, Topology topology) override;
 
         void DrawBackground(VkCommandBuffer cmd);
-        void DrawGeometry(VkCommandBuffer cmd);
         void DrawGeometryTextured(std::vector<std::shared_ptr<GameObject>>& gameObjects, VkCommandBuffer cmd);
 
         void NewFrameImGui();
@@ -158,5 +158,8 @@ namespace Zero {
         // VulkanMesh m_Pyramid{};
 
         std::vector<std::shared_ptr<GameObject>> m_GameObjects;
+
+        GPUSceneData m_SceneData{};
+        VkDescriptorSetLayout m_GpuSceneDataDescriptorLayout{};
     };
 }

@@ -8,37 +8,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c1e6d020-1b85-454d-b55c-363ab39862b5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Zero/src/Application.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Zero/src/Application.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Zero/src/Debug/DebugSphere.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Zero/src/Debug/DebugSphere.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Zero/src/Physics/Collision/CapsuleCollider.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Zero/src/Physics/Collision/CapsuleCollider.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Zero/src/Physics/Collision/MeshCollider.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Zero/src/Physics/Collision/MeshCollider.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Zero/src/Physics/Collision/PlaneCollider.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Zero/src/Physics/Collision/PlaneCollider.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Zero/src/Physics/Collision/SphereCollider.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Zero/src/Physics/Collision/SphereCollider.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.zero/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.zero/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/Zero.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/Zero.vcxproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/imgui.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/imgui.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/Model/Vulkan/VulkanMesh.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/Model/Vulkan/VulkanMesh.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/Model/Vulkan/VulkanModel.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/Model/Vulkan/VulkanModel.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/Physics/Collision/Collider.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/Physics/Collision/Collider.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/Physics/Collision/TestCollision.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/Physics/Collision/TestCollision.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/Physics/Collision/TestCollision.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/Physics/Collision/TestCollision.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/Physics/Physics.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/Physics/Physics.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/Physics/Solvers/Solver.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/Physics/Solvers/Solver.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/Renderer/Vulkan/VulkanTexture.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/Renderer/Vulkan/VulkanTexture.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/Scene/GameObject.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/Scene/GameObject.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/Scene/GameObject.h" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/Scene/GameObject.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/camera/EditorCamera.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/camera/EditorCamera.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/core/Application.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/core/Application.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/renderer/OpenGLRenderer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/OpenGLRenderer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zero/src/renderer/VulkanRenderer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Zero/src/renderer/VulkanRenderer.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -729,7 +699,7 @@
       <workItem from="1740682077254" duration="3216000" />
       <workItem from="1740694276775" duration="1737000" />
       <workItem from="1740790739930" duration="9633000" />
-      <workItem from="1740844787367" duration="66233000" />
+      <workItem from="1740844787367" duration="69543000" />
     </task>
     <servers />
   </component>

@@ -105,7 +105,6 @@ namespace Zero
         initInfo.PipelineRenderingCreateInfo.colorAttachmentCount = 1;
         initInfo.PipelineRenderingCreateInfo.pColorAttachmentFormats = &m_SwapchainImageFormat;
 
-
         initInfo.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
 
         ImGui_ImplVulkan_Init(&initInfo);
@@ -271,60 +270,6 @@ namespace Zero
         vkCmdClearColorImage(cmd, m_DrawImage.Image, VK_IMAGE_LAYOUT_GENERAL, &clearValue, 1, &clearRange);
     }
 
-    void VulkanRenderer::DrawGeometry(VkCommandBuffer cmd)
-    {
-        //begin a render pass  connected to our draw image
-        VkRenderingAttachmentInfo colorAttachment = VkInit::AttachmentInfo(m_DrawImage.ImageView, nullptr,
-                                                                           VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
-        VkRenderingAttachmentInfo depthAttachment = VkInit::DepthAttachmentInfo(
-            m_DepthImage.ImageView, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL);
-        VkRenderingInfo renderInfo = VkInit::RenderingInfo(m_DrawExtent, &colorAttachment, &depthAttachment);
-        vkCmdBeginRendering(cmd, &renderInfo);
-
-        //set dynamic viewport and scissor
-        VkViewport viewport = {};
-        viewport.x = 0;
-        viewport.y = 0;
-        viewport.width = static_cast<float>(m_DrawExtent.width);
-        viewport.height = static_cast<float>(m_DrawExtent.height);
-        viewport.minDepth = 0.f;
-        viewport.maxDepth = 1.f;
-
-        vkCmdSetViewport(cmd, 0, 1, &viewport);
-
-        VkRect2D scissor = {};
-        scissor.offset.x = 0;
-        scissor.offset.y = 0;
-        scissor.extent.width = m_DrawExtent.width;
-        scissor.extent.height = m_DrawExtent.height;
-
-        vkCmdSetScissor(cmd, 0, 1, &scissor);
-
-        vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_PlainPipeline);
-
-        glm::mat4 view = Application::Get().GetActiveCamera().GetViewMatrix();
-        glm::mat4 projection = glm::perspective(glm::radians(Application::Get().GetActiveCamera().GetFOV()),
-                                                (float)m_DrawExtent.width / (float)m_DrawExtent.height, 0.1f, 10000.f);
-
-        projection[1][1] *= -1;
-
-        GPUDrawPushConstants pushConstants;
-        pushConstants.ModelMatrix = {1};
-        pushConstants.WorldViewProjMatrix = projection * view;
-        pushConstants.VertexBuffer = m_Rectangle.VertexBufferAddress;
-
-        vkCmdPushConstants(cmd, m_PlainPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants),
-                           &pushConstants);
-        vkCmdBindIndexBuffer(cmd, m_Rectangle.IndexBuffer.Buffer, 0, VK_INDEX_TYPE_UINT32);
-
-        vkCmdDrawIndexed(cmd, 18, 1, 0, 0, 0);
-
-        vkCmdEndRendering(cmd);
-    }
-
-    float rotationvk = 0.0f;
-    double lastTimevk = glfwGetTime();
-
     void VulkanRenderer::DrawGeometryTextured(std::vector<std::shared_ptr<GameObject>>& gameObjects, VkCommandBuffer cmd)
     {
         //begin a render pass  connected to our draw image
@@ -363,13 +308,33 @@ namespace Zero
 
         projection[1][1] *= -1;
 
+        //allocate a new uniform buffer for the scene data
+        AllocatedBuffer gpuSceneDataBuffer = VulkanBufferManager::CreateBuffer(m_Allocator, sizeof(GPUSceneData), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+
+        //add it to the deletion queue of this frame so it gets deleted once its been used
+        GetCurrentFrame().DeletionQueue.PushFunction([=, this]() {
+            VulkanBufferManager::DestroyBuffer(m_Allocator, gpuSceneDataBuffer);
+            });
+
+        //write the buffer
+        GPUSceneData* sceneUniformData = (GPUSceneData*)gpuSceneDataBuffer.Allocation->GetMappedData();
+        *sceneUniformData = m_SceneData;
+
+        sceneUniformData->Viewproj = projection * view;
+
+        //create a descriptor set that binds that buffer and update it
+        VkDescriptorSet globalDescriptor = GetCurrentFrame().FrameDescriptors.Allocate(m_Device, m_GpuSceneDataDescriptorLayout);
+
+        DescriptorWriter writer;
+        writer.WriteBuffer(0, gpuSceneDataBuffer.Buffer, sizeof(GPUSceneData), 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+        writer.UpdateSet(m_Device, globalDescriptor);
+
         for (auto& gameObj : gameObjects)
         {
             GPUDrawPushConstants pushConstants;
             pushConstants.ModelMatrix = gameObj->GetTransform().GetMatrix();
-            pushConstants.WorldViewProjMatrix = projection * view;
-            pushConstants.cameraPos = Application::Get().GetActiveCamera().GetPosition();
-            gameObj->GetModel()->Draw(cmd, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerLinear, pushConstants);
+            pushConstants.CameraPos = Application::Get().GetActiveCamera().GetPosition();
+            gameObj->GetModel()->Draw(cmd, writer, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerLinear, pushConstants);
         }
 
         vkCmdEndRendering(cmd);
@@ -656,8 +621,8 @@ namespace Zero
 
         {
             DescriptorLayoutBuilder builder;
-            builder.AddBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
-            m_SingleImageDescriptorLayout = builder.Build(m_Device, VK_SHADER_STAGE_FRAGMENT_BIT);
+            builder.AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+            m_GpuSceneDataDescriptorLayout = builder.Build(m_Device, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
         }
 
         // Allocate a descriptor set for our draw image
@@ -676,6 +641,7 @@ namespace Zero
 
             vkDestroyDescriptorSetLayout(m_Device, m_DrawImageDescriptorLayout, nullptr);
             vkDestroyDescriptorSetLayout(m_Device, m_SingleImageDescriptorLayout, nullptr);
+            vkDestroyDescriptorSetLayout(m_Device, m_GpuSceneDataDescriptorLayout, nullptr);
         });
 
 
@@ -780,21 +746,21 @@ namespace Zero
         VkShaderModule triangleFragShader;
         if (!VkUtil::LoadShaderModule("../shaders/compiled/phongvk.frag.spv", m_Device, &triangleFragShader))
         {
-            printf("Error when building the triangle fragment shader module \n");
+            printf("Error when building the fragment shader module \n");
         }
         else
         {
-            printf("Triangle fragment shader successfully loaded \n");
+            printf("Fragment shader successfully loaded \n");
         }
 
         VkShaderModule triangleVertexShader;
         if (!VkUtil::LoadShaderModule("../shaders/compiled/phongvk.vert.spv", m_Device, &triangleVertexShader))
         {
-            printf("Error when building the triangle vertex shader module \n");
+            printf("Error when building the vertex shader module \n");
         }
         else
         {
-            printf("Triangle vertex shader successfully loaded \n");
+            printf("Vertex shader successfully loaded \n");
         }
 
         VkPushConstantRange bufferRange{};
@@ -802,15 +768,22 @@ namespace Zero
         bufferRange.size = sizeof(GPUDrawPushConstants);
         bufferRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
+        DescriptorLayoutBuilder layoutBuilder;
+        layoutBuilder.AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);         // Scene data
+        layoutBuilder.AddBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER); // Texture
+
+        m_SingleImageDescriptorLayout = layoutBuilder.Build(m_Device, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
+
+        VkDescriptorSetLayout layouts[] = { m_SingleImageDescriptorLayout,  m_GpuSceneDataDescriptorLayout};
+
         VkPipelineLayoutCreateInfo pipelineLayoutInfo = VkInit::PipelineLayoutCreateInfo();
         pipelineLayoutInfo.pPushConstantRanges = &bufferRange;
         pipelineLayoutInfo.pushConstantRangeCount = 1;
-        pipelineLayoutInfo.pSetLayouts = &m_SingleImageDescriptorLayout;
-        pipelineLayoutInfo.setLayoutCount = 1;
+        pipelineLayoutInfo.pSetLayouts = layouts;
+        pipelineLayoutInfo.setLayoutCount = 2;
         VK_CHECK(vkCreatePipelineLayout(m_Device, &pipelineLayoutInfo, nullptr, &m_TexturedPipelineLayout));
 
         PipelineBuilder pipelineBuilder;
-
         //use the triangle layout we created
         pipelineBuilder.PipelineLayout = m_TexturedPipelineLayout;
         //connecting the vertex and pixel shaders to the pipeline
@@ -895,7 +868,6 @@ namespace Zero
         DestroySwapchain();
 
         int w, h;
-
 
         glfwGetWindowSize(Application::Get().GetWindow(), &w, &h);
 

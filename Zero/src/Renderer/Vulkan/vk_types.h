@@ -52,10 +52,17 @@ struct AllocatedImage
 };
 
 // push constants for our mesh object draws
-struct GPUDrawPushConstants {
-    // glm::mat4 WorldMatrix;
+struct GPUDrawPushConstants 
+{
     glm::mat4 ModelMatrix;
-	glm::mat4 WorldViewProjMatrix;
-    glm::vec3 cameraPos;
+    glm::vec3 CameraPos;
     VkDeviceAddress VertexBuffer;
+};
+
+struct GPUSceneData
+{
+    glm::mat4 View;
+    glm::mat4 Proj;
+    glm::mat4 Viewproj;
+    glm::vec4 AmbientColor;
 };

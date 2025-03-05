@@ -1,5 +1,9 @@
+// glsl version 4.5
 #version 450
+
 #extension GL_EXT_buffer_reference : require
+#extension GL_GOOGLE_include_directive : require
+#include "input_structures.glsl"
 
 layout (location = 0) out vec3 outNormal;
 layout (location = 1) out vec3 outColor;
@@ -27,7 +31,6 @@ layout(buffer_reference, std430) readonly buffer VertexBuffer{
 layout( push_constant ) uniform constants
 {	
 	mat4 model;
-	mat4 viewproj;
 	vec3 cameraPos;
 	VertexBuffer vertexBuffer;
 } PushConstants;
@@ -38,7 +41,7 @@ void main()
 	Vertex v = PushConstants.vertexBuffer.vertices[gl_VertexIndex];
 
 	//output data
-	gl_Position = PushConstants.viewproj * PushConstants.model * vec4(v.position, 1.0f);
+	gl_Position = sceneData.viewproj * PushConstants.model * vec4(v.position, 1.0f);
 
 	outNormal = mat3(transpose(inverse(PushConstants.model))) * v.normal.xyz;
 	outColor = v.color.xyz;
