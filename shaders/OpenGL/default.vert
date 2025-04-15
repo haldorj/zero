@@ -9,6 +9,7 @@ layout (location = 4) in vec4 Color;
 
 out vec4 color;
 out vec2 texCoord;
+out vec3 normal;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -22,4 +23,6 @@ void main()
 	color = Color;
 	// Assigns the texture coordinates from the Vertex Data to "texCoord"
 	texCoord = vec2(UV_x, UV_y);
+
+	normal = mat3(transpose(inverse(model))) * Normal;
 }

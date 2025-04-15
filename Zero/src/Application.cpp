@@ -64,11 +64,12 @@ namespace Zero
         plane->EnableGravity = false;
         plane->EnableCollision = true;
 
-        Light* dirLight = new Light({ 
-            m_DirectionalLightColor.x,
-            m_DirectionalLightColor.y,
-            m_DirectionalLightColor.z, }, 
-            m_DirectionalLightColor.w );
+        Light* dirLight = new Light({
+            glm::vec3(m_DirectionalLightColor),
+            m_DirectionalLightColor.w,
+            glm::vec3(1.0f, 1.0, 0.0f),
+            0.5f });
+
         m_Scene = std::make_shared<Scene>(dirLight);
 
         m_Scene->AddGameObject(blackBison);

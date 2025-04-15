@@ -116,6 +116,12 @@ namespace Zero
         int ambientIntensity = glGetUniformLocation(m_ShaderProgram->GetID(), "directionalLight.ambientIntensity");
         glUniform1f(ambientIntensity, scene->GetDirectionalLight()->GetAmbientIntensity());
 
+        int direction = glGetUniformLocation(m_ShaderProgram->GetID(), "directionalLight.direction");
+        glUniform3fv(direction, 1, glm::value_ptr(scene->GetDirectionalLight()->GetDirection()));
+
+        int diffuseIntensity = glGetUniformLocation(m_ShaderProgram->GetID(), "directionalLight.diffuseIntensity");
+        glUniform1f(diffuseIntensity, scene->GetDirectionalLight()->GetDiffuseIntensity());
+
         for (auto& gameObj : scene->GetGameObjects())
         {
             if (!gameObj->GetModel())

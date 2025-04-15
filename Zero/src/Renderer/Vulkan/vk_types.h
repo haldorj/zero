@@ -63,6 +63,8 @@ struct DirectionalLight
 {
     glm::vec3 Color;
     float AmbientIntensity;
+    glm::vec3 Direction;
+    float DiffuseIntensity;
 };
 
 struct GPUSceneData

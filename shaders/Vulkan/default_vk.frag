@@ -15,5 +15,9 @@ layout (location = 0) out vec4 outFragColor;
 void main() 
 {
 	vec4 ambientColor = vec4(sceneData.directionalLight.color, 1.0f) * sceneData.directionalLight.ambientIntensity;
-	outFragColor = vec4(texture(displayTexture, inUV).xyz, 1.0) * ambientColor;
+	
+	float diffuseFactor = max(dot(normalize(inNormal), normalize(sceneData.directionalLight.direction)), 0.0f);
+	vec4 diffuseColor = vec4(sceneData.directionalLight.color, 1.0f) * sceneData.directionalLight.diffuseIntensity * diffuseFactor;
+	
+	outFragColor = vec4(texture(displayTexture, inUV).xyz, 1.0) * (ambientColor + diffuseColor);
 }
