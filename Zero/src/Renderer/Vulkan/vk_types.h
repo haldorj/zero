@@ -59,10 +59,17 @@ struct GPUDrawPushConstants
     VkDeviceAddress VertexBuffer;
 };
 
+struct DirectionalLight
+{
+    glm::vec3 Color;
+    float AmbientIntensity;
+};
+
 struct GPUSceneData
 {
     glm::mat4 View;
     glm::mat4 Proj;
     glm::mat4 Viewproj;
-    glm::vec4 AmbientColor;
+
+    DirectionalLight DirLight;
 };

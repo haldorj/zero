@@ -19,11 +19,11 @@ namespace Zero {
 		void DestroyGameObject(const GameObject::IdType objectID);
 
 		std::vector<std::shared_ptr<GameObject>>& GetGameObjects() { return m_GameObjects; }
+		std::shared_ptr<Light>& GetDirectionalLight() { return m_DirectionalLight; }
 
 	private:
 		std::vector<std::shared_ptr<GameObject>> m_GameObjects{};
 		std::shared_ptr<Light> m_DirectionalLight{};
-	
 	};
 
 }

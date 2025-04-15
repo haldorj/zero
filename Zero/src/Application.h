@@ -102,12 +102,10 @@ namespace Zero
         std::shared_ptr<Scene> m_Scene{};
         // PhysicsWorld m_PhysicsWorld{};
 
+        glm::vec4 m_DirectionalLightColor{1};
+
         float m_Time{0.0f};
         float m_DeltaTime{0.0f};
         float m_LastFrameTime{0.0f};
-
-
-        // std::vector<std::shared_ptr<GameObject>> m_GameObjects;
-
     };
 } // namespace Zero

@@ -63,7 +63,7 @@ namespace Zero {
         void Draw(Scene* scene) override;
 
         void DrawBackground(VkCommandBuffer cmd);
-        void DrawGeometryTextured(std::vector<std::shared_ptr<GameObject>>& gameObjects, VkCommandBuffer cmd);
+        void DrawGeometryTextured(Scene* scene, VkCommandBuffer cmd);
 
         void NewFrameImGui();
         void DrawImGui(VkCommandBuffer cmd, VkImageView targetImageView);

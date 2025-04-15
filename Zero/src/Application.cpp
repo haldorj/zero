@@ -12,6 +12,7 @@
 #include "Physics/Collision/CapsuleCollider.h"
 #include "Physics/Collision/PlaneCollider.h"
 #include "Physics/Collision/SphereCollider.h"
+#include <glm/gtc/type_ptr.hpp>
 
 
 namespace Zero
@@ -63,7 +64,11 @@ namespace Zero
         plane->EnableGravity = false;
         plane->EnableCollision = true;
 
-        Light* dirLight = new Light({ 1, 1, 1 }, 0.5);
+        Light* dirLight = new Light({ 
+            m_DirectionalLightColor.x,
+            m_DirectionalLightColor.y,
+            m_DirectionalLightColor.z, }, 
+            m_DirectionalLightColor.w );
         m_Scene = std::make_shared<Scene>(dirLight);
 
         m_Scene->AddGameObject(blackBison);
@@ -214,6 +219,9 @@ namespace Zero
                 // m_PhysicsWorld.Step(m_DeltaTime, m_GameObjects);
             }
             
+            m_Scene->GetDirectionalLight()->Update(
+                glm::vec3(m_DirectionalLightColor), m_DirectionalLightColor.a);
+
             Draw();
             
             if (!Loaded)
@@ -261,6 +269,10 @@ namespace Zero
 
         ImGui::Begin("Objects");
         ImGui::Text("Number of Objects: %i", m_Scene->GetGameObjects().size());
+        ImGui::End();
+
+        ImGui::Begin("Directional Light");
+        ImGui::ColorEdit4("Color:", glm::value_ptr(m_DirectionalLightColor));
         ImGui::End();
     }
 

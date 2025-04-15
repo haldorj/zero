@@ -109,7 +109,12 @@ namespace Zero
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
         int viewPos = glGetUniformLocation(m_ShaderProgram->GetID(), "viewPos");
         glUniform3fv(viewPos, 1, glm::value_ptr(Application::Get().GetActiveCamera().GetPosition()));
-        
+
+        int ambientColor = glGetUniformLocation(m_ShaderProgram->GetID(), "directionalLight.color");
+        glUniform3fv(ambientColor, 1, glm::value_ptr(scene->GetDirectionalLight()->GetColor()));
+
+        int ambientIntensity = glGetUniformLocation(m_ShaderProgram->GetID(), "directionalLight.ambientIntensity");
+        glUniform1f(ambientIntensity, scene->GetDirectionalLight()->GetAmbientIntensity());
 
         for (auto& gameObj : scene->GetGameObjects())
         {
@@ -134,7 +139,10 @@ namespace Zero
     void OpenGLRenderer::InitShaders()
     {
         // Create Shader object
-        m_ShaderProgram = std::make_unique<OpenGLShader>("../shaders/phong.vert", "../shaders/phong.frag");
+        m_ShaderProgram = std::make_unique<OpenGLShader>(
+            "../shaders/OpenGL/default.vert", 
+            "../shaders/OpenGL/default.frag"
+        );
     }
 
 

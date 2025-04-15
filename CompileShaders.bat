@@ -9,4 +9,7 @@
 "%VULKAN_SDK%\Bin\glslangValidator.exe" -V "shaders/phongvk.vert" -o "shaders/compiled/phongvk.vert.spv"
 "%VULKAN_SDK%\Bin\glslangValidator.exe" -V "shaders/phongvk.frag" -o "shaders/compiled/phongvk.frag.spv"
 
+"%VULKAN_SDK%\Bin\glslangValidator.exe" -V "shaders/Vulkan/default_vk.vert" -o "shaders/Vulkan/Compiled/default_vk.vert.spv"
+"%VULKAN_SDK%\Bin\glslangValidator.exe" -V "shaders/Vulkan/default_vk.frag" -o "shaders/Vulkan/Compiled/default_vk.frag.spv"
+
 pause

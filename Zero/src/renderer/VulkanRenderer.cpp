@@ -200,7 +200,7 @@ namespace Zero
 
         if (scene)
         {
-            DrawGeometryTextured(scene->GetGameObjects(), cmd);
+            DrawGeometryTextured(scene, cmd);
         }
        
 
@@ -275,7 +275,7 @@ namespace Zero
         vkCmdClearColorImage(cmd, m_DrawImage.Image, VK_IMAGE_LAYOUT_GENERAL, &clearValue, 1, &clearRange);
     }
 
-    void VulkanRenderer::DrawGeometryTextured(std::vector<std::shared_ptr<GameObject>>& gameObjects, VkCommandBuffer cmd)
+    void VulkanRenderer::DrawGeometryTextured(Scene* scene, VkCommandBuffer cmd)
     {
         //begin a render pass  connected to our draw image
         VkRenderingAttachmentInfo colorAttachment = VkInit::AttachmentInfo(m_DrawImage.ImageView, nullptr,
@@ -326,6 +326,8 @@ namespace Zero
         *sceneUniformData = m_SceneData;
 
         sceneUniformData->Viewproj = projection * view;
+        sceneUniformData->DirLight.Color = scene->GetDirectionalLight()->GetColor();
+        sceneUniformData->DirLight.AmbientIntensity = scene->GetDirectionalLight()->GetAmbientIntensity();
 
         //create a descriptor set that binds that buffer and update it
         VkDescriptorSet globalDescriptor = GetCurrentFrame().FrameDescriptors.Allocate(m_Device, m_GpuSceneDataDescriptorLayout);
@@ -334,7 +336,7 @@ namespace Zero
         writer.WriteBuffer(0, gpuSceneDataBuffer.Buffer, sizeof(GPUSceneData), 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
         writer.UpdateSet(m_Device, globalDescriptor);
 
-        for (const auto& gameObj : gameObjects)
+        for (const auto& gameObj : scene->GetGameObjects())
         {
             GPUDrawPushConstants pushConstants;
             pushConstants.ModelMatrix = gameObj->GetTransform().GetMatrix();
@@ -741,7 +743,7 @@ namespace Zero
     void VulkanRenderer::InitTexturedPipeline()
     {
         VkShaderModule triangleFragShader;
-        if (!VkUtil::LoadShaderModule("../shaders/compiled/phongvk.frag.spv", m_Device, &triangleFragShader))
+        if (!VkUtil::LoadShaderModule("../shaders/vulkan/compiled/default_vk.frag.spv", m_Device, &triangleFragShader))
         {
             printf("Error when building the fragment shader module \n");
         }
@@ -751,7 +753,7 @@ namespace Zero
         }
 
         VkShaderModule triangleVertexShader;
-        if (!VkUtil::LoadShaderModule("../shaders/compiled/phongvk.vert.spv", m_Device, &triangleVertexShader))
+        if (!VkUtil::LoadShaderModule("../shaders/vulkan/compiled/default_vk.vert.spv", m_Device, &triangleVertexShader))
         {
             printf("Error when building the vertex shader module \n");
         }
