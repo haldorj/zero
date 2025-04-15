@@ -9,7 +9,7 @@
 
 namespace Zero
 {
-	std::string GetFileContents(const char* filename);
+	std::string ReadFile(const char* filename);
 
 	class OpenGLShader
 	{

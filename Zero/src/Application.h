@@ -7,6 +7,7 @@
 #include "Camera/PerspectiveCamera.h"
 #include "renderer/OpenGLRenderer.h"
 #include "renderer/VulkanRenderer.h"
+#include <Scene/Scene.h>
 
 namespace Zero
 {
@@ -70,7 +71,6 @@ namespace Zero
 
         void SpawnSphere();
         void SpawnSphereAtLocation(const glm::vec3& location, float scale);
-        void DestroyGameObject(GameObject::IdType objectID);
 
         bool IsEditorMode() const { return m_EditorMode; }
 
@@ -80,8 +80,6 @@ namespace Zero
         RendererAPI GetRendererType() const { return m_RendererType; }
         GLFWwindow* GetWindow() const { return m_Window; }
         Camera& GetActiveCamera() const { return *m_ActiveCamera; }
-
-        std::vector<std::shared_ptr<GameObject>>& GetGameObjects() { return m_GameObjects; }
 
     private:
         Camera* m_ActiveCamera = nullptr;
@@ -101,13 +99,15 @@ namespace Zero
         Renderer* m_Renderer = nullptr;
         RendererAPI m_RendererType{RendererAPI::Vulkan};
 
-        PhysicsWorld m_PhysicsWorld{};
+        std::shared_ptr<Scene> m_Scene{};
+        // PhysicsWorld m_PhysicsWorld{};
 
         float m_Time{0.0f};
         float m_DeltaTime{0.0f};
         float m_LastFrameTime{0.0f};
 
-        std::vector<std::shared_ptr<GameObject>> m_GameObjects;
+
+        // std::vector<std::shared_ptr<GameObject>> m_GameObjects;
 
     };
 } // namespace Zero

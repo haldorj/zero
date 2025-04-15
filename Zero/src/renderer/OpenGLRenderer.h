@@ -19,16 +19,13 @@ namespace Zero {
         void InitImGui() override;
         void Shutdown() override;
         void SetClearColor(glm::vec4 clearColor) override { m_ClearColor = clearColor; }
-        void Draw(std::vector<std::shared_ptr<GameObject>>& gameObjects, Topology) override;
+        void Draw(Scene* scene) override;
 
     private:
         void InitShaders();
 
         glm::vec4 m_ClearColor = {};
         std::shared_ptr<OpenGLShader> m_ShaderProgram;
-        std::shared_ptr<OpenGLShader> m_DebugShader;
-
-        std::array<std::shared_ptr<OpenGLShader>, 2> m_ShaderPrograms;
 
         int m_Width{};
         int m_Height{};

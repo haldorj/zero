@@ -143,7 +143,7 @@ namespace Zero
         });
     }
 
-    void VulkanRenderer::Draw(std::vector<std::shared_ptr<GameObject>>& gameObjects, Topology topology)
+    void VulkanRenderer::Draw(Scene* scene)
     {
         NewFrameImGui();
 
@@ -197,7 +197,12 @@ namespace Zero
         VkUtil::TransitionImage(cmd, m_DepthImage.Image, VK_IMAGE_LAYOUT_UNDEFINED,
             VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL);
         //DrawGeometry(cmd);
-        DrawGeometryTextured(gameObjects, cmd);
+
+        if (scene)
+        {
+            DrawGeometryTextured(scene->GetGameObjects(), cmd);
+        }
+       
 
         // vkCmdEndRendering(cmd);
 
@@ -329,7 +334,7 @@ namespace Zero
         writer.WriteBuffer(0, gpuSceneDataBuffer.Buffer, sizeof(GPUSceneData), 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
         writer.UpdateSet(m_Device, globalDescriptor);
 
-        for (auto& gameObj : gameObjects)
+        for (const auto& gameObj : gameObjects)
         {
             GPUDrawPushConstants pushConstants;
             pushConstants.ModelMatrix = gameObj->GetTransform().GetMatrix();
@@ -367,14 +372,6 @@ namespace Zero
     void VulkanRenderer::Shutdown()
     {
         vkDeviceWaitIdle(m_Device);
-
-        for (auto gameObj : Application::Get().GetGameObjects())
-        {
-            if (!gameObj)
-                continue;
-            if (gameObj->GetModel())
-			    gameObj->GetModel()->DestroyModel();
-		}
 
         // Free per-frame structures and deletion queue
         for (auto& frame : m_Frames)

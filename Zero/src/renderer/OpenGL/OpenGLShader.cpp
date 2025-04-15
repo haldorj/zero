@@ -1,9 +1,34 @@
 #include "OpenGLShader.h"
+#include <array>
 
-namespace Zero
-{
-    // Reads a text file and outputs a string with everything in the text file
-    std::string GetFileContents(const char* filename)
+namespace Zero {
+
+    void OpenGLShader::CompileErrors(const unsigned int shader, const char* type)
+    {
+        // Stores status of compilation
+        GLint hasCompiled;
+        std::array<char, 1024> infoLog{};
+        if (type != "PROGRAM")
+        {
+            glGetShaderiv(shader, GL_COMPILE_STATUS, &hasCompiled);
+            if (hasCompiled == GL_FALSE)
+            {
+                glGetShaderInfoLog(shader, 1024, NULL, infoLog.data());
+                std::cout << "SHADER_COMPILATION_ERROR for:" << type << "\n" << infoLog.data() << std::endl;
+            }
+        }
+        else
+        {
+            glGetProgramiv(shader, GL_LINK_STATUS, &hasCompiled);
+            if (hasCompiled == GL_FALSE)
+            {
+                glGetProgramInfoLog(shader, 1024, NULL, infoLog.data());
+                std::cout << "SHADER_LINKING_ERROR for:" << type << "\n" << infoLog.data() << std::endl;
+            }
+        }
+    }
+
+    std::string ReadFile(const char* filename)
     {
         std::ifstream in(filename, std::ios::binary);
         if (in)
@@ -20,14 +45,11 @@ namespace Zero
         throw(errno);
     }
 
-    // Constructor that build the Shader Program from 2 different shaders
     OpenGLShader::OpenGLShader(const char* vertexFile, const char* fragmentFile)
     {
-        // Read vertexFile and fragmentFile and store the strings
-        const std::string vertexCode = GetFileContents(vertexFile);
-        const std::string fragmentCode = GetFileContents(fragmentFile);
+        const std::string vertexCode = ReadFile(vertexFile);
+        const std::string fragmentCode = ReadFile(fragmentFile);
 
-        // Convert the shader source strings into character arrays
         const char* vertexSource = vertexCode.c_str();
         const char* fragmentSource = fragmentCode.c_str();
 
@@ -43,11 +65,11 @@ namespace Zero
         const GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
         // Attach Fragment Shader source to the Fragment Shader Object
         glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
-        // Compile the Vertex Shader into machine code
+        // Compile the Fragment Shader into machine code
         glCompileShader(fragmentShader);
         CompileErrors(fragmentShader, "Fragment");
 
-        // Create Shader Program Object and get its reference
+        // Create and cache Shader Program Object
         ID = glCreateProgram();
         // Attach the Vertex and Fragment Shaders to the Shader Program
         glAttachShader(ID, vertexShader);
@@ -62,15 +84,14 @@ namespace Zero
         glDeleteShader(fragmentShader);
     }
 
-    // Activates the Shader Program
     void OpenGLShader::Activate() const
     {
         glUseProgram(ID);
     }
 
-    // Deletes the Shader Program
     void OpenGLShader::Delete() const
     {
         glDeleteProgram(ID);
     }
-} // namespace Zero
+
+}

@@ -43,7 +43,7 @@ namespace Zero
         glfwGetFramebufferSize(Application::Get().GetWindow(), &m_Width, &m_Height);
         glViewport(0, 0, m_Width, m_Height);
 
-        glfwSwapInterval(0); // vsync
+        glfwSwapInterval(1); // vsync
 
         const GLubyte* renderer = glGetString(GL_RENDERER);
         std::cout << "Chosen GPU: " << "\n";
@@ -77,17 +77,11 @@ namespace Zero
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
 
-        for (const auto& shader : m_ShaderPrograms)
-        {
-            if (shader)
-                shader->Delete();
-        }
-
-
-        // m_ShaderProgram->Delete();
+        if (m_ShaderProgram)
+            m_ShaderProgram->Delete();
     }
 
-    void OpenGLRenderer::Draw(std::vector<std::shared_ptr<GameObject>>& gameObjects, Topology topology)
+    void OpenGLRenderer::Draw(Scene* scene)
     {
         // Specify the color of the background
         glClearColor(m_ClearColor.r, m_ClearColor.g, m_ClearColor.b, m_ClearColor.a);
@@ -109,31 +103,22 @@ namespace Zero
         projection = glm::perspective(glm::radians(Application::Get().GetActiveCamera().GetFOV()),
                                       (float)m_Width / (float)m_Height, 0.1f, 10000.0f);
 
-        for (auto& shaderProgram : m_ShaderPrograms)
-        {
-            if (!shaderProgram)
-                continue;
+        int viewLoc = glGetUniformLocation(m_ShaderProgram->GetID(), "view");
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+        int projLoc = glGetUniformLocation(m_ShaderProgram->GetID(), "projection");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+        int viewPos = glGetUniformLocation(m_ShaderProgram->GetID(), "viewPos");
+        glUniform3fv(viewPos, 1, glm::value_ptr(Application::Get().GetActiveCamera().GetPosition()));
+        
 
-            int viewLoc = glGetUniformLocation(shaderProgram->GetID(), "view");
-            glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-            int projLoc = glGetUniformLocation(shaderProgram->GetID(), "projection");
-            glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-            int viewPos = glGetUniformLocation(shaderProgram->GetID(), "viewPos");
-            glUniform3fv(viewPos, 1, glm::value_ptr(Application::Get().GetActiveCamera().GetPosition()));
-        }
-
-        for (auto& gameObj : gameObjects)
+        for (auto& gameObj : scene->GetGameObjects())
         {
             if (!gameObj->GetModel())
                 continue;
 
             model = gameObj->GetTransform().GetMatrix();
 
-            gameObj->GetModel()->Draw(*m_ShaderPrograms[0], model);
-            if (gameObj->GetCollider())
-            {
-                
-            }
+            gameObj->GetModel()->Draw(*m_ShaderProgram, model);
         }
 
         Application::Get().UpdateImGui();
@@ -150,37 +135,7 @@ namespace Zero
     {
         // Create Shader object
         m_ShaderProgram = std::make_unique<OpenGLShader>("../shaders/phong.vert", "../shaders/phong.frag");
-        // m_DebugShader = std::make_unique<OpenGLShader>("../shaders/debug.vert", "../shaders/debug.frag");
-
-        m_ShaderPrograms[0] = m_ShaderProgram;
-        // m_ShaderPrograms[1] = m_DebugShader;
     }
 
-    // Checks if the different Shaders have compiled properly
-    void OpenGLShader::CompileErrors(const unsigned int shader, const char* type)
-    {
-        // Stores status of compilation
-        GLint hasCompiled;
-        // Character array to store error message in
-        // char infoLog[1024];
-        std::array<char, 1024> infoLog;
-        if (type != "PROGRAM")
-        {
-            glGetShaderiv(shader, GL_COMPILE_STATUS, &hasCompiled);
-            if (hasCompiled == GL_FALSE)
-            {
-                glGetShaderInfoLog(shader, 1024, NULL, infoLog.data());
-                std::cout << "SHADER_COMPILATION_ERROR for:" << type << "\n" << infoLog.data() << std::endl;
-            }
-        }
-        else
-        {
-            glGetProgramiv(shader, GL_LINK_STATUS, &hasCompiled);
-            if (hasCompiled == GL_FALSE)
-            {
-                glGetProgramInfoLog(shader, 1024, NULL, infoLog.data());
-                std::cout << "SHADER_LINKING_ERROR for:" << type << "\n" << infoLog.data() << std::endl;
-            }
-        }
-    }
+
 }

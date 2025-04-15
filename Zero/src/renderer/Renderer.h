@@ -2,6 +2,7 @@
 
 #include "glm/glm.hpp"
 #include <span>
+#include <Scene/Scene.h>
 #include <Scene/GameObject.h>
 
 namespace Zero
@@ -30,7 +31,7 @@ namespace Zero
 
         virtual void SetClearColor(glm::vec4 clearColor) = 0;
 
-        virtual void Draw(std::vector<std::shared_ptr<GameObject>>& gameObjects, Topology) = 0;
+        virtual void Draw(Scene* Scene) = 0;
 
         // bool VSync = true;
     };

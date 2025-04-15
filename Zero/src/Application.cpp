@@ -39,8 +39,6 @@ namespace Zero
             "../assets/models/plane.glb",
         };
 
-        m_GameObjects.reserve(modelPaths.size());
-
         std::shared_ptr<GameObject> blackBison = std::make_shared<GameObject>(GameObject::Create());
         blackBison->SetModel(ModelFactory::CreateModel(modelPaths[0].c_str(), m_RendererType));
         blackBison->GetTransform().Position = {15, 10, 0};
@@ -65,9 +63,13 @@ namespace Zero
         plane->EnableGravity = false;
         plane->EnableCollision = true;
 
-        m_GameObjects.emplace_back(blackBison);
-        m_GameObjects.emplace_back(greenRhino);
-        m_GameObjects.emplace_back(plane);
+        Light* dirLight = new Light({ 1, 1, 1 }, 0.5);
+        m_Scene = std::make_shared<Scene>(dirLight);
+
+        m_Scene->AddGameObject(blackBison);
+        m_Scene->AddGameObject(greenRhino);
+        m_Scene->AddGameObject(plane);
+
         SpawnSphereAtLocation({0, 0, 20}, 10.0f);
 
         glm::vec3 direction = {0, 1, -0.5};
@@ -76,7 +78,7 @@ namespace Zero
         constexpr float force = 20;
         const glm::vec3 forceVector = direction * force;
 
-        m_GameObjects[1]->GetRigidBody().AddImpulse(forceVector);
+        // m_GameObjects[1]->GetRigidBody().AddImpulse(forceVector);
     }
 
     void Application::SpawnSphere()
@@ -95,7 +97,8 @@ namespace Zero
         const glm::vec3 direction = m_EditorCamera.GetForwardVector();
         sphere->GetRigidBody().AddImpulse(direction * 50.0f);
 
-        m_GameObjects.emplace_back(sphere);
+        m_Scene->AddGameObject(sphere);
+        // m_GameObjects.emplace_back(sphere);
     }
 
     void Application::SpawnSphereAtLocation(const glm::vec3& location, float scale)
@@ -112,21 +115,7 @@ namespace Zero
         const glm::vec3 direction = m_EditorCamera.GetForwardVector();
         sphere->GetRigidBody().AddImpulse(direction * 50.0f);
 
-        m_GameObjects.emplace_back(sphere);
-    }
-
-    void Application::DestroyGameObject(const GameObject::IdType objectID)
-    {
-        for (auto it = m_GameObjects.begin(); it != m_GameObjects.end(); ++it)
-        {
-            if ((*it)->GetID() == objectID)
-            {
-                (*it)->Destroy();
-                m_GameObjects.erase(it);
-
-                break;
-            }
-        }
+        m_Scene->AddGameObject(sphere);
     }
 
     void Application::Init()
@@ -137,7 +126,7 @@ namespace Zero
 
         InitGLFW(m_RendererType);
 
-        m_PhysicsWorld.Init();
+        // m_PhysicsWorld.Init();
 
         // Initialize the renderer
         m_Renderer = RendererFactory::CreateRenderer(m_RendererType);
@@ -154,6 +143,7 @@ namespace Zero
     {
         if (m_IsInitialized)
         {
+            m_Scene->Destroy();
             m_Renderer->Shutdown();
 
             glfwDestroyWindow(m_Window);
@@ -165,6 +155,7 @@ namespace Zero
 
     bool Pressed = false;
     bool Loaded = false;
+
     void Application::Run()
     {
         // main loop
@@ -202,6 +193,7 @@ namespace Zero
             m_ActiveCamera = m_EditorMode
                                  ? reinterpret_cast<Camera*>(&m_EditorCamera)
                                  : reinterpret_cast<Camera*>(&m_PlayerCamera);
+
             if (m_EditorMode)
             {
                 m_EditorCamera.ProcessInput(m_Window, m_DeltaTime);
@@ -210,15 +202,16 @@ namespace Zero
             }
             else
             {
+                
                 m_PlayerCamera.ProcessInput(m_Window, m_DeltaTime);
-                m_PlayerCamera.Update(m_DeltaTime, m_GameObjects[0]->GetTransform().Position);
+                m_PlayerCamera.Update(m_DeltaTime, m_Scene->GetGameObjects()[0]->GetTransform().Position);
                 // m_GameObjects[0]->EnableGravity = true;
             }
             
             if (Loaded)
             {
-                m_GameObjects[0]->UpdatePlayer(m_DeltaTime);
-                m_PhysicsWorld.Step(m_DeltaTime, m_GameObjects);
+                m_Scene->GetGameObjects()[0]->UpdatePlayer(m_DeltaTime);
+                // m_PhysicsWorld.Step(m_DeltaTime, m_GameObjects);
             }
             
             Draw();
@@ -231,7 +224,7 @@ namespace Zero
     void Application::Draw()
     {
         m_Renderer->SetClearColor({0.05, 0, 0.32, 1});
-        m_Renderer->Draw(m_GameObjects, Topology::Triangles);
+        m_Renderer->Draw(m_Scene.get());
 
         m_FrameCount++;
     }
@@ -267,7 +260,7 @@ namespace Zero
         ImGui::End();
 
         ImGui::Begin("Objects");
-        ImGui::Text("Number of Objects: %i", m_GameObjects.size());
+        ImGui::Text("Number of Objects: %i", m_Scene->GetGameObjects().size());
         ImGui::End();
     }
 
