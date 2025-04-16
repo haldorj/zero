@@ -13,7 +13,11 @@ namespace Zero {
 		m_GameObjects.reserve(100);
 		m_DirectionalLight.reset(light);
 
-		m_Material = std::make_shared<Material>(1.0f, 32.0f);
+		// Dull
+		m_Material = std::make_shared<Material>(0.25f, 2.0f);
+
+		// Shiny
+		// m_Material = std::make_shared<Material>(1.0f, 32.0f);
 	}
 
 	void Scene::Destroy()

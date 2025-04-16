@@ -35,17 +35,15 @@ void main()
 	vec4 diffuseColor = vec4(directionalLight.color, 1.0f) * directionalLight.diffuseIntensity * diffuseFactor;
 
 	vec4 specularColor = vec4(0,0,0,0);
-	if (diffuseFactor > 0.0f)
+
+	vec3 viewDir = normalize(viewPos - fragPos);
+	vec3 reflectedVertex = normalize(reflect(-directionalLight.direction, normalize(normal)));
+	
+	float specularFactor = dot(viewDir, reflectedVertex);
+	if(specularFactor > 0.0f)
 	{
-		vec3 fragToView = normalize(viewPos - fragPos);
-		vec3 reflectedVertex = normalize(reflect(directionalLight.direction, normalize(normal)));
-		
-		float specularFactor = dot(-fragToView, reflectedVertex);
-		if(specularFactor > 0.0f)
-		{
-			specularFactor = pow(specularFactor, material.shininess);
-			specularColor = vec4(directionalLight.color * material.specularIntensity * specularFactor, 1.0f);
-		}
+		specularFactor = pow(specularFactor, material.shininess);
+		specularColor = vec4(directionalLight.color * material.specularIntensity * specularFactor, 1.0f);
 	}
 
 	FragColor = texture(tex0, texCoord) * (ambientColor + diffuseColor + specularColor);
