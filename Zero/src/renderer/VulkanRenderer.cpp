@@ -330,6 +330,8 @@ namespace Zero
         sceneUniformData->DirLight.AmbientIntensity = scene->GetDirectionalLight()->GetAmbientIntensity();
         sceneUniformData->DirLight.Direction = scene->GetDirectionalLight()->GetDirection();
         sceneUniformData->DirLight.DiffuseIntensity = scene->GetDirectionalLight()->GetDiffuseIntensity();
+        sceneUniformData->Mat.specularIntensity = scene->GetMaterial()->GetSpecularIntensity();
+        sceneUniformData->Mat.shininess = scene->GetMaterial()->GetShininess();
 
         //create a descriptor set that binds that buffer and update it
         VkDescriptorSet globalDescriptor = GetCurrentFrame().FrameDescriptors.Allocate(m_Device, m_GpuSceneDataDescriptorLayout);

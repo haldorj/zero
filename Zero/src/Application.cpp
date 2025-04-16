@@ -67,8 +67,9 @@ namespace Zero
         Light* dirLight = new Light({
             glm::vec3(m_DirectionalLightColor),
             m_DirectionalLightColor.w,
-            glm::vec3(1.0f, 1.0, 0.0f),
-            0.5f });
+            m_DirectionalLightDirection,
+            m_DirectionalLightIntensity 
+            });
 
         m_Scene = std::make_shared<Scene>(dirLight);
 
@@ -221,7 +222,8 @@ namespace Zero
             }
             
             m_Scene->GetDirectionalLight()->Update(
-                glm::vec3(m_DirectionalLightColor), m_DirectionalLightColor.a);
+                glm::vec3(m_DirectionalLightColor), m_DirectionalLightColor.a,
+                m_DirectionalLightDirection, m_DirectionalLightIntensity);
 
             Draw();
             
@@ -274,6 +276,8 @@ namespace Zero
 
         ImGui::Begin("Directional Light");
         ImGui::ColorEdit4("Color:", glm::value_ptr(m_DirectionalLightColor));
+        ImGui::DragFloat3("Direction", glm::value_ptr(m_DirectionalLightDirection), 0.1);
+        ImGui::DragFloat("Diffuse Intensity", &m_DirectionalLightIntensity, 0.05f, 0.0f, 1.0f);
         ImGui::End();
     }
 

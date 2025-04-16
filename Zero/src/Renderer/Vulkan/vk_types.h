@@ -67,6 +67,12 @@ struct DirectionalLight
     float DiffuseIntensity;
 };
 
+struct Material
+{
+    float specularIntensity;
+    float shininess;
+};
+
 struct GPUSceneData
 {
     glm::mat4 View;
@@ -74,4 +80,5 @@ struct GPUSceneData
     glm::mat4 Viewproj;
 
     DirectionalLight DirLight;
+    Material Mat;
 };

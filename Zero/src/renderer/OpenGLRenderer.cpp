@@ -122,6 +122,12 @@ namespace Zero
         int diffuseIntensity = glGetUniformLocation(m_ShaderProgram->GetID(), "directionalLight.diffuseIntensity");
         glUniform1f(diffuseIntensity, scene->GetDirectionalLight()->GetDiffuseIntensity());
 
+        int specularIntensity = glGetUniformLocation(m_ShaderProgram->GetID(), "material.specularIntensity");
+        glUniform1f(specularIntensity, scene->GetMaterial()->GetSpecularIntensity());
+
+        int shininess = glGetUniformLocation(m_ShaderProgram->GetID(), "material.shininess");
+        glUniform1f(shininess, scene->GetMaterial()->GetShininess());
+
         for (auto& gameObj : scene->GetGameObjects())
         {
             if (!gameObj->GetModel())

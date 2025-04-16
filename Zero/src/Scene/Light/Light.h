@@ -12,7 +12,8 @@ namespace Zero {
 		Light(glm::vec3 color, float ambientIntensity,
 		glm::vec3 direction, float diffuseIntensity);
 
-		void Update(glm::vec3 color, float ambientIntensity);
+		void Update(glm::vec3 color, float ambientIntensity,
+			glm::vec3 direction, float diffuseIntensity);
 
 		glm::vec3 GetColor() const { return m_Color; }
 		float GetAmbientIntensity() const { return m_AmbientIntensity; }

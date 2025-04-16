@@ -6,12 +6,19 @@ struct DirectionalLight
 	float diffuseIntensity;
 };
 
+struct Material
+{
+	float specularIntensity;
+    float shininess;
+};
+
 layout(set = 0, binding = 0) uniform  SceneData {   
 
 	mat4 view;
 	mat4 proj;
 	mat4 viewproj;
 	DirectionalLight directionalLight;
+	Material material;
 
 } sceneData;
 

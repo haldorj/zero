@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Scene\Material\Material.h" />
     <ClInclude Include="src\Scene\Scene.h" />
     <ClInclude Include="src\Scene\Light\Light.h" />
     <ClInclude Include="src\Application.h" />
@@ -606,6 +607,7 @@
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Scene\Material\Material.cpp" />
     <ClCompile Include="src\Scene\Scene.cpp" />
     <ClCompile Include="src\Scene\Light\Light.cpp" />
     <ClCompile Include="src\Application.cpp" />

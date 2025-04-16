@@ -102,7 +102,9 @@ namespace Zero
         std::shared_ptr<Scene> m_Scene{};
         // PhysicsWorld m_PhysicsWorld{};
 
-        glm::vec4 m_DirectionalLightColor{1, 1, 1, 0.2};
+        glm::vec4 m_DirectionalLightColor{1.0f, 1.0f, 1.0f, 0.2f};
+        glm::vec3 m_DirectionalLightDirection{ 1.0f, 1.0, 0.0f };
+        float m_DirectionalLightIntensity{1.f};
 
         float m_Time{0.0f};
         float m_DeltaTime{0.0f};

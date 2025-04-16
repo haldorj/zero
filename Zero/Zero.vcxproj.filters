@@ -1478,6 +1478,7 @@
     </ClInclude>
     <ClInclude Include="src\Scene\Light\Light.h" />
     <ClInclude Include="src\Scene\Scene.h" />
+    <ClInclude Include="src\Scene\Material\Material.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
@@ -1599,5 +1600,6 @@
     </ClCompile>
     <ClCompile Include="src\Scene\Light\Light.cpp" />
     <ClCompile Include="src\Scene\Scene.cpp" />
+    <ClCompile Include="src\Scene\Material\Material.cpp" />
   </ItemGroup>
 </Project>
