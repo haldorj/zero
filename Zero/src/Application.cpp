@@ -77,21 +77,21 @@ namespace Zero
         m_Scene->AddGameObject(greenRhino);
         m_Scene->AddGameObject(plane);
 
-        //m_Scene->AddPointLight(std::make_shared<PointLight>(
-        //    glm::vec3{ 10, 10, -10 },
-        //    glm::vec3{ 1, 0, 0.5 },
-        //    0.1f, 0.25f,
-        //    1.0, 0.014, 0.007));
-        //m_Scene->AddPointLight(std::make_shared<PointLight>(
-        //    glm::vec3{ 0, 15, 10 },
-        //    glm::vec3{ 0.5, 1.0, 0.0 },
-        //    0.1f, 0.25f,
-        //    1.0, 0.014, 0.007));
-        //m_Scene->AddPointLight(std::make_shared<PointLight>(
-        //    glm::vec3{ -10, 10, -10 },
-        //    glm::vec3{ 0, 0, 1 },
-        //    0.1f, 0.25f,
-        //    1.0, 0.014, 0.007));
+        m_Scene->AddPointLight(std::make_shared<PointLight>(
+            glm::vec3{ 10, 10, -10 },
+            glm::vec3{ 1, 0, 0.5 },
+            0.1f, 0.25f,
+            1.0, 0.014, 0.007));
+        m_Scene->AddPointLight(std::make_shared<PointLight>(
+            glm::vec3{ 0, 15, 10 },
+            glm::vec3{ 0.5, 1.0, 0.0 },
+            0.1f, 0.25f,
+            1.0, 0.014, 0.007));
+        m_Scene->AddPointLight(std::make_shared<PointLight>(
+            glm::vec3{ -10, 10, -10 },
+            glm::vec3{ 0, 0, 1 },
+            0.1f, 0.25f,
+            1.0, 0.014, 0.007));
 
         m_Scene->AddSpotLight(std::make_shared<SpotLight>(
 			glm::vec3{ 0, 30, 0 },

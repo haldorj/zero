@@ -83,6 +83,13 @@ struct PointLightData
     float Exponent;
 };
 
+struct SpotLightData
+{
+    PointLightData Base;
+	glm::vec3 Direction;
+	float Edge;
+};
+
 struct MaterialData
 {
     float SpecularIntensity;
@@ -96,7 +103,10 @@ struct GPUSceneData
     glm::mat4 Viewproj;
 
     int PointLightCount;
+    int SpotLightCount;
+
     DirectionalLightData DirectionalLight;
     PointLightData PointLights[MAX_POINT_LIGHTS];
+	SpotLightData SpotLights[MAX_SPOT_LIGHTS];
     MaterialData Material;
 };

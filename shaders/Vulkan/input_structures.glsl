@@ -1,6 +1,7 @@
 #extension GL_EXT_scalar_block_layout : require
 
 const int MAX_POINT_LIGHTS = 100;
+const int MAX_SPOT_LIGHTS = 100;
 
 struct Light
 {
@@ -24,6 +25,13 @@ struct PointLight
 	float exponent;
 };
 
+struct SpotLight
+{
+	PointLight base;
+	vec3 direction;
+	float edge;
+};
+
 struct Material
 {
 	float specularIntensity;
@@ -37,8 +45,11 @@ layout(scalar, set = 0, binding = 0) uniform SceneData
 	mat4 viewproj;
 
 	int pointLightCount;
+	int spotLightCount;
+	
 	DirectionalLight directionalLight;
 	PointLight pointLights[MAX_POINT_LIGHTS];
+	SpotLight spotLights[MAX_SPOT_LIGHTS];
 	Material material;
 } sceneData;
 

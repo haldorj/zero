@@ -330,9 +330,12 @@ namespace Zero
         sceneUniformData->DirectionalLight.Base.AmbientIntensity = scene->GetDirectionalLight()->GetAmbientIntensity();
         sceneUniformData->DirectionalLight.Base.DiffuseIntensity = scene->GetDirectionalLight()->GetDiffuseIntensity();
         sceneUniformData->DirectionalLight.Direction = scene->GetDirectionalLight()->GetDirection();
-        sceneUniformData->PointLightCount = scene->GetPointLights().size();
+ 
         sceneUniformData->Material.SpecularIntensity = scene->GetMaterial()->GetSpecularIntensity();
         sceneUniformData->Material.Shininess = scene->GetMaterial()->GetShininess();
+
+        sceneUniformData->PointLightCount = scene->GetPointLights().size();
+        sceneUniformData->SpotLightCount = scene->GetSpotLights().size();
 
         for (int i = 0; i < scene->GetPointLights().size(); i++)
         {
@@ -344,6 +347,19 @@ namespace Zero
 			sceneUniformData->PointLights[i].Linear = scene->GetPointLights()[i]->GetLinear();
 			sceneUniformData->PointLights[i].Exponent = scene->GetPointLights()[i]->GetExponent();
 		}   
+
+        for (int i = 0; i < scene->GetSpotLights().size(); i++)
+        {
+			sceneUniformData->SpotLights[i].Base.Base.Color = scene->GetSpotLights()[i]->GetColor();
+			sceneUniformData->SpotLights[i].Base.Base.AmbientIntensity = scene->GetSpotLights()[i]->GetAmbientIntensity();
+			sceneUniformData->SpotLights[i].Base.Base.DiffuseIntensity = scene->GetSpotLights()[i]->GetDiffuseIntensity();
+			sceneUniformData->SpotLights[i].Base.Position = scene->GetSpotLights()[i]->GetPosition();
+			sceneUniformData->SpotLights[i].Base.Constant = scene->GetSpotLights()[i]->GetConstant();
+			sceneUniformData->SpotLights[i].Base.Linear = scene->GetSpotLights()[i]->GetLinear();
+			sceneUniformData->SpotLights[i].Base.Exponent = scene->GetSpotLights()[i]->GetExponent();
+			sceneUniformData->SpotLights[i].Direction = scene->GetSpotLights()[i]->GetDirection();
+            sceneUniformData->SpotLights[i].Edge = scene->GetSpotLights()[i]->GetEdge();
+		}
 
         //create a descriptor set that binds that buffer and update it
         VkDescriptorSet globalDescriptor = GetCurrentFrame().FrameDescriptors.Allocate(m_Device, m_GpuSceneDataDescriptorLayout);

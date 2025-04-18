@@ -39,21 +39,53 @@ vec4 CalcDirectionalLight()
 	return CalcLightByDirection(sceneData.directionalLight.base, sceneData.directionalLight.direction);
 }
 
+vec4 CalcPointLight(PointLight pLight)
+{
+	vec3 direction = pLight.position - inPosition;
+	float dist = length(direction);
+	direction = normalize(direction);
+
+	vec4 color = CalcLightByDirection(pLight.base, direction);
+	float attenuation = (pLight.exponent * dist * dist	) +
+						(pLight.linear 	 * dist			) +
+						(pLight.constant				);
+
+	return (color / attenuation);
+}
+
+vec4 CalcSpotLight(SpotLight sLight)
+{
+	vec3 direction = normalize(sLight.base.position - inPosition);
+	float slFactor = dot(direction, normalize(-sLight.direction));
+	if (slFactor > sLight.edge)
+	{
+		vec4 color = CalcPointLight(sLight.base);
+
+		return color * (1.0f - (1.0f - slFactor) * (1.0f/(1.0f - sLight.edge)));
+	} 
+	else
+	{
+		return vec4(0,0,0,0);
+	}
+}
+
+
 vec4 CalcPointLights()
 {
 	vec4 totalColor = vec4(0,0,0,0);
 	for (int i = 0; i < sceneData.pointLightCount; i++)
 	{
-		vec3 direction = sceneData.pointLights[i].position - inPosition;
-		float dist = length(direction);
-		direction = normalize(direction);
+		totalColor += CalcPointLight(sceneData.pointLights[i]);
+	}
+	return totalColor;
+}
 
-		vec4 color = CalcLightByDirection(sceneData.pointLights[i].base, direction);
-		float attenuation = (sceneData.pointLights[i].exponent * dist * dist	) +
-							(sceneData.pointLights[i].linear   * dist			) +
-							(sceneData.pointLights[i].constant					);
-
-		totalColor += (color / attenuation);
+vec4 CalcSpotLights()
+{
+	vec4 totalColor = vec4(0,0,0,0);
+	for (int i = 0; i < sceneData.spotLightCount; i++)
+	{
+		totalColor += CalcSpotLight(sceneData.spotLights[i]);
 	}
 	return totalColor;
 }
@@ -62,6 +94,7 @@ void main()
 {
 	vec4 finalColor = CalcDirectionalLight();
 	finalColor += CalcPointLights();
+	finalColor += CalcSpotLights();
 
 	outFragColor = vec4(texture(displayTexture, inUV).xyz, 1.0) * finalColor;
 }
