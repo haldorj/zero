@@ -5,14 +5,14 @@ namespace Zero {
 	Scene::Scene()
 	{
 		m_GameObjects.reserve(100);
-		m_PointLights.reserve(MAX_POINTLIGHTS);
+		m_PointLights.reserve(MAX_POINT_LIGHTS);
 		m_DirectionalLight = std::make_shared<DirectionalLight>();
 	}
 
 	Scene::Scene(DirectionalLight* light)
 	{
 		m_GameObjects.reserve(100);
-		m_PointLights.reserve(MAX_POINTLIGHTS);
+		m_PointLights.reserve(MAX_POINT_LIGHTS);
 		m_DirectionalLight.reset(light);
 
 		// Dull
@@ -40,7 +40,7 @@ namespace Zero {
 
 	void Scene::AddPointLight(std::shared_ptr<PointLight> pointLight)
 	{
-		if (m_PointLights.size() >= MAX_POINTLIGHTS)
+		if (m_PointLights.size() >= MAX_POINT_LIGHTS)
 		{
 			return;
 		}

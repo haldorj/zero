@@ -34,7 +34,7 @@ namespace Zero {
         UniformDirectionalLight m_UniformDirectionalLight{};
 
         size_t m_PointLightCount{};
-        std::array<UniformPointLight, MAX_POINTLIGHTS> m_UniformPointLights{};
+        std::array<UniformPointLight, MAX_POINT_LIGHTS> m_UniformPointLights{};
 
         int m_Width{};
         int m_Height{};

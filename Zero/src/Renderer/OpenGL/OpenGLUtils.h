@@ -1,6 +1,6 @@
 #pragma once
 
-constexpr unsigned int MAX_POINTLIGHTS = 100;
+constexpr unsigned int MAX_POINT_LIGHTS = 100;
 
 struct UniformDirectionalLight
 {

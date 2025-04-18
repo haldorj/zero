@@ -97,10 +97,10 @@ namespace Zero
         GLFWwindow* m_Window = nullptr;
 
         Renderer* m_Renderer = nullptr;
-        RendererAPI m_RendererType{ RendererAPI::OpenGL };
+        RendererAPI m_RendererType{ RendererAPI::Vulkan };
 
         std::shared_ptr<Scene> m_Scene{};
-        // PhysicsWorld m_PhysicsWorld{};
+        PhysicsWorld m_PhysicsWorld{};
 
         glm::vec4 m_DirectionalLightColor{1.0f, 1.0f, 1.0f, 0.3f};
         glm::vec3 m_DirectionalLightDirection{ 1.0f, 1.0, 0.0f };

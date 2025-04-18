@@ -77,21 +77,21 @@ namespace Zero
         m_Scene->AddGameObject(greenRhino);
         m_Scene->AddGameObject(plane);
 
-        m_Scene->AddPointLight(std::make_shared<PointLight>(
-            glm::vec3{ 10, 10, -10 },
-            glm::vec3{ 1, 0, 0 },
-            0.1f, 0.25f,
-            1.0, 0.014, 0.007));
-        m_Scene->AddPointLight(std::make_shared<PointLight>(
-            glm::vec3{ 0, 15, 10 },
-            glm::vec3{ 0, 1, 0 },
-            0.1f, 0.25f,
-            1.0, 0.014, 0.007));
-        m_Scene->AddPointLight(std::make_shared<PointLight>(
-            glm::vec3{ -10, 10, -10 },
-            glm::vec3{ 0, 0, 1 },
-            0.1f, 0.25f,
-            1.0, 0.014, 0.007));
+        //m_Scene->AddPointLight(std::make_shared<PointLight>(
+        //    glm::vec3{ 10, 10, -10 },
+        //    glm::vec3{ 1, 0, 0.5 },
+        //    0.1f, 0.25f,
+        //    1.0, 0.014, 0.007));
+        //m_Scene->AddPointLight(std::make_shared<PointLight>(
+        //    glm::vec3{ 0, 15, 10 },
+        //    glm::vec3{ 0, 0.5, 1 },
+        //    0.1f, 0.25f,
+        //    1.0, 0.014, 0.007));
+        //m_Scene->AddPointLight(std::make_shared<PointLight>(
+        //    glm::vec3{ -10, 10, -10 },
+        //    glm::vec3{ 0, 0, 1 },
+        //    0.1f, 0.25f,
+        //    1.0, 0.014, 0.007));
 
         SpawnSphereAtLocation({0, 0, 20}, 10.0f);
 
@@ -149,7 +149,7 @@ namespace Zero
 
         InitGLFW(m_RendererType);
 
-        // m_PhysicsWorld.Init();
+        m_PhysicsWorld.Init();
 
         // Initialize the renderer
         m_Renderer = RendererFactory::CreateRenderer(m_RendererType);
@@ -221,20 +221,20 @@ namespace Zero
             {
                 m_EditorCamera.ProcessInput(m_Window, m_DeltaTime);
                 m_EditorCamera.Update(m_DeltaTime);
-                // m_GameObjects[0]->EnableGravity = false;
+                // m_Scene->GetGameObjects()[0]->EnableGravity = false;
             }
             else
             {
                 
                 m_PlayerCamera.ProcessInput(m_Window, m_DeltaTime);
                 m_PlayerCamera.Update(m_DeltaTime, m_Scene->GetGameObjects()[0]->GetTransform().Position);
-                // m_GameObjects[0]->EnableGravity = true;
+                // m_Scene->GetGameObjects()[0]->EnableGravity = true;
             }
             
             if (Loaded)
             {
                 m_Scene->GetGameObjects()[0]->UpdatePlayer(m_DeltaTime);
-                // m_PhysicsWorld.Step(m_DeltaTime, m_GameObjects);
+                m_PhysicsWorld.Step(m_DeltaTime, m_Scene->GetGameObjects());
             }
             
             m_Scene->GetDirectionalLight()->Update(

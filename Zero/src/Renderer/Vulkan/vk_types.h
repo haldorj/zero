@@ -59,18 +59,23 @@ struct GPUDrawPushConstants
     VkDeviceAddress VertexBuffer;
 };
 
-struct DirectionalLightData
+struct LightData
 {
     glm::vec3 Color;
     float AmbientIntensity;
-    glm::vec3 Direction;
     float DiffuseIntensity;
+};
+
+struct DirectionalLightData
+{
+    LightData Base;
+    glm::vec3 Direction;
 };
 
 struct MaterialData
 {
-    float specularIntensity;
-    float shininess;
+    float SpecularIntensity;
+    float Shininess;
 };
 
 struct GPUSceneData
@@ -79,6 +84,7 @@ struct GPUSceneData
     glm::mat4 Proj;
     glm::mat4 Viewproj;
 
+    // int PointLightCount;
     DirectionalLightData DirectionalLight;
     MaterialData Material;
 };

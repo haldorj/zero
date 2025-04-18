@@ -326,12 +326,13 @@ namespace Zero
         *sceneUniformData = m_SceneData;
 
         sceneUniformData->Viewproj = projection * view;
-        sceneUniformData->DirectionalLight.Color = scene->GetDirectionalLight()->GetColor();
-        sceneUniformData->DirectionalLight.AmbientIntensity = scene->GetDirectionalLight()->GetAmbientIntensity();
+        sceneUniformData->DirectionalLight.Base.Color = scene->GetDirectionalLight()->GetColor();
+        sceneUniformData->DirectionalLight.Base.AmbientIntensity = scene->GetDirectionalLight()->GetAmbientIntensity();
+        sceneUniformData->DirectionalLight.Base.DiffuseIntensity = scene->GetDirectionalLight()->GetDiffuseIntensity();
         sceneUniformData->DirectionalLight.Direction = scene->GetDirectionalLight()->GetDirection();
-        sceneUniformData->DirectionalLight.DiffuseIntensity = scene->GetDirectionalLight()->GetDiffuseIntensity();
-        sceneUniformData->Material.specularIntensity = scene->GetMaterial()->GetSpecularIntensity();
-        sceneUniformData->Material.shininess = scene->GetMaterial()->GetShininess();
+        // sceneUniformData->PointLightCount = scene->GetPointLights().size();
+        sceneUniformData->Material.SpecularIntensity = scene->GetMaterial()->GetSpecularIntensity();
+        sceneUniformData->Material.Shininess = scene->GetMaterial()->GetShininess();
 
         //create a descriptor set that binds that buffer and update it
         VkDescriptorSet globalDescriptor = GetCurrentFrame().FrameDescriptors.Allocate(m_Device, m_GpuSceneDataDescriptorLayout);
