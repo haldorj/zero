@@ -1479,6 +1479,9 @@
     <ClInclude Include="src\Scene\Light\Light.h" />
     <ClInclude Include="src\Scene\Scene.h" />
     <ClInclude Include="src\Scene\Material\Material.h" />
+    <ClInclude Include="src\Scene\Light\DirectionalLight.h" />
+    <ClInclude Include="src\Scene\Light\PointLight.h" />
+    <ClInclude Include="src\Renderer\OpenGL\OpenGLUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
@@ -1601,5 +1604,7 @@
     <ClCompile Include="src\Scene\Light\Light.cpp" />
     <ClCompile Include="src\Scene\Scene.cpp" />
     <ClCompile Include="src\Scene\Material\Material.cpp" />
+    <ClCompile Include="src\Scene\Light\DirectionalLight.cpp" />
+    <ClCompile Include="src\Scene\Light\PointLight.cpp" />
   </ItemGroup>
 </Project>

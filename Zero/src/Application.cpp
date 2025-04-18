@@ -59,12 +59,12 @@ namespace Zero
         std::shared_ptr<GameObject> plane = std::make_shared<GameObject>(GameObject::Create());
         plane->SetModel(ModelFactory::CreateModel(modelPaths[2].c_str(), m_RendererType));
         plane->GetTransform().Position = {0, 0, 0};
-        plane->GetTransform().Scale = glm::vec3{500.f};
+        plane->GetTransform().Scale = glm::vec3{200.f};
         plane->SetCollider(std::make_shared<PlaneCollider>(plane->GetTransform().GetUpVector(), 500.f));
         plane->EnableGravity = false;
         plane->EnableCollision = true;
 
-        Light* dirLight = new Light({
+        DirectionalLight* dirLight = new DirectionalLight({
             glm::vec3(m_DirectionalLightColor),
             m_DirectionalLightColor.w,
             m_DirectionalLightDirection,
@@ -76,6 +76,22 @@ namespace Zero
         m_Scene->AddGameObject(blackBison);
         m_Scene->AddGameObject(greenRhino);
         m_Scene->AddGameObject(plane);
+
+        m_Scene->AddPointLight(std::make_shared<PointLight>(
+            glm::vec3{ 10, 10, -10 },
+            glm::vec3{ 1, 0, 0 },
+            0.1f, 0.25f,
+            1.0, 0.014, 0.007));
+        m_Scene->AddPointLight(std::make_shared<PointLight>(
+            glm::vec3{ 0, 15, 10 },
+            glm::vec3{ 0, 1, 0 },
+            0.1f, 0.25f,
+            1.0, 0.014, 0.007));
+        m_Scene->AddPointLight(std::make_shared<PointLight>(
+            glm::vec3{ -10, 10, -10 },
+            glm::vec3{ 0, 0, 1 },
+            0.1f, 0.25f,
+            1.0, 0.014, 0.007));
 
         SpawnSphereAtLocation({0, 0, 20}, 10.0f);
 

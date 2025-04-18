@@ -11,8 +11,7 @@
 
 #include "Debug/DebugSphere.h"
 
-std::vector<Vertex> RectVertices;
-std::vector<GLuint> RectIndeces;
+
 
 namespace Zero
 {
@@ -92,41 +91,11 @@ namespace Zero
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 view = glm::mat4(1.0f);
-        glm::mat4 projection = glm::mat4(1.0f);
-
         glfwGetWindowSize(Application::Get().GetWindow(), &m_Width, &m_Height);
 
-        // model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
-        view = Application::Get().GetActiveCamera().GetViewMatrix();
-        projection = glm::perspective(glm::radians(Application::Get().GetActiveCamera().GetFOV()),
-                                      (float)m_Width / (float)m_Height, 0.1f, 10000.0f);
+        glm::mat4 model = glm::mat4(1.0f);
 
-        int viewLoc = glGetUniformLocation(m_ShaderProgram->GetID(), "view");
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        int projLoc = glGetUniformLocation(m_ShaderProgram->GetID(), "projection");
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-        int viewPos = glGetUniformLocation(m_ShaderProgram->GetID(), "viewPos");
-        glUniform3fv(viewPos, 1, glm::value_ptr(Application::Get().GetActiveCamera().GetPosition()));
-
-        int ambientColor = glGetUniformLocation(m_ShaderProgram->GetID(), "directionalLight.color");
-        glUniform3fv(ambientColor, 1, glm::value_ptr(scene->GetDirectionalLight()->GetColor()));
-
-        int ambientIntensity = glGetUniformLocation(m_ShaderProgram->GetID(), "directionalLight.ambientIntensity");
-        glUniform1f(ambientIntensity, scene->GetDirectionalLight()->GetAmbientIntensity());
-
-        int direction = glGetUniformLocation(m_ShaderProgram->GetID(), "directionalLight.direction");
-        glUniform3fv(direction, 1, glm::value_ptr(scene->GetDirectionalLight()->GetDirection()));
-
-        int diffuseIntensity = glGetUniformLocation(m_ShaderProgram->GetID(), "directionalLight.diffuseIntensity");
-        glUniform1f(diffuseIntensity, scene->GetDirectionalLight()->GetDiffuseIntensity());
-
-        int specularIntensity = glGetUniformLocation(m_ShaderProgram->GetID(), "material.specularIntensity");
-        glUniform1f(specularIntensity, scene->GetMaterial()->GetSpecularIntensity());
-
-        int shininess = glGetUniformLocation(m_ShaderProgram->GetID(), "material.shininess");
-        glUniform1f(shininess, scene->GetMaterial()->GetShininess());
+        SetUniformValues(m_ShaderProgram.get(), scene);
 
         for (auto& gameObj : scene->GetGameObjects())
         {
@@ -146,6 +115,84 @@ namespace Zero
 
         // Swap the back buffer with the front buffer
         glfwSwapBuffers(Application::Get().GetWindow());
+    }
+
+    void OpenGLRenderer::SetUniformValues(OpenGLShader* shader, Scene* scene)
+    {
+        if (!shader) return;
+
+        glm::mat4 view = glm::mat4(1.0f);
+        glm::mat4 projection = glm::mat4(1.0f);
+
+        // model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
+        view = Application::Get().GetActiveCamera().GetViewMatrix();
+        projection = glm::perspective(glm::radians(Application::Get().GetActiveCamera().GetFOV()),
+            (float)m_Width / (float)m_Height, 0.1f, 10000.0f);
+
+        int viewLoc = glGetUniformLocation(shader->GetID(), "view");
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+        int projLoc = glGetUniformLocation(shader->GetID(), "projection");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+        int viewPos = glGetUniformLocation(shader->GetID(), "viewPos");
+        glUniform3fv(viewPos, 1, glm::value_ptr(Application::Get().GetActiveCamera().GetPosition()));
+
+        // Directional Light
+        m_UniformDirectionalLight.Color = glGetUniformLocation(shader->GetID(), "directionalLight.base.color");
+        glUniform3fv(m_UniformDirectionalLight.Color, 1, glm::value_ptr(scene->GetDirectionalLight()->GetColor()));
+
+        m_UniformDirectionalLight.AmbientIntensity = glGetUniformLocation(shader->GetID(), "directionalLight.base.ambientIntensity");
+        glUniform1f(m_UniformDirectionalLight.AmbientIntensity, scene->GetDirectionalLight()->GetAmbientIntensity());
+
+        m_UniformDirectionalLight.DiffuseIntensity = glGetUniformLocation(shader->GetID(), "directionalLight.base.diffuseIntensity");
+        glUniform1f(m_UniformDirectionalLight.DiffuseIntensity, scene->GetDirectionalLight()->GetDiffuseIntensity());
+
+        m_UniformDirectionalLight.Direction = glGetUniformLocation(shader->GetID(), "directionalLight.direction");
+        glUniform3fv(m_UniformDirectionalLight.Direction, 1, glm::value_ptr(scene->GetDirectionalLight()->GetDirection()));
+
+        // Material
+        int specularIntensity = glGetUniformLocation(shader->GetID(), "material.specularIntensity");
+        glUniform1f(specularIntensity, scene->GetMaterial()->GetSpecularIntensity());
+
+        int shininess = glGetUniformLocation(shader->GetID(), "material.shininess");
+        glUniform1f(shininess, scene->GetMaterial()->GetShininess());
+
+        // Point Lights
+        int pointLightCount = scene->GetPointLights().size();
+        m_PointLightCount = scene->GetPointLights().size();
+        glUniform1i(glGetUniformLocation(shader->GetID(), "pointLightCount"), m_PointLightCount);
+
+        for (unsigned int i = 0; i < scene->GetPointLights().size(); ++i)
+        {
+            char locBuff[100] = { '\0' };
+
+            snprintf(locBuff, sizeof(locBuff), "pointLights[%d].base.color", i);
+            m_UniformPointLights[i].Color = glGetUniformLocation(shader->GetID(), locBuff);
+            glUniform3fv(m_UniformPointLights[i].Color, 1, glm::value_ptr(scene->GetPointLights()[i]->GetColor()));
+
+            snprintf(locBuff, sizeof(locBuff), "pointLights[%d].base.ambientIntensity", i);
+            m_UniformPointLights[i].AmbientIntensity = glGetUniformLocation(shader->GetID(), locBuff);
+            glUniform1f(m_UniformPointLights[i].AmbientIntensity, scene->GetPointLights()[i]->GetAmbientIntensity());
+
+            snprintf(locBuff, sizeof(locBuff), "pointLights[%d].base.diffuseIntensity", i);
+            m_UniformPointLights[i].DiffuseIntensity = glGetUniformLocation(shader->GetID(), locBuff);
+            glUniform1f(m_UniformPointLights[i].DiffuseIntensity, scene->GetPointLights()[i]->GetDiffuseIntensity());
+
+            snprintf(locBuff, sizeof(locBuff), "pointLights[%d].position", i);
+            m_UniformPointLights[i].Position = glGetUniformLocation(shader->GetID(), locBuff);
+            glUniform3fv(m_UniformPointLights[i].Position, 1, glm::value_ptr(scene->GetPointLights()[i]->GetPosition()));
+
+            snprintf(locBuff, sizeof(locBuff), "pointLights[%d].constant", i);
+            m_UniformPointLights[i].Constant = glGetUniformLocation(shader->GetID(), locBuff);
+            glUniform1f(m_UniformPointLights[i].Constant, scene->GetPointLights()[i]->GetConstant());
+
+            snprintf(locBuff, sizeof(locBuff), "pointLights[%d].linear", i);
+            m_UniformPointLights[i].Linear = glGetUniformLocation(shader->GetID(), locBuff);
+            glUniform1f(m_UniformPointLights[i].Linear, scene->GetPointLights()[i]->GetLinear());
+
+            snprintf(locBuff, sizeof(locBuff), "pointLights[%d].exponent", i);
+            m_UniformPointLights[i].Exponent = glGetUniformLocation(shader->GetID(), locBuff);
+            glUniform1f(m_UniformPointLights[i].Exponent, scene->GetPointLights()[i]->GetExponent());
+        }
     }
 
     void OpenGLRenderer::InitShaders()
