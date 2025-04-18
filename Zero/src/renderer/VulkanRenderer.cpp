@@ -330,9 +330,20 @@ namespace Zero
         sceneUniformData->DirectionalLight.Base.AmbientIntensity = scene->GetDirectionalLight()->GetAmbientIntensity();
         sceneUniformData->DirectionalLight.Base.DiffuseIntensity = scene->GetDirectionalLight()->GetDiffuseIntensity();
         sceneUniformData->DirectionalLight.Direction = scene->GetDirectionalLight()->GetDirection();
-        // sceneUniformData->PointLightCount = scene->GetPointLights().size();
+        sceneUniformData->PointLightCount = scene->GetPointLights().size();
         sceneUniformData->Material.SpecularIntensity = scene->GetMaterial()->GetSpecularIntensity();
         sceneUniformData->Material.Shininess = scene->GetMaterial()->GetShininess();
+
+        for (int i = 0; i < scene->GetPointLights().size(); i++)
+        {
+			sceneUniformData->PointLights[i].Base.Color = scene->GetPointLights()[i]->GetColor();
+			sceneUniformData->PointLights[i].Base.AmbientIntensity = scene->GetPointLights()[i]->GetAmbientIntensity();
+			sceneUniformData->PointLights[i].Base.DiffuseIntensity = scene->GetPointLights()[i]->GetDiffuseIntensity();
+			sceneUniformData->PointLights[i].Position = scene->GetPointLights()[i]->GetPosition();
+			sceneUniformData->PointLights[i].Constant = scene->GetPointLights()[i]->GetConstant();
+			sceneUniformData->PointLights[i].Linear = scene->GetPointLights()[i]->GetLinear();
+			sceneUniformData->PointLights[i].Exponent = scene->GetPointLights()[i]->GetExponent();
+		}   
 
         //create a descriptor set that binds that buffer and update it
         VkDescriptorSet globalDescriptor = GetCurrentFrame().FrameDescriptors.Allocate(m_Device, m_GpuSceneDataDescriptorLayout);

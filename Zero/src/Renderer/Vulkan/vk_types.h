@@ -20,6 +20,8 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 
+#include <Renderer/OpenGL/OpenGLUtils.h>
+
 #define VK_CHECK(x)                                                     \
     do {                                                                \
         VkResult err = x;                                               \
@@ -72,6 +74,15 @@ struct DirectionalLightData
     glm::vec3 Direction;
 };
 
+struct PointLightData
+{
+    LightData Base;
+    glm::vec3 Position;
+    float Constant;
+    float Linear;
+    float Exponent;
+};
+
 struct MaterialData
 {
     float SpecularIntensity;
@@ -84,7 +95,8 @@ struct GPUSceneData
     glm::mat4 Proj;
     glm::mat4 Viewproj;
 
-    // int PointLightCount;
+    int PointLightCount;
     DirectionalLightData DirectionalLight;
+    PointLightData PointLights[MAX_POINT_LIGHTS];
     MaterialData Material;
 };
