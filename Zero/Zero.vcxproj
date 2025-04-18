@@ -137,13 +137,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Renderer\OpenGL\OpenGLUtils.h" />
-    <ClInclude Include="src\Scene\Light\PointLight.h" />
-    <ClInclude Include="src\Scene\Light\DirectionalLight.h" />
-    <ClInclude Include="src\Scene\Material\Material.h" />
-    <ClInclude Include="src\Scene\Scene.h" />
-    <ClInclude Include="src\Scene\Light\Light.h" />
     <ClInclude Include="src\Application.h" />
+    <ClInclude Include="src\Camera\Camera.h" />
+    <ClInclude Include="src\Camera\EditorCamera.h" />
+    <ClInclude Include="src\Camera\PerspectiveCamera.h" />
+    <ClInclude Include="src\Core\core.h" />
     <ClInclude Include="src\Debug\DebugSphere.h" />
     <ClInclude Include="src\ImGui\imgui_impl_glfw.h" />
     <ClInclude Include="src\ImGui\imgui_impl_opengl3.h" />
@@ -166,15 +164,10 @@
     <ClInclude Include="src\Physics\Collision\TestCollision.h" />
     <ClInclude Include="src\Physics\Physics.h" />
     <ClInclude Include="src\Physics\Solvers\Solver.h" />
-    <ClInclude Include="src\Scene\GameObject.h" />
-    <ClInclude Include="src\Scene\Transform.h" />
-    <ClInclude Include="src\Camera\Camera.h" />
-    <ClInclude Include="src\Camera\EditorCamera.h" />
-    <ClInclude Include="src\Camera\PerspectiveCamera.h" />
-    <ClInclude Include="src\Core\core.h" />
     <ClInclude Include="src\Renderer\OpenGL\EBO.h" />
     <ClInclude Include="src\Renderer\OpenGL\OpenGLShader.h" />
     <ClInclude Include="src\Renderer\OpenGL\OpenGLTexture.h" />
+    <ClInclude Include="src\Renderer\OpenGL\OpenGLUtils.h" />
     <ClInclude Include="src\Renderer\OpenGL\VAO.h" />
     <ClInclude Include="src\Renderer\OpenGL\VBO.h" />
     <ClInclude Include="src\Renderer\OpenGLRenderer.h" />
@@ -188,6 +181,14 @@
     <ClInclude Include="src\Renderer\Vulkan\vk_pipelines.h" />
     <ClInclude Include="src\Renderer\Vulkan\vk_types.h" />
     <ClInclude Include="src\Renderer\VulkanRenderer.h" />
+    <ClInclude Include="src\Scene\GameObject.h" />
+    <ClInclude Include="src\Scene\Light\DirectionalLight.h" />
+    <ClInclude Include="src\Scene\Light\Light.h" />
+    <ClInclude Include="src\Scene\Light\PointLight.h" />
+    <ClInclude Include="src\Scene\Light\SpotLight.h" />
+    <ClInclude Include="src\Scene\Material\Material.h" />
+    <ClInclude Include="src\Scene\Scene.h" />
+    <ClInclude Include="src\Scene\Transform.h" />
     <ClInclude Include="vendor\VMA\vk_mem_alloc.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
@@ -610,12 +611,9 @@
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Scene\Light\PointLight.cpp" />
-    <ClCompile Include="src\Scene\Light\DirectionalLight.cpp" />
-    <ClCompile Include="src\Scene\Material\Material.cpp" />
-    <ClCompile Include="src\Scene\Scene.cpp" />
-    <ClCompile Include="src\Scene\Light\Light.cpp" />
     <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\Camera\EditorCamera.cpp" />
+    <ClCompile Include="src\Camera\PerspectiveCamera.cpp" />
     <ClCompile Include="src\Debug\DebugSphere.cpp" />
     <ClCompile Include="src\ImGui\imgui_impl_glfw.cpp" />
     <ClCompile Include="src\ImGui\imgui_impl_opengl3.cpp" />
@@ -634,10 +632,6 @@
     <ClCompile Include="src\Physics\Collision\TestCollision.cpp" />
     <ClCompile Include="src\Physics\Physics.cpp" />
     <ClCompile Include="src\Physics\Solvers\Solver.cpp" />
-    <ClCompile Include="src\Scene\GameObject.cpp" />
-    <ClCompile Include="src\Camera\EditorCamera.cpp" />
-    <ClCompile Include="src\Camera\PerspectiveCamera.cpp" />
-    <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Renderer\OpenGL\EBO.cpp" />
     <ClCompile Include="src\Renderer\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="src\Renderer\OpenGL\OpenGLTexture.cpp" />
@@ -652,6 +646,14 @@
     <ClCompile Include="src\Renderer\Vulkan\vk_loader.cpp" />
     <ClCompile Include="src\Renderer\Vulkan\vk_pipelines.cpp" />
     <ClCompile Include="src\Renderer\VulkanRenderer.cpp" />
+    <ClCompile Include="src\Scene\GameObject.cpp" />
+    <ClCompile Include="src\Scene\Light\DirectionalLight.cpp" />
+    <ClCompile Include="src\Scene\Light\Light.cpp" />
+    <ClCompile Include="src\Scene\Light\PointLight.cpp" />
+    <ClCompile Include="src\Scene\Light\SpotLight.cpp" />
+    <ClCompile Include="src\Scene\Material\Material.cpp" />
+    <ClCompile Include="src\Scene\Scene.cpp" />
+    <ClCompile Include="src\main.cpp" />
     <ClCompile Include="vendor\stb_image\stb_image.cpp" />
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp" />
   </ItemGroup>

@@ -17,7 +17,7 @@ namespace Zero {
 		float GetLinear() const { return m_Linear; }
 		float GetExponent() const { return m_Exponent; }
 
-	private:
+	protected:
 		glm::vec3 m_Position{};
 		float m_Constant{};
 		float m_Linear{};

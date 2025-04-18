@@ -7,6 +7,7 @@
 #include "Light/DirectionalLight.h"
 #include "Light/PointLight.h"
 #include "Renderer/OpenGL/OpenGLUtils.h"
+#include "Light/SpotLight.h"
 
 namespace Zero {
 
@@ -19,6 +20,7 @@ namespace Zero {
 		void Destroy();
 
 		void AddPointLight(std::shared_ptr<PointLight> pointLight);
+		void AddSpotLight(std::shared_ptr<SpotLight> spotLight);
 		void AddGameObject(std::shared_ptr<GameObject> gameObject);
 		void DestroyGameObject(const GameObject::IdType objectID);
 
@@ -26,11 +28,13 @@ namespace Zero {
 		std::shared_ptr<DirectionalLight>& GetDirectionalLight() { return m_DirectionalLight; }
 		std::shared_ptr<Material>& GetMaterial() { return m_Material; }
 		std::vector<std::shared_ptr<PointLight>>& GetPointLights() { return m_PointLights; }
+		std::vector<std::shared_ptr<SpotLight>>& GetSpotLights() { return m_SpotLights; }
 
 	private:
 		std::vector<std::shared_ptr<GameObject>> m_GameObjects{};
 		std::shared_ptr<DirectionalLight> m_DirectionalLight{};
 		std::vector<std::shared_ptr<PointLight>> m_PointLights{};
+		std::vector<std::shared_ptr<SpotLight>> m_SpotLights{};
 		std::shared_ptr<Material> m_Material{};
 	};
 

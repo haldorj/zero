@@ -36,6 +36,9 @@ namespace Zero {
         size_t m_PointLightCount{};
         std::array<UniformPointLight, MAX_POINT_LIGHTS> m_UniformPointLights{};
 
+        size_t m_SpotLightCount{};
+        std::array<UniformSpotLight, MAX_SPOT_LIGHTS> m_UniformSpotLights{};
+
         int m_Width{};
         int m_Height{};
     };

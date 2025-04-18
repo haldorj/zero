@@ -6,6 +6,7 @@ namespace Zero {
 	{
 		m_GameObjects.reserve(100);
 		m_PointLights.reserve(MAX_POINT_LIGHTS);
+		m_SpotLights.reserve(MAX_SPOT_LIGHTS);
 		m_DirectionalLight = std::make_shared<DirectionalLight>();
 	}
 
@@ -13,10 +14,11 @@ namespace Zero {
 	{
 		m_GameObjects.reserve(100);
 		m_PointLights.reserve(MAX_POINT_LIGHTS);
+		m_SpotLights.reserve(MAX_SPOT_LIGHTS);
 		m_DirectionalLight.reset(light);
 
 		// Dull
-		m_Material = std::make_shared<Material>(0.25f, 2.0f);
+		m_Material = std::make_shared<Material>(0.25f, 4.0f);
 
 		// Shiny
 		// m_Material = std::make_shared<Material>(1.0f, 32.0f);
@@ -46,6 +48,16 @@ namespace Zero {
 		}
 
 		m_PointLights.emplace_back(pointLight);
+	}
+
+	void Scene::AddSpotLight(std::shared_ptr<SpotLight> spotLight)
+	{
+		if (m_SpotLights.size() >= MAX_SPOT_LIGHTS)
+		{
+			return;
+		}
+
+		m_SpotLights.emplace_back(spotLight);
 	}
 
 	void Scene::AddGameObject(std::shared_ptr<GameObject> gameObject)
