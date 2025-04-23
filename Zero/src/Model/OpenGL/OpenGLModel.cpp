@@ -58,6 +58,9 @@ namespace Zero
         for (size_t i = 0; i < mesh->mNumVertices; i++)
         {
             Vertex vertex;
+
+            SetVertexBoneDataToDefault(vertex);
+
             // process vertex positions, normals and texture coordinates
             vertex.Position =
                 glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
@@ -106,6 +109,8 @@ namespace Zero
                                                                            aiTextureType_SPECULAR, "texture_specular");
             textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
         }
+
+        ExtractBoneWeightForVertices(vertices, mesh, scene);
 
         return {vertices, indices, textures};
     }

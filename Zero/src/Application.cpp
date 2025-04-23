@@ -50,6 +50,9 @@ namespace Zero
         blackBison->EnableGravity = true;
         blackBison->EnableCollision = true;
 
+        m_Animation = new Animation(modelPaths[0], blackBison->GetModel().get());
+        m_Animator = new Animator(m_Animation);
+
         std::shared_ptr<GameObject> greenRhino = std::make_shared<GameObject>(GameObject::Create());
         greenRhino->SetModel(ModelFactory::CreateModel(modelPaths[1].c_str(), m_RendererType));
         greenRhino->GetTransform().Position = {-15, 0, 0};
@@ -247,6 +250,8 @@ namespace Zero
             m_Scene->GetDirectionalLight()->Update(
                 glm::vec3(m_DirectionalLightColor), m_DirectionalLightColor.a,
                 m_DirectionalLightDirection, m_DirectionalLightIntensity);
+
+            m_Animator->UpdateAnimation(m_DeltaTime);
 
             Draw();
             

@@ -136,6 +136,15 @@ namespace Zero
         int viewPos = glGetUniformLocation(shader->GetID(), "viewPos");
         glUniform3fv(viewPos, 1, glm::value_ptr(Application::Get().GetActiveCamera().GetPosition()));
 
+        auto transforms = Application::Get().GetAnimator()->GetFinalBoneMatrices();
+        for (int i = 0; i < transforms.size(); ++i)
+        {
+            std::string Str = "finalBonesMatrices[" + std::to_string(i) + "]";
+
+            int transformLoc = glGetUniformLocation(shader->GetID(), Str.c_str());
+            glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transforms[i]));
+        }
+
         // Directional Light
         m_UniformDirectionalLight.Color = glGetUniformLocation(shader->GetID(), "directionalLight.base.color");
         glUniform3fv(m_UniformDirectionalLight.Color, 1, glm::value_ptr(scene->GetDirectionalLight()->GetColor()));
@@ -239,6 +248,7 @@ namespace Zero
             m_UniformSpotLights[i].Edge = glGetUniformLocation(shader->GetID(), locBuff);
             glUniform1f(m_UniformSpotLights[i].Edge, scene->GetSpotLights()[i]->GetEdge());
         }
+
     }
 
     void OpenGLRenderer::InitShaders()
@@ -249,6 +259,5 @@ namespace Zero
             "../shaders/OpenGL/default.frag"
         );
     }
-
 
 }
