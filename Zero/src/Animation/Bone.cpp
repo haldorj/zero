@@ -9,10 +9,7 @@ namespace Zero {
 
     // Reads keyframes from aiNodeAnim
     Bone::Bone(const std::string& name, int ID, const aiNodeAnim* channel)
-        :
-        m_Name(name),
-        m_ID(ID),
-        m_LocalTransform(1.0f)
+        : m_Name(name), m_ID(ID), m_LocalTransform(1.0f)
     {
         m_NumPositions = channel->mNumPositionKeys;
 
@@ -20,7 +17,7 @@ namespace Zero {
         {
             aiVector3D aiPosition = channel->mPositionKeys[positionIndex].mValue;
             float timeStamp = channel->mPositionKeys[positionIndex].mTime;
-            KeyPosition data;
+            KeyPosition data{};
             data.position = AssimpGLMHelpers::GetGLMVec(aiPosition);
             data.timeStamp = timeStamp;
             m_Positions.push_back(data);

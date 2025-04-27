@@ -22,33 +22,33 @@ const int MAX_BONES = 100;
 const int MAX_BONE_INFLUENCE = 4;
 uniform mat4 finalBonesMatrices[MAX_BONES];
 
+uniform int Animated;
+
 void main()
 {
-    vec4 boneTransform = vec4(0.0f);
-    for(int i = 0 ; i < MAX_BONE_INFLUENCE ; i++)
+    vec4 totalPosition = vec4(Pos, 1.0f);
+
+    if (Animated == 1) // <-- ONLY if animated
     {
-        if(boneIds[i] == -1) 
-            continue;
-        if(boneIds[i] >=MAX_BONES) 
+        totalPosition = vec4(0.0f);
+        for (int i = 0; i < MAX_BONE_INFLUENCE; i++)
         {
-            boneTransform = vec4(Pos,1.0f);
-            break;
+            if (boneIds[i] == -1)
+                continue;
+            if (boneIds[i] >= MAX_BONES)
+            {
+                totalPosition = vec4(Pos, 1.0f);
+                break;
+            }
+            vec4 localPosition = finalBonesMatrices[boneIds[i]] * vec4(Pos, 1.0f);
+            totalPosition += localPosition * weights[i];
         }
-        vec4 localPosition = finalBonesMatrices[boneIds[i]] * vec4(Pos,1.0f);
-        boneTransform += localPosition * weights[i];
-        vec3 localNormal = mat3(finalBonesMatrices[boneIds[i]]) * Normal;
     }
 
-	vec4 PosL = BoneTransform * vec4(Position, 1.0);
+    gl_Position = projection * view * model * totalPosition;
 
-	// Outputs the positions/coordinates of all vertices
-	gl_Position = projection * view * model * vec4(Pos, 1.0);
-	// Assigns the colors from the Vertex Data to "color"
-	color = Color;
-	// Assigns the texture coordinates from the Vertex Data to "texCoord"
-	texCoord = vec2(UV_x, UV_y);
-
-	normal = mat3(transpose(inverse(model))) * Normal;
-
-	fragPos = (model * vec4(Pos, 1.0)).xyz;
+    color = Color;
+    texCoord = vec2(UV_x, UV_y);
+    normal = mat3(transpose(inverse(model))) * Normal;
+    fragPos = (model * totalPosition).xyz;
 }

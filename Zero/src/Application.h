@@ -82,9 +82,6 @@ namespace Zero
         GLFWwindow* GetWindow() const { return m_Window; }
         Camera& GetActiveCamera() const { return *m_ActiveCamera; }
 
-        Animation* GetAnimation() const { return m_Animation; }
-        Animator* GetAnimator() const { return m_Animator; }
-
     private:
         Camera* m_ActiveCamera = nullptr;
         EditorCamera m_EditorCamera{};
@@ -113,8 +110,5 @@ namespace Zero
         float m_Time{0.0f};
         float m_DeltaTime{0.0f};
         float m_LastFrameTime{0.0f};
-
-        Animation* m_Animation;
-        Animator* m_Animator;
     };
 } // namespace Zero

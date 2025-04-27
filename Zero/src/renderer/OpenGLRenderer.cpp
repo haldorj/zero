@@ -100,10 +100,29 @@ namespace Zero
         for (auto& gameObj : scene->GetGameObjects())
         {
             if (!gameObj->GetModel())
+            {
                 continue;
+            }
+
+            if (gameObj->GetAnimator())
+            {
+                glUniform1i(glGetUniformLocation(m_ShaderProgram->GetID(), "Animated"), 1);
+
+                const auto transforms = gameObj->GetAnimator()->GetFinalBoneMatrices();
+                for (int i = 0; i < transforms.size(); ++i)
+                {
+                    std::string str = "finalBonesMatrices[" + std::to_string(i) + "]";
+
+                    int transformLoc = glGetUniformLocation(m_ShaderProgram->GetID(), str.c_str());
+                    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transforms[i]));
+                }
+            }
+            else
+            {
+                glUniform1i(glGetUniformLocation(m_ShaderProgram->GetID(), "Animated"), 0);
+            }
 
             model = gameObj->GetTransform().GetMatrix();
-
             gameObj->GetModel()->Draw(*m_ShaderProgram, model);
         }
 
@@ -135,15 +154,6 @@ namespace Zero
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
         int viewPos = glGetUniformLocation(shader->GetID(), "viewPos");
         glUniform3fv(viewPos, 1, glm::value_ptr(Application::Get().GetActiveCamera().GetPosition()));
-
-        auto transforms = Application::Get().GetAnimator()->GetFinalBoneMatrices();
-        for (int i = 0; i < transforms.size(); ++i)
-        {
-            std::string Str = "finalBonesMatrices[" + std::to_string(i) + "]";
-
-            int transformLoc = glGetUniformLocation(shader->GetID(), Str.c_str());
-            glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transforms[i]));
-        }
 
         // Directional Light
         m_UniformDirectionalLight.Color = glGetUniformLocation(shader->GetID(), "directionalLight.base.color");
