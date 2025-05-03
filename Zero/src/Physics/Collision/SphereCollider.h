@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "Collider.h"
-#include "Debug/DebugSphere.h"
 
 
 namespace Zero
@@ -11,7 +10,6 @@ namespace Zero
         SphereCollider(const glm::vec3& center, const float radius)
             : Center(center), Radius(radius)
         {
-            Sphere = DebugSphere(32, radius);
             Type = ColliderType::Sphere;
         }
 
@@ -20,8 +18,7 @@ namespace Zero
             return {};
         }
 
-        glm::vec3 Center;
-        float Radius;
-        DebugSphere Sphere{};
+        glm::vec3 Center{};
+        float Radius{};
     };
 }

@@ -145,7 +145,6 @@
     <ClInclude Include="src\Camera\EditorCamera.h" />
     <ClInclude Include="src\Camera\PerspectiveCamera.h" />
     <ClInclude Include="src\Core\core.h" />
-    <ClInclude Include="src\Debug\DebugSphere.h" />
     <ClInclude Include="src\ImGui\imgui_impl_glfw.h" />
     <ClInclude Include="src\ImGui\imgui_impl_opengl3.h" />
     <ClInclude Include="src\ImGui\imgui_impl_opengl3_loader.h" />
@@ -621,7 +620,6 @@
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Camera\EditorCamera.cpp" />
     <ClCompile Include="src\Camera\PerspectiveCamera.cpp" />
-    <ClCompile Include="src\Debug\DebugSphere.cpp" />
     <ClCompile Include="src\ImGui\imgui_impl_glfw.cpp" />
     <ClCompile Include="src\ImGui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\ImGui\imgui_impl_vulkan.cpp" />

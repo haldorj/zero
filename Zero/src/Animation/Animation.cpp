@@ -12,8 +12,8 @@ namespace Zero {
         const aiScene* scene = importer.ReadFile(animationPath, aiProcess_Triangulate);
         assert(scene && scene->mRootNode);
         auto animation = scene->mAnimations[0];
-        m_Duration = animation->mDuration;
-        m_TicksPerSecond = animation->mTicksPerSecond;
+        m_Duration = static_cast<float>(animation->mDuration);
+        m_TicksPerSecond = static_cast<float>(animation->mTicksPerSecond);
         ReadHeirarchyData(m_RootNode, scene->mRootNode);
         ReadMissingBones(animation, *model);
 	}
@@ -63,7 +63,7 @@ namespace Zero {
         dest.transformation = AssimpGLMHelpers::ConvertMatrixToGLMFormat(src->mTransformation);
         dest.childrenCount = src->mNumChildren;
 
-        for (int i = 0; i < src->mNumChildren; i++)
+        for (unsigned int i = 0; i < src->mNumChildren; i++)
         {
             AssimpNodeData newData;
             ReadHeirarchyData(newData, src->mChildren[i]);

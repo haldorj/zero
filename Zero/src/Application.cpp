@@ -305,7 +305,7 @@ namespace Zero
 
         ImGui::Begin("Directional Light");
         ImGui::ColorEdit4("Color:", glm::value_ptr(m_DirectionalLightColor));
-        ImGui::DragFloat3("Direction", glm::value_ptr(m_DirectionalLightDirection), 0.1);
+        ImGui::DragFloat3("Direction", glm::value_ptr(m_DirectionalLightDirection), 0.1f);
         ImGui::DragFloat("Diffuse Intensity", &m_DirectionalLightIntensity, 0.05f, 0.0f, 1.0f);
         ImGui::End();
     }

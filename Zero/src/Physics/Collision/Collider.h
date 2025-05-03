@@ -29,7 +29,7 @@ namespace Zero {
 
 		virtual glm::vec3 FindFurthestPoint(const glm::vec3& direction) = 0;
 		
-		ColliderType Type;
+		ColliderType Type{};
 	};
 
 	class GameObject;

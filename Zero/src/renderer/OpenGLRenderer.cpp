@@ -9,10 +9,6 @@
 #include <ImGui/imgui_impl_glfw.h>
 #include <ImGui/imgui_impl_opengl3.h>
 
-#include "Debug/DebugSphere.h"
-
-
-
 namespace Zero
 {
     // Callback function to handle window resizing
@@ -176,9 +172,9 @@ namespace Zero
         glUniform1f(shininess, scene->GetMaterial()->GetShininess());
 
         // Point Lights
-        int pointLightCount = scene->GetPointLights().size();
-        m_PointLightCount = scene->GetPointLights().size();
-        glUniform1i(glGetUniformLocation(shader->GetID(), "pointLightCount"), m_PointLightCount);
+        int pointLightCount = static_cast<int>(scene->GetPointLights().size());
+        m_PointLightCount = static_cast<int>(scene->GetPointLights().size());
+        glUniform1i(glGetUniformLocation(shader->GetID(), "pointLightCount"), static_cast<GLint>(m_PointLightCount));
 
         for (unsigned int i = 0; i < scene->GetPointLights().size(); ++i)
         {
@@ -214,9 +210,9 @@ namespace Zero
         }
 
         // Spot Lights
-        int spotLightCount = scene->GetSpotLights().size();
+        int spotLightCount = static_cast<int>(scene->GetSpotLights().size());
         m_SpotLightCount = scene->GetSpotLights().size();
-        glUniform1i(glGetUniformLocation(shader->GetID(), "spotLightCount"), m_SpotLightCount);
+        glUniform1i(glGetUniformLocation(shader->GetID(), "spotLightCount"), static_cast<GLint>(m_SpotLightCount));
 
         for (unsigned int i = 0; i < scene->GetSpotLights().size(); ++i)
         {

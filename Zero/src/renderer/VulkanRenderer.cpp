@@ -334,8 +334,8 @@ namespace Zero
         sceneUniformData->Material.SpecularIntensity = scene->GetMaterial()->GetSpecularIntensity();
         sceneUniformData->Material.Shininess = scene->GetMaterial()->GetShininess();
 
-        sceneUniformData->PointLightCount = scene->GetPointLights().size();
-        sceneUniformData->SpotLightCount = scene->GetSpotLights().size();
+        sceneUniformData->PointLightCount = static_cast<int>(scene->GetPointLights().size());
+        sceneUniformData->SpotLightCount = static_cast<int>(scene->GetSpotLights().size());
 
         for (int i = 0; i < scene->GetPointLights().size(); i++)
         {

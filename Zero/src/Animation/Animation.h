@@ -11,10 +11,10 @@ namespace Zero {
 
 	struct AssimpNodeData
 	{
-		glm::mat4 transformation;
-		std::string name;
-		int childrenCount;
-		std::vector<AssimpNodeData> children;
+		glm::mat4 transformation{};
+		std::string name{};
+        int childrenCount{};
+		std::vector<AssimpNodeData> children{};
 	};
 
 	class Animation
@@ -39,7 +39,7 @@ namespace Zero {
         void ReadHeirarchyData(AssimpNodeData& dest, const aiNode* src);
 
         float m_Duration;
-        int m_TicksPerSecond;
+        float m_TicksPerSecond;
         std::vector<Bone> m_Bones;
         AssimpNodeData m_RootNode;
         std::map<std::string, BoneInfo> m_BoneInfoMap;

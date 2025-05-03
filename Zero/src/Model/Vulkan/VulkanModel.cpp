@@ -132,7 +132,7 @@ namespace Zero
         auto renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
 
         std::vector<VulkanTexture> textures;
-        for (size_t i = 0; i < mat->GetTextureCount(type); i++)
+        for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
         {
             aiString path;
             mat->GetTexture(type, i, &path);

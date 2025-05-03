@@ -28,7 +28,7 @@ namespace Zero {
 
     void Model::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, const aiMesh* mesh, const aiScene* scene)
     {
-        for (int boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex)
+        for (unsigned int boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex)
         {
             int boneID = -1;
             std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();

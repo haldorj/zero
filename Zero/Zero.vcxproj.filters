@@ -114,9 +114,6 @@
     <ClInclude Include="src\Core\core.h">
       <Filter>src\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Debug\DebugSphere.h">
-      <Filter>src\Debug</Filter>
-    </ClInclude>
     <ClInclude Include="src\ImGui\imgui_impl_glfw.h">
       <Filter>src\ImGui</Filter>
     </ClInclude>
@@ -1537,9 +1534,6 @@
     </ClCompile>
     <ClCompile Include="src\Camera\PerspectiveCamera.cpp">
       <Filter>src\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Debug\DebugSphere.cpp">
-      <Filter>src\Debug</Filter>
     </ClCompile>
     <ClCompile Include="src\ImGui\imgui_impl_glfw.cpp">
       <Filter>src\ImGui</Filter>
