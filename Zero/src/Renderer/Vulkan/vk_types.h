@@ -32,9 +32,9 @@
     } while (0)
 
 struct AllocatedBuffer {
+    VmaAllocationInfo Info;
     VkBuffer Buffer;
     VmaAllocation Allocation;
-    VmaAllocationInfo Info;
 };
 
 // holds the resources needed for a mesh

@@ -11,7 +11,7 @@
 
 namespace Zero
 {
-    enum class RendererAPI
+    enum class RendererAPI : uint8_t
     {
         OpenGL,
         Vulkan
@@ -82,32 +82,35 @@ namespace Zero
         Camera& GetActiveCamera() const { return *m_ActiveCamera; }
 
     private:
-        Camera* m_ActiveCamera = nullptr;
-        EditorCamera m_EditorCamera{};
         PerspectiveCamera m_PlayerCamera{};
-        float m_Fov{ 0.0f };
+        EditorCamera m_EditorCamera{};
 
-        bool m_EditorMode{ true };
-        
-        bool m_IsInitialized{false};
-        bool m_StopRendering{false};
+        PhysicsWorld m_PhysicsWorld{};
 
-        int32_t m_FrameCount{0};
-
+        Camera* m_ActiveCamera = nullptr;
         GLFWwindow* m_Window = nullptr;
-
         Renderer* m_Renderer = nullptr;
-        RendererAPI m_RendererType{ RendererAPI::Vulkan };
 
         std::shared_ptr<Scene> m_Scene{};
-        PhysicsWorld m_PhysicsWorld{};
 
         glm::vec4 m_DirectionalLightColor{1.0f, 1.0f, 1.0f, 0.3f};
         glm::vec3 m_DirectionalLightDirection{ 1.0f, 1.0, 0.0f };
-        float m_DirectionalLightIntensity{0.3f};
 
+        int32_t m_FrameCount{ 0 };
+
+        float m_DirectionalLightIntensity{0.3f};
         float m_Time{0.0f};
         float m_DeltaTime{0.0f};
         float m_LastFrameTime{0.0f};
+
+        float m_Fov{ 0.0f };
+
+        RendererAPI m_RendererType{ RendererAPI::Vulkan };
+
+        bool m_EditorMode{ true };
+        bool m_IsInitialized{ false };
+        bool m_StopRendering{ false };
+
+
     };
 } // namespace Zero

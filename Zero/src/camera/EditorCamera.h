@@ -25,17 +25,19 @@ namespace Zero
         void SetFOV(float fov) { m_FOV = fov; }
 
     private:
+        Transform m_Transform = {};
+        glm::vec3 m_Direction = {};
+
         // vertical rotation
         float m_Pitch{0.f};
         // horizontal rotation
         float m_Yaw{180.f};
 
-        glm::vec3 m_Direction = {};
         float m_FOV = 70.f;
 
         float m_MovementSpeed = 30.f;
         float m_RotationSpeed = 0.4f;
 
-        Transform m_Transform = {};
+
     };
 } // namespace Zero
