@@ -463,6 +463,7 @@ namespace Zero
         VkPhysicalDeviceVulkan12Features features12{.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES};
         features12.bufferDeviceAddress = true;
         features12.descriptorIndexing = true;
+        features12.scalarBlockLayout = true;
 
         // Use vkbootstrap to select a gpu. 
         // We want a gpu that can write to the surface and supports vulkan 1.3 with the correct features
