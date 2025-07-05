@@ -3,6 +3,8 @@
 const int MAX_POINT_LIGHTS = 100;
 const int MAX_SPOT_LIGHTS = 100;
 
+const int MAX_BONES = 100;
+
 struct Light
 {
 	vec3 color;

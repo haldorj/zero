@@ -21,9 +21,15 @@ struct Vertex {
 	vec3 normal;
 	float uv_y;
 	vec4 color;
+
+	vec3 tangents;
+	vec3 bitangents;
+
+	ivec4 boneIds;
+	vec4 weights;
 }; 
 
-layout(buffer_reference, std430) readonly buffer VertexBuffer{ 
+layout(buffer_reference, scalar) readonly buffer VertexBuffer{ 
 	Vertex vertices[];
 };
 
@@ -32,6 +38,8 @@ layout( push_constant ) uniform constants
 {	
 	mat4 model;
 	vec3 cameraPos;
+	// int Animated;
+   	// mat4 BoneMatrices[MAX_BONES];
 	VertexBuffer vertexBuffer;
 } PushConstants;
 

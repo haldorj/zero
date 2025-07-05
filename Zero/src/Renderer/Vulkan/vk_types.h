@@ -58,6 +58,8 @@ struct GPUDrawPushConstants
 {
     glm::mat4 ModelMatrix;
     glm::vec3 CameraPos;
+    //int Animated;
+    //std::vector<glm::mat4> BoneMatrices;
     VkDeviceAddress VertexBuffer;
 };
 

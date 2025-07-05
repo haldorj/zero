@@ -373,6 +373,18 @@ namespace Zero
             GPUDrawPushConstants pushConstants;
             pushConstants.ModelMatrix = gameObj->GetTransform().GetMatrix();
             pushConstants.CameraPos = Application::Get().GetActiveCamera().GetPosition();
+
+			//if (gameObj->GetAnimator())
+			//{
+			//	pushConstants.Animated = 1;
+			//	pushConstants.BoneMatrices = gameObj->GetAnimator()->GetFinalBoneMatrices();
+			//}
+			//else
+			//{
+			//	pushConstants.Animated = 0;
+			//	pushConstants.BoneMatrices.clear();
+			//}
+
             gameObj->GetModel()->Draw(cmd, writer, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerLinear, pushConstants);
         }
 
