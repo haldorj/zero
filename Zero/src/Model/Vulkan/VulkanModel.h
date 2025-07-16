@@ -17,11 +17,11 @@ namespace Zero {
 
         void Draw(
             VkCommandBuffer& cmd,
-            DescriptorWriter& descriptorWriter,
             VkPipelineLayout& pipelineLayout, 
             VkExtent2D drawExtent, 
             VkSampler& sampler, 
-            GPUDrawPushConstants& pushConstants) override;
+            GPUDrawPushConstants& pushConstants,
+            Animator* animator) override;
 
         void DestroyModel() const override;
 

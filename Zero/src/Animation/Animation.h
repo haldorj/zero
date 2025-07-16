@@ -6,6 +6,7 @@
 #include <string>
 #include <Model/Model.h>
 #include "Bone.h"
+#include <map>
 
 namespace Zero {
 

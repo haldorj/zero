@@ -2,6 +2,7 @@
 #include <Renderer/VulkanRenderer.h>
 #include <Application.h>
 #include <Renderer/Vulkan/VulkanBuffer.h>
+#include <vk_mem_alloc.h>
 
 namespace Zero
 {
@@ -22,8 +23,8 @@ namespace Zero
         m_GPUMeshBuffers = renderer->UploadMesh(indices, vertices);
     }
 
-    void VulkanMesh::Draw(const VkCommandBuffer& cmd, DescriptorWriter& descriptorWriter, const VkPipelineLayout& pipelineLayout, VkExtent2D drawExtent,
-                          const VkSampler& sampler, GPUDrawPushConstants& pushConstants) const
+    void VulkanMesh::Draw(const VkCommandBuffer& cmd, const VkPipelineLayout& pipelineLayout, VkExtent2D drawExtent,
+                          const VkSampler& sampler, GPUDrawPushConstants& pushConstants, Animator* animator)
     {
         const auto renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
         if (!renderer)
@@ -34,25 +35,57 @@ namespace Zero
 
         //// TEXTURES /////////////////////////////////////////////////////////////////////////////////////////////////
 
+        DescriptorWriter descriptorWriter{};
+
         const VkDescriptorSet imageSet = renderer->GetCurrentFrame().FrameDescriptors.Allocate(
             renderer->GetDevice(), renderer->GetSingleImageDescriptorLayout());
+
+        for (auto& texture : m_Textures)
         {
-            for (auto& texture : m_Textures)
-            {
-                // DescriptorWriter descriptorWriter;
-                descriptorWriter.WriteImage(0, texture.GetImage().ImageView, sampler,
-                                            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-                                            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+            // DescriptorWriter descriptorWriter;
+            descriptorWriter.WriteImage(0, texture.GetImage().ImageView, sampler,
+                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 
-
-
-                descriptorWriter.UpdateSet(renderer->GetDevice(), imageSet);
-            }
+            descriptorWriter.UpdateSet(renderer->GetDevice(), imageSet);
         }
 
-        vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &imageSet, 0, nullptr);
+        //vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &imageSet, 0, nullptr);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        //// STORAGE BUFFER //////////////////////////////////////////////////////////////////////////////////////////
+
+        //allocate a new uniform buffer for the scene data
+        AllocatedBuffer gpuObjectDataBuffer = VulkanBufferManager::CreateBuffer(renderer->GetAllocator(),
+            sizeof(GPUObjectData), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+
+        //add it to the deletion queue of this frame so it gets deleted once its been used
+        renderer->GetCurrentFrame().DeletionQueue.PushFunction([=, this]() {
+            VulkanBufferManager::DestroyBuffer(renderer->GetAllocator(), gpuObjectDataBuffer);
+            });
+
+        //write the buffer
+        GPUObjectData* objectUniformData = (GPUObjectData*)gpuObjectDataBuffer.Info.pMappedData;
+        *objectUniformData = m_GPUObjectData;
+
+        if (animator)
+        {
+            objectUniformData->Animated = true;
+        }
+        else
+		{
+			objectUniformData->Animated = false;
+		}
+
+		descriptorWriter.WriteBuffer(1, gpuObjectDataBuffer.Buffer, sizeof(GPUObjectData), 0,
+			VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
+
+        descriptorWriter.UpdateSet(renderer->GetDevice(), imageSet);
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &imageSet, 0, nullptr);
 
         pushConstants.VertexBuffer = m_GPUMeshBuffers.VertexBufferAddress;
 

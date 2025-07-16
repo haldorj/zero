@@ -29,7 +29,13 @@ namespace Zero {
 		virtual void Draw(OpenGLShader& shader, glm::mat4& matrix) {};
 
 		// Vulkan
-		virtual void Draw(VkCommandBuffer& cmd, DescriptorWriter& descriptorWriter, VkPipelineLayout& pipelineLayout, VkExtent2D drawExtent, VkSampler& sampler, GPUDrawPushConstants& pushConstants) {}
+		virtual void Draw(
+			VkCommandBuffer& cmd,
+			VkPipelineLayout& pipelineLayout,
+			VkExtent2D drawExtent,
+			VkSampler& sampler,
+			GPUDrawPushConstants& pushConstants,
+			class Animator* animator) {};
 		virtual void DestroyModel() const {}
 
 		auto& GetBoneInfoMap() { return m_BoneInfoMap; }

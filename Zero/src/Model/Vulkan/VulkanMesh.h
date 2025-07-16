@@ -18,12 +18,12 @@ namespace Zero {
 		VulkanMesh(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices, const std::vector<VulkanTexture>& textures);
 
 		void Draw(const VkCommandBuffer& cmd,
-				  DescriptorWriter& descriptorWriter,
 		          const VkPipelineLayout& pipelineLayout,
 		          VkExtent2D drawExtent,
 		          const VkSampler& sampler,
-		          GPUDrawPushConstants& pushConstants
-		) const;
+		          GPUDrawPushConstants& pushConstants,
+				  class Animator* animator
+		);
 
 		void DestroyMesh() const;
 

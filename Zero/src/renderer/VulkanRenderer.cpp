@@ -11,8 +11,9 @@
 #include <iostream>
 #include <Renderer/Vulkan/vk_images.h>
 
-#define VMA_IMPLEMENTATION
 #include <Renderer/Vulkan/vk_pipelines.h>
+
+#define VMA_IMPLEMENTATION
 #include "vk_mem_alloc.h"
 
 #include <GLFW/glfw3.h>
@@ -371,15 +372,13 @@ namespace Zero
 		vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TexturedPipelineLayout, 0, 1,
 			&sceneDataDescriptor, 0, nullptr);
 
-		DescriptorWriter writer2;
-
         for (const auto& gameObj : scene->GetGameObjects())
         {
             GPUDrawPushConstants pushConstants{};
             pushConstants.ModelMatrix = gameObj->GetTransform().GetMatrix();
             pushConstants.CameraPos = Application::Get().GetActiveCamera().GetPosition();
 
-            gameObj->GetModel()->Draw(cmd, writer2, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerLinear, pushConstants);
+            gameObj->GetModel()->Draw(cmd, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerLinear, pushConstants, gameObj->GetAnimator().get());
         }
 
         vkCmdEndRendering(cmd);
@@ -656,14 +655,15 @@ namespace Zero
 
         {
             DescriptorLayoutBuilder builder;
-            builder.AddBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-            m_DrawImageDescriptorLayout = builder.Build(m_Device, VK_SHADER_STAGE_COMPUTE_BIT);
+            builder.AddBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
+            m_GpuSceneDataDescriptorLayout = builder.Build(m_Device, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
         }
 
         {
             DescriptorLayoutBuilder builder;
-            builder.AddBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
-            m_GpuSceneDataDescriptorLayout = builder.Build(m_Device, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
+            builder.AddBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+            builder.AddBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
+            m_DrawImageDescriptorLayout = builder.Build(m_Device, VK_SHADER_STAGE_COMPUTE_BIT);
         }
 
         // Allocate a descriptor set for our draw image
@@ -811,6 +811,7 @@ namespace Zero
 
         DescriptorLayoutBuilder layoutBuilder;
         layoutBuilder.AddBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER); // Texture
+		layoutBuilder.AddBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);     // Scene data
 
         m_SingleImageDescriptorLayout = layoutBuilder.Build(m_Device, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
 

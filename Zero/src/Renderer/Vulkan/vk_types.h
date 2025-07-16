@@ -116,5 +116,5 @@ struct GPUSceneData
 struct GPUObjectData
 {
 	int Animated{ 0 };
-	std::vector<glm::mat4> BoneMatrices; // max 100 bones
+	// std::vector<glm::mat4> BoneMatrices; // max 100 bones
 };

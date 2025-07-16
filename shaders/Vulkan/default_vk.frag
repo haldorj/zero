@@ -96,5 +96,5 @@ void main()
 	finalColor += CalcPointLights();
 	finalColor += CalcSpotLights();
 
-	outFragColor = vec4(texture(displayTexture, inUV).xyz, 1.0) * finalColor;
+	outFragColor = vec4(texture(displayTexture, inUV).xyz, 1.0) * finalColor + vec4(1, 0, 0, 1) * animationData.animated;
 }

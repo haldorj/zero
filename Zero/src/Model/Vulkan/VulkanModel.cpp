@@ -16,11 +16,11 @@ namespace Zero
         LoadModel(path);
     }
 
-    void VulkanModel::Draw(VkCommandBuffer& cmd, DescriptorWriter& descriptorWriter, VkPipelineLayout& pipelineLayout, const VkExtent2D drawExtent,
-                           VkSampler& sampler, GPUDrawPushConstants& pushConstants)
+    void VulkanModel::Draw(VkCommandBuffer& cmd, VkPipelineLayout& pipelineLayout, const VkExtent2D drawExtent,
+                           VkSampler& sampler, GPUDrawPushConstants& pushConstants, Animator* animator)
     {
         for (unsigned int i = 0; i < m_Meshes.size(); i++)
-            m_Meshes[i].Draw(cmd, descriptorWriter, pipelineLayout, drawExtent, sampler, pushConstants);
+            m_Meshes[i].Draw(cmd, pipelineLayout, drawExtent, sampler, pushConstants, animator);
     }
 
     void VulkanModel::DestroyModel() const

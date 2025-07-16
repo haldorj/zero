@@ -54,10 +54,13 @@ layout(scalar, set = 0, binding = 0) readonly buffer SceneData
 	PointLight pointLights[MAX_POINT_LIGHTS];
 	SpotLight spotLights[MAX_SPOT_LIGHTS];
 	Material material;
-
-	int animated;
-	mat4 finalBonesMatrices[MAX_BONES];
 } sceneData;
 
 //texture to access
 layout(set = 1, binding = 0) uniform sampler2D displayTexture;
+
+layout(scalar, set = 1, binding = 1) readonly buffer AnimationData
+{
+	int animated;
+	// mat4 finalBonesMatrices[MAX_BONES];
+} animationData;
