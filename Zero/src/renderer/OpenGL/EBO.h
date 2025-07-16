@@ -3,19 +3,23 @@
 #include <glad/glad.h>
 #include <vector>
 
-class EBO final
-{
-public:
-    EBO() = default;
-    EBO(std::vector<GLuint>& indices);
+namespace Zero {
 
-    void Bind();
-    void Unbind();
-    void Delete();
+    class EBO final
+    {
+    public:
+        EBO() = default;
+        EBO(std::vector<GLuint>& indices);
 
-    ~EBO() = default;
+        void Bind();
+        void Unbind();
+        void Delete();
 
-private:
-    // ID reference of Element Buffer Object
-    GLuint ID;
-};
+        ~EBO() = default;
+
+    private:
+        // ID reference of Element Buffer Object
+        GLuint ID;
+    };
+
+}

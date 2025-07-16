@@ -11,8 +11,9 @@
 #include <iostream>
 #include <Renderer/Vulkan/vk_images.h>
 
-#define VMA_IMPLEMENTATION
 #include <Renderer/Vulkan/vk_pipelines.h>
+
+#define VMA_IMPLEMENTATION
 #include "vk_mem_alloc.h"
 
 #include <GLFW/glfw3.h>
@@ -314,7 +315,7 @@ namespace Zero
         projection[1][1] *= -1;
 
         //allocate a new uniform buffer for the scene data
-        AllocatedBuffer gpuSceneDataBuffer = VulkanBufferManager::CreateBuffer(m_Allocator, sizeof(GPUSceneData), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+        AllocatedBuffer gpuSceneDataBuffer = VulkanBufferManager::CreateBuffer(m_Allocator, sizeof(GPUSceneData), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
 
         //add it to the deletion queue of this frame so it gets deleted once its been used
         GetCurrentFrame().DeletionQueue.PushFunction([=, this]() {
@@ -334,8 +335,8 @@ namespace Zero
         sceneUniformData->Material.SpecularIntensity = scene->GetMaterial()->GetSpecularIntensity();
         sceneUniformData->Material.Shininess = scene->GetMaterial()->GetShininess();
 
-        sceneUniformData->PointLightCount = scene->GetPointLights().size();
-        sceneUniformData->SpotLightCount = scene->GetSpotLights().size();
+        sceneUniformData->PointLightCount = static_cast<int>(scene->GetPointLights().size());
+        sceneUniformData->SpotLightCount = static_cast<int>(scene->GetSpotLights().size());
 
         for (int i = 0; i < scene->GetPointLights().size(); i++)
         {
@@ -362,18 +363,22 @@ namespace Zero
 		}
 
         //create a descriptor set that binds that buffer and update it
-        VkDescriptorSet globalDescriptor = GetCurrentFrame().FrameDescriptors.Allocate(m_Device, m_GpuSceneDataDescriptorLayout);
+        VkDescriptorSet sceneDataDescriptor = GetCurrentFrame().FrameDescriptors.Allocate(m_Device, m_GpuSceneDataDescriptorLayout);
 
         DescriptorWriter writer;
-        writer.WriteBuffer(0, gpuSceneDataBuffer.Buffer, sizeof(GPUSceneData), 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
-        writer.UpdateSet(m_Device, globalDescriptor);
+        writer.WriteBuffer(0, gpuSceneDataBuffer.Buffer, sizeof(GPUSceneData), 0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
+        writer.UpdateSet(m_Device, sceneDataDescriptor);
+
+		vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TexturedPipelineLayout, 0, 1,
+			&sceneDataDescriptor, 0, nullptr);
 
         for (const auto& gameObj : scene->GetGameObjects())
         {
-            GPUDrawPushConstants pushConstants;
+            GPUDrawPushConstants pushConstants{};
             pushConstants.ModelMatrix = gameObj->GetTransform().GetMatrix();
             pushConstants.CameraPos = Application::Get().GetActiveCamera().GetPosition();
-            gameObj->GetModel()->Draw(cmd, writer, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerLinear, pushConstants);
+
+            gameObj->GetModel()->Draw(cmd, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerLinear, pushConstants, gameObj->GetAnimator());
         }
 
         vkCmdEndRendering(cmd);
@@ -464,7 +469,6 @@ namespace Zero
         features12.bufferDeviceAddress = true;
         features12.descriptorIndexing = true;
         features12.scalarBlockLayout = true;
- 
 
         // Use vkbootstrap to select a gpu. 
         // We want a gpu that can write to the surface and supports vulkan 1.3 with the correct features
@@ -641,21 +645,25 @@ namespace Zero
         // Create a descriptor pool that will hold 10 sets with 1 image each
         std::vector<DescriptorAllocator::PoolSizeRatio> sizes =
         {
-            {VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1}
+            {VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1},
+			{VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1},
+			{VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1},
+			{VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1}
         };
 
         m_GlobalDescriptorAllocator.InitPool(m_Device, 10, sizes);
 
         {
             DescriptorLayoutBuilder builder;
-            builder.AddBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-            m_DrawImageDescriptorLayout = builder.Build(m_Device, VK_SHADER_STAGE_COMPUTE_BIT);
+            builder.AddBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
+            m_GpuSceneDataDescriptorLayout = builder.Build(m_Device, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
         }
 
         {
             DescriptorLayoutBuilder builder;
-            builder.AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
-            m_GpuSceneDataDescriptorLayout = builder.Build(m_Device, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
+            builder.AddBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+            builder.AddBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
+            m_DrawImageDescriptorLayout = builder.Build(m_Device, VK_SHADER_STAGE_COMPUTE_BIT);
         }
 
         // Allocate a descriptor set for our draw image
@@ -802,12 +810,12 @@ namespace Zero
         bufferRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
         DescriptorLayoutBuilder layoutBuilder;
-        layoutBuilder.AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);         // Scene data
-        layoutBuilder.AddBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER); // Texture
+        layoutBuilder.AddBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER); // Texture
+		layoutBuilder.AddBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);     // Scene data
 
         m_SingleImageDescriptorLayout = layoutBuilder.Build(m_Device, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
 
-        VkDescriptorSetLayout layouts[] = { m_SingleImageDescriptorLayout,  m_GpuSceneDataDescriptorLayout};
+        VkDescriptorSetLayout layouts[] = { m_GpuSceneDataDescriptorLayout, m_SingleImageDescriptorLayout };
 
         VkPipelineLayoutCreateInfo pipelineLayoutInfo = VkInit::PipelineLayoutCreateInfo();
         pipelineLayoutInfo.pPushConstantRanges = &bufferRange;

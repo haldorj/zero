@@ -46,9 +46,10 @@ namespace Zero
         blackBison->GetTransform().Scale = glm::vec3{0.5f};
         blackBison->GetRigidBody().Mass = 5;
         blackBison->SetCollider(std::make_shared<CapsuleCollider>(glm::vec3{0, 3.5, 0}, 1.0f, 5.0f));
-        // blackBison->SetCollider(std::make_shared<SphereCollider>(glm::vec3{0, 0, 0}, 1.0f));
+        //blackBison->SetCollider(std::make_shared<SphereCollider>(glm::vec3{0, 0, 0}, 1.0f));
         blackBison->EnableGravity = true;
         blackBison->EnableCollision = true;
+        blackBison->SetAnimation(new Animation(modelPaths[0], blackBison->GetModel().get()));
 
         std::shared_ptr<GameObject> greenRhino = std::make_shared<GameObject>(GameObject::Create());
         greenRhino->SetModel(ModelFactory::CreateModel(modelPaths[1].c_str(), m_RendererType));
@@ -248,6 +249,11 @@ namespace Zero
                 glm::vec3(m_DirectionalLightColor), m_DirectionalLightColor.a,
                 m_DirectionalLightDirection, m_DirectionalLightIntensity);
 
+            for (const auto& gameObject : m_Scene->GetGameObjects())
+            {
+                gameObject->UpdateAnimation(m_DeltaTime);
+            }
+
             Draw();
             
             if (!Loaded)
@@ -299,7 +305,7 @@ namespace Zero
 
         ImGui::Begin("Directional Light");
         ImGui::ColorEdit4("Color:", glm::value_ptr(m_DirectionalLightColor));
-        ImGui::DragFloat3("Direction", glm::value_ptr(m_DirectionalLightDirection), 0.1);
+        ImGui::DragFloat3("Direction", glm::value_ptr(m_DirectionalLightDirection), 0.1f);
         ImGui::DragFloat("Diffuse Intensity", &m_DirectionalLightIntensity, 0.05f, 0.0f, 1.0f);
         ImGui::End();
     }

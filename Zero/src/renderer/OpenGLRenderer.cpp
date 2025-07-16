@@ -9,10 +9,6 @@
 #include <ImGui/imgui_impl_glfw.h>
 #include <ImGui/imgui_impl_opengl3.h>
 
-#include "Debug/DebugSphere.h"
-
-
-
 namespace Zero
 {
     // Callback function to handle window resizing
@@ -100,10 +96,29 @@ namespace Zero
         for (auto& gameObj : scene->GetGameObjects())
         {
             if (!gameObj->GetModel())
+            {
                 continue;
+            }
+
+            if (gameObj->GetAnimator())
+            {
+                glUniform1i(glGetUniformLocation(m_ShaderProgram->GetID(), "Animated"), 1);
+
+                const std::vector transforms = gameObj->GetAnimator()->GetFinalBoneMatrices();
+                for (int i = 0; i < transforms.size(); ++i)
+                {
+                    std::string str = "finalBonesMatrices[" + std::to_string(i) + "]";
+
+                    int transformLoc = glGetUniformLocation(m_ShaderProgram->GetID(), str.c_str());
+                    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transforms[i]));
+                }
+            }
+            else
+            {
+                glUniform1i(glGetUniformLocation(m_ShaderProgram->GetID(), "Animated"), 0);
+            }
 
             model = gameObj->GetTransform().GetMatrix();
-
             gameObj->GetModel()->Draw(*m_ShaderProgram, model);
         }
 
@@ -157,9 +172,9 @@ namespace Zero
         glUniform1f(shininess, scene->GetMaterial()->GetShininess());
 
         // Point Lights
-        int pointLightCount = scene->GetPointLights().size();
-        m_PointLightCount = scene->GetPointLights().size();
-        glUniform1i(glGetUniformLocation(shader->GetID(), "pointLightCount"), m_PointLightCount);
+        int pointLightCount = static_cast<int>(scene->GetPointLights().size());
+        m_PointLightCount = static_cast<int>(scene->GetPointLights().size());
+        glUniform1i(glGetUniformLocation(shader->GetID(), "pointLightCount"), static_cast<GLint>(m_PointLightCount));
 
         for (unsigned int i = 0; i < scene->GetPointLights().size(); ++i)
         {
@@ -195,9 +210,9 @@ namespace Zero
         }
 
         // Spot Lights
-        int spotLightCount = scene->GetSpotLights().size();
+        int spotLightCount = static_cast<int>(scene->GetSpotLights().size());
         m_SpotLightCount = scene->GetSpotLights().size();
-        glUniform1i(glGetUniformLocation(shader->GetID(), "spotLightCount"), m_SpotLightCount);
+        glUniform1i(glGetUniformLocation(shader->GetID(), "spotLightCount"), static_cast<GLint>(m_SpotLightCount));
 
         for (unsigned int i = 0; i < scene->GetSpotLights().size(); ++i)
         {
@@ -239,6 +254,7 @@ namespace Zero
             m_UniformSpotLights[i].Edge = glGetUniformLocation(shader->GetID(), locBuff);
             glUniform1f(m_UniformSpotLights[i].Edge, scene->GetSpotLights()[i]->GetEdge());
         }
+
     }
 
     void OpenGLRenderer::InitShaders()
@@ -249,6 +265,5 @@ namespace Zero
             "../shaders/OpenGL/default.frag"
         );
     }
-
 
 }

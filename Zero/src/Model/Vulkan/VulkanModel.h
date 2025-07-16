@@ -17,11 +17,11 @@ namespace Zero {
 
         void Draw(
             VkCommandBuffer& cmd,
-            DescriptorWriter& descriptorWriter,
             VkPipelineLayout& pipelineLayout, 
             VkExtent2D drawExtent, 
             VkSampler& sampler, 
-            GPUDrawPushConstants& pushConstants) override;
+            GPUDrawPushConstants& pushConstants,
+            std::shared_ptr<class Animator> animator) override;
 
         void DestroyModel() const override;
 
@@ -41,6 +41,8 @@ namespace Zero {
         std::vector<VulkanTexture> m_LoadedTextures;
 
         const aiScene* m_Scene;
+
+        GPUObjectData m_GPUObjectData{};
 
 
     };

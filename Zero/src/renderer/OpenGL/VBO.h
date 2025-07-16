@@ -4,18 +4,22 @@
 #include <vector>
 #include <Model/Vertex.h>
 
-class VBO
-{
-public:
-    VBO() = default;
-    VBO(std::vector<Vertex>& vertices);
+namespace Zero {
 
-    void Bind();
-    void Unbind();
-    void Delete() ;
-    ~VBO() = default;
+    class VBO
+    {
+    public:
+        VBO() = default;
+        VBO(std::vector<Vertex>& vertices);
 
-private:
-    // Reference ID of the Vertex Buffer Object
-    GLuint ID;
-};
+        void Bind();
+        void Unbind();
+        void Delete() ;
+        ~VBO() = default;
+
+    private:
+        // Reference ID of the Vertex Buffer Object
+        GLuint ID;
+    };
+
+}

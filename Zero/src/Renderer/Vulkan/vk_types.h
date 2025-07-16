@@ -58,6 +58,8 @@ struct GPUDrawPushConstants
 {
     glm::mat4 ModelMatrix;
     glm::vec3 CameraPos;
+    //int Animated;
+    //std::vector<glm::mat4> BoneMatrices;
     VkDeviceAddress VertexBuffer;
 };
 
@@ -109,4 +111,10 @@ struct GPUSceneData
     PointLightData PointLights[MAX_POINT_LIGHTS];
 	SpotLightData SpotLights[MAX_SPOT_LIGHTS];
     MaterialData Material;
+};
+
+struct GPUObjectData
+{
+	int Animated{ 0 };
+    std::array<glm::mat4, 100> BoneMatrices{}; // max 100 bones
 };

@@ -7,8 +7,8 @@ in vec2 texCoord;
 in vec3 normal;
 in vec3 fragPos;
 
-const int MAX_POINT_LIGHTS = 100;
-const int MAX_SPOT_LIGTS = 100;
+const int MAX_POINT_LIGHTS = 5;
+const int MAX_SPOT_LIGHTS = 5;
 
 struct Light
 {
@@ -50,7 +50,7 @@ uniform int spotLightCount;
 
 uniform DirectionalLight directionalLight;
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
-uniform SpotLight spotLights[MAX_SPOT_LIGTS];
+uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 
 uniform sampler2D tex0;
 uniform Material material;
@@ -76,7 +76,7 @@ vec4 CalcLightByDirection(Light light, vec3 direction)
 		specularColor = vec4(light.color * material.specularIntensity * specularFactor, 1.0f);
 	}
 
-	return (ambientColor + diffuseColor);// + specularColor);
+	return (ambientColor + diffuseColor + specularColor);
 }
 
 vec4 CalcDirectionalLight()
@@ -136,7 +136,9 @@ vec4 CalcSpotLights()
 
 void main()
 {
-	vec4 finalColor = CalcDirectionalLight();
+	vec4 finalColor = vec4(0,0,0,0);
+	
+	finalColor += CalcDirectionalLight();
 	finalColor += CalcPointLights();
 	finalColor += CalcSpotLights();
 

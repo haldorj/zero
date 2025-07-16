@@ -4,14 +4,14 @@
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Animation">
+      <UniqueIdentifier>{5C00BBE1-C8C0-3618-91FB-7F95FD7A7BF4}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Camera">
       <UniqueIdentifier>{054BA008-F102-E255-5A0A-BBB146E17C46}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Core">
       <UniqueIdentifier>{A5D31CCF-91A0-77DA-BAB9-6582A6E5AC68}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\Debug">
-      <UniqueIdentifier>{63A3C3B2-CF0D-7829-184C-29CF84F5557E}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\ImGui">
       <UniqueIdentifier>{170E22B3-8378-D629-CCB6-87CF3860B47E}</UniqueIdentifier>
@@ -87,6 +87,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Animation\Animation.h">
+      <Filter>src\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\Animator.h">
+      <Filter>src\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\Bone.h">
+      <Filter>src\Animation</Filter>
+    </ClInclude>
     <ClInclude Include="src\Application.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -102,9 +111,6 @@
     <ClInclude Include="src\Core\core.h">
       <Filter>src\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Debug\DebugSphere.h">
-      <Filter>src\Debug</Filter>
-    </ClInclude>
     <ClInclude Include="src\ImGui\imgui_impl_glfw.h">
       <Filter>src\ImGui</Filter>
     </ClInclude>
@@ -116,6 +122,9 @@
     </ClInclude>
     <ClInclude Include="src\ImGui\imgui_impl_vulkan.h">
       <Filter>src\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Model\AssimpGLMHelpers.h">
+      <Filter>src\Model</Filter>
     </ClInclude>
     <ClInclude Include="src\Model\Model.h">
       <Filter>src\Model</Filter>
@@ -1505,6 +1514,15 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Animation\Animation.cpp">
+      <Filter>src\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Animation\Animator.cpp">
+      <Filter>src\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Animation\Bone.cpp">
+      <Filter>src\Animation</Filter>
+    </ClCompile>
     <ClCompile Include="src\Application.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -1514,9 +1532,6 @@
     <ClCompile Include="src\Camera\PerspectiveCamera.cpp">
       <Filter>src\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="src\Debug\DebugSphere.cpp">
-      <Filter>src\Debug</Filter>
-    </ClCompile>
     <ClCompile Include="src\ImGui\imgui_impl_glfw.cpp">
       <Filter>src\ImGui</Filter>
     </ClCompile>
@@ -1525,6 +1540,9 @@
     </ClCompile>
     <ClCompile Include="src\ImGui\imgui_impl_vulkan.cpp">
       <Filter>src\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Model\Model.cpp">
+      <Filter>src\Model</Filter>
     </ClCompile>
     <ClCompile Include="src\Model\OpenGL\OpenGLMesh.cpp">
       <Filter>src\Model\OpenGL</Filter>

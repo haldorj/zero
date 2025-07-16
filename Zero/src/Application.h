@@ -9,6 +9,7 @@
 #include "renderer/VulkanRenderer.h"
 #include <Scene/Scene.h>
 
+#include <Animation/Animator.h>
 namespace Zero
 {
     enum class RendererAPI : uint8_t

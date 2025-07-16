@@ -24,6 +24,12 @@ namespace Zero
         }
     }
 
+    void GameObject::SetAnimation(Animation* animation)
+    {
+        m_Animation = animation;
+        m_Animator = std::make_shared<Animator>(m_Animation);
+    }
+
     void GameObject::UpdatePlayer(float deltaTime)
     {
         if (Application::Get().IsEditorMode())
@@ -115,5 +121,14 @@ namespace Zero
             m_RigidBody.Velocity.x -= velocityDirection.x * acceleration * deltaTime;
             m_RigidBody.Velocity.z -= velocityDirection.z * acceleration * deltaTime;
         }
+    }
+
+    void GameObject::UpdateAnimation(float deltaTime)
+    {
+        if (m_Animator && m_Animation)
+        {
+            m_Animator->UpdateAnimation(deltaTime);
+        }
+            
     }
 }

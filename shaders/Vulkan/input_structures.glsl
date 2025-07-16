@@ -3,6 +3,9 @@
 const int MAX_POINT_LIGHTS = 100;
 const int MAX_SPOT_LIGHTS = 100;
 
+const int MAX_BONES = 100;
+const int MAX_BONE_INFLUENCE = 4;
+
 struct Light
 {
 	vec3 color;
@@ -38,7 +41,7 @@ struct Material
     float shininess;
 };
 
-layout(scalar, set = 0, binding = 0) uniform SceneData 
+layout(scalar, set = 0, binding = 0) readonly buffer SceneData 
 {   
 	mat4 view;
 	mat4 proj;
@@ -54,4 +57,10 @@ layout(scalar, set = 0, binding = 0) uniform SceneData
 } sceneData;
 
 //texture to access
-layout(set = 0, binding = 1) uniform sampler2D displayTexture;
+layout(set = 1, binding = 0) uniform sampler2D displayTexture;
+
+layout(scalar, set = 1, binding = 1) readonly buffer AnimationData
+{
+	int animated;
+	mat4 finalBonesMatrices[MAX_BONES];
+} animationData;

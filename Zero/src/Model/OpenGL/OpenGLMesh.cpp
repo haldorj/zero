@@ -23,15 +23,14 @@ namespace Zero
         // Generates Element Buffer Object and links it to indices
         EBO ebo(indices);
         // Links VBO attributes such as coordinates and colors to VAO
-        m_VAO.LinkAttrib(vbo, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)0); // Pos (vec3) -> Offset 0
-        m_VAO.LinkAttrib(vbo, 1, 1, GL_FLOAT, sizeof(Vertex), (void*)(3 * sizeof(float)));
-        // UV_x (float) -> Offset 3 * sizeof(float)
-        m_VAO.LinkAttrib(vbo, 2, 3, GL_FLOAT, sizeof(Vertex), (void*)(4 * sizeof(float)));
-        // Normal (vec3) -> Offset 4 * sizeof(float)
-        m_VAO.LinkAttrib(vbo, 3, 1, GL_FLOAT, sizeof(Vertex), (void*)(7 * sizeof(float)));
-        // UV_y (float) -> Offset 7 * sizeof(float)
-        m_VAO.LinkAttrib(vbo, 4, 4, GL_FLOAT, sizeof(Vertex), (void*)(8 * sizeof(float)));
-        // Color (vec4) -> Offset 8 * sizeof(float)
+
+        m_VAO.LinkAttrib(vbo, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, Position));
+        m_VAO.LinkAttrib(vbo, 1, 1, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, UvX));
+        m_VAO.LinkAttrib(vbo, 2, 3, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+        m_VAO.LinkAttrib(vbo, 3, 1, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, UvY));
+        m_VAO.LinkAttrib(vbo, 4, 4, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, Color));
+        m_VAO.LinkAttribINT(vbo, 5, 4, GL_INT, sizeof(Vertex), (void*)offsetof(Vertex, m_BoneIDs));
+        m_VAO.LinkAttrib(vbo, 6, 4, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, m_Weights));
 
         // Unbind all to prevent accidentally modifying them
         m_VAO.Unbind();
