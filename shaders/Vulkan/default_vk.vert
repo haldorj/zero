@@ -38,8 +38,6 @@ layout( push_constant ) uniform constants
 {	
 	mat4 model;
 	vec3 cameraPos;
-	// int Animated;
-   	// mat4 BoneMatrices[MAX_BONES];
 	VertexBuffer vertexBuffer;
 } PushConstants;
 
@@ -47,9 +45,29 @@ void main()
 {	
 	//load vertex data from device adress
 	Vertex v = PushConstants.vertexBuffer.vertices[gl_VertexIndex];
+	vec3 Pos = v.position;
+
+	vec4 totalPosition = vec4(Pos, 1.0f);
+
+    if (sceneData.animated == 1) // <-- ONLY if animated
+    {
+        totalPosition = vec4(0.0f);
+        for (int i = 0; i < MAX_BONE_INFLUENCE; i++)
+        {
+            if (v.boneIds[i] == -1)
+                continue;
+            if (v.boneIds[i] >= MAX_BONES)
+            {
+                totalPosition = vec4(Pos, 1.0f);
+                break;
+            }
+            vec4 localPosition = sceneData.finalBonesMatrices[v.boneIds[i]] * vec4(Pos, 1.0f);
+            totalPosition += localPosition * v.weights[i];
+        }
+    }
 
 	//output data
-	gl_Position = sceneData.viewproj * PushConstants.model * vec4(v.position, 1.0f);
+	gl_Position = sceneData.viewproj * PushConstants.model * totalPosition;
 
 	outNormal = mat3(transpose(inverse(PushConstants.model))) * v.normal.xyz;
 	outColor = v.color.xyz;

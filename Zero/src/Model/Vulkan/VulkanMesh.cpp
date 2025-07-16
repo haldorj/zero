@@ -40,16 +40,17 @@ namespace Zero
             for (auto& texture : m_Textures)
             {
                 // DescriptorWriter descriptorWriter;
-                descriptorWriter.WriteImage(1, texture.GetImage().ImageView, sampler,
+                descriptorWriter.WriteImage(0, texture.GetImage().ImageView, sampler,
                                             VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
                                             VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+
+
 
                 descriptorWriter.UpdateSet(renderer->GetDevice(), imageSet);
             }
         }
 
-        vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &imageSet, 0,
-                                nullptr);
+        vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &imageSet, 0, nullptr);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

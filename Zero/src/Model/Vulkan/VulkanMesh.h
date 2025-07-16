@@ -33,10 +33,11 @@ namespace Zero {
 		GPUMeshBuffers GetGPUMeshBuffers() const { return m_GPUMeshBuffers; }
 
 	private:
-		std::vector<Vertex> m_Vertices;
-		std::vector<uint32_t> m_Indices;
-		std::vector<VulkanTexture> m_Textures;
-		GPUMeshBuffers m_GPUMeshBuffers;
+		std::vector<Vertex> m_Vertices{};
+		std::vector<uint32_t> m_Indices{};
+		std::vector<VulkanTexture> m_Textures{};
+		GPUMeshBuffers m_GPUMeshBuffers{};
+		GPUObjectData m_GPUObjectData{};
 	};
 
 }

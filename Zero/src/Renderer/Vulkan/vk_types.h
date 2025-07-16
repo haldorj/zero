@@ -112,3 +112,9 @@ struct GPUSceneData
 	SpotLightData SpotLights[MAX_SPOT_LIGHTS];
     MaterialData Material;
 };
+
+struct GPUObjectData
+{
+	int Animated{ 0 };
+	std::vector<glm::mat4> BoneMatrices; // max 100 bones
+};

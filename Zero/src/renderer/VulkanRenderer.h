@@ -150,14 +150,14 @@ namespace Zero {
         // VulkanTexture m_ErrorCheckerboardImage;
         VulkanTexture m_DefaultTexture;
 
-        VkSampler m_DefaultSamplerLinear = nullptr;
-        VkSampler m_DefaultSamplerNearest = nullptr;
+        VkSampler m_DefaultSamplerLinear{};
+        VkSampler m_DefaultSamplerNearest{};
 
-        VkDescriptorSetLayout m_SingleImageDescriptorLayout = nullptr;
+        VkDescriptorSetLayout m_SingleImageDescriptorLayout{};
 
         // VulkanMesh m_Pyramid{};
 
-        std::vector<std::shared_ptr<GameObject>> m_GameObjects;
+        std::vector<std::shared_ptr<GameObject>> m_GameObjects{};
 
         GPUSceneData m_SceneData{};
         VkDescriptorSetLayout m_GpuSceneDataDescriptorLayout{};

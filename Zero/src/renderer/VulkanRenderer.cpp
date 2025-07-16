@@ -314,7 +314,7 @@ namespace Zero
         projection[1][1] *= -1;
 
         //allocate a new uniform buffer for the scene data
-        AllocatedBuffer gpuSceneDataBuffer = VulkanBufferManager::CreateBuffer(m_Allocator, sizeof(GPUSceneData), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+        AllocatedBuffer gpuSceneDataBuffer = VulkanBufferManager::CreateBuffer(m_Allocator, sizeof(GPUSceneData), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
 
         //add it to the deletion queue of this frame so it gets deleted once its been used
         GetCurrentFrame().DeletionQueue.PushFunction([=, this]() {
@@ -362,30 +362,24 @@ namespace Zero
 		}
 
         //create a descriptor set that binds that buffer and update it
-        VkDescriptorSet globalDescriptor = GetCurrentFrame().FrameDescriptors.Allocate(m_Device, m_GpuSceneDataDescriptorLayout);
+        VkDescriptorSet sceneDataDescriptor = GetCurrentFrame().FrameDescriptors.Allocate(m_Device, m_GpuSceneDataDescriptorLayout);
 
         DescriptorWriter writer;
-        writer.WriteBuffer(0, gpuSceneDataBuffer.Buffer, sizeof(GPUSceneData), 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
-        writer.UpdateSet(m_Device, globalDescriptor);
+        writer.WriteBuffer(0, gpuSceneDataBuffer.Buffer, sizeof(GPUSceneData), 0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
+        writer.UpdateSet(m_Device, sceneDataDescriptor);
+
+		vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TexturedPipelineLayout, 0, 1,
+			&sceneDataDescriptor, 0, nullptr);
+
+		DescriptorWriter writer2;
 
         for (const auto& gameObj : scene->GetGameObjects())
         {
-            GPUDrawPushConstants pushConstants;
+            GPUDrawPushConstants pushConstants{};
             pushConstants.ModelMatrix = gameObj->GetTransform().GetMatrix();
             pushConstants.CameraPos = Application::Get().GetActiveCamera().GetPosition();
 
-			//if (gameObj->GetAnimator())
-			//{
-			//	pushConstants.Animated = 1;
-			//	pushConstants.BoneMatrices = gameObj->GetAnimator()->GetFinalBoneMatrices();
-			//}
-			//else
-			//{
-			//	pushConstants.Animated = 0;
-			//	pushConstants.BoneMatrices.clear();
-			//}
-
-            gameObj->GetModel()->Draw(cmd, writer, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerLinear, pushConstants);
+            gameObj->GetModel()->Draw(cmd, writer2, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerLinear, pushConstants);
         }
 
         vkCmdEndRendering(cmd);
@@ -652,7 +646,10 @@ namespace Zero
         // Create a descriptor pool that will hold 10 sets with 1 image each
         std::vector<DescriptorAllocator::PoolSizeRatio> sizes =
         {
-            {VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1}
+            {VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1},
+			{VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1},
+			{VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1},
+			{VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1}
         };
 
         m_GlobalDescriptorAllocator.InitPool(m_Device, 10, sizes);
@@ -665,7 +662,7 @@ namespace Zero
 
         {
             DescriptorLayoutBuilder builder;
-            builder.AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+            builder.AddBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
             m_GpuSceneDataDescriptorLayout = builder.Build(m_Device, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
         }
 
@@ -813,12 +810,11 @@ namespace Zero
         bufferRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
         DescriptorLayoutBuilder layoutBuilder;
-        layoutBuilder.AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);         // Scene data
-        layoutBuilder.AddBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER); // Texture
+        layoutBuilder.AddBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER); // Texture
 
         m_SingleImageDescriptorLayout = layoutBuilder.Build(m_Device, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
 
-        VkDescriptorSetLayout layouts[] = { m_SingleImageDescriptorLayout,  m_GpuSceneDataDescriptorLayout};
+        VkDescriptorSetLayout layouts[] = { m_GpuSceneDataDescriptorLayout, m_SingleImageDescriptorLayout };
 
         VkPipelineLayoutCreateInfo pipelineLayoutInfo = VkInit::PipelineLayoutCreateInfo();
         pipelineLayoutInfo.pPushConstantRanges = &bufferRange;

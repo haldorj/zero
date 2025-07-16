@@ -8,9 +8,11 @@ namespace Zero {
         m_DeltaTime = 0.0f;
         m_CurrentAnimation = Animation;
 
-        m_FinalBoneMatrices.reserve(100);
+        const int maxBones = 100;
 
-        for (int i = 0; i < 100; i++)
+        m_FinalBoneMatrices.reserve(maxBones);
+
+        for (int i = 0; i < maxBones; i++)
             m_FinalBoneMatrices.push_back(glm::mat4(1.0f));
     }
 
