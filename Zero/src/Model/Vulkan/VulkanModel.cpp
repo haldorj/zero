@@ -8,6 +8,7 @@
 
 #include <Renderer/VulkanRenderer.h>
 #include <Application.h>
+#include <Renderer/Vulkan/VulkanBuffer.h>
 
 namespace Zero
 {
@@ -17,10 +18,50 @@ namespace Zero
     }
 
     void VulkanModel::Draw(VkCommandBuffer& cmd, VkPipelineLayout& pipelineLayout, const VkExtent2D drawExtent,
-                           VkSampler& sampler, GPUDrawPushConstants& pushConstants, Animator* animator)
+                           VkSampler& sampler, GPUDrawPushConstants& pushConstants, std::shared_ptr<Animator> animator)
     {
+        const auto renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+
+        //// STORAGE BUFFER //////////////////////////////////////////////////////////////////////////////////////////
+        //allocate a new uniform buffer for the scene data
+        AllocatedBuffer gpuObjectDataBuffer = VulkanBufferManager::CreateBuffer(renderer->GetAllocator(),
+            sizeof(GPUObjectData), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+
+        //add it to the deletion queue of this frame so it gets deleted once its been used
+        renderer->GetCurrentFrame().DeletionQueue.PushFunction([=, this]() {
+            VulkanBufferManager::DestroyBuffer(renderer->GetAllocator(), gpuObjectDataBuffer);
+            });
+
+        //write the buffer
+        GPUObjectData* objectUniformData = (GPUObjectData*)gpuObjectDataBuffer.Info.pMappedData;
+        *objectUniformData = m_GPUObjectData;
+
+        if (animator)
+        {
+            objectUniformData->Animated = true;
+
+            const std::vector transforms = animator->GetFinalBoneMatrices();
+            for (int i = 0; i < transforms.size(); ++i)
+            {
+                if (i >= 100) break;
+
+                objectUniformData->BoneMatrices[i] = transforms[i];
+            }
+        }
+        else
+        {
+            objectUniformData->Animated = false;
+        }
+
+        DescriptorWriter descriptorWriter{};
+
+        descriptorWriter.WriteBuffer(1, gpuObjectDataBuffer.Buffer, sizeof(GPUObjectData), 0,
+            VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
         for (unsigned int i = 0; i < m_Meshes.size(); i++)
-            m_Meshes[i].Draw(cmd, pipelineLayout, drawExtent, sampler, pushConstants, animator);
+            m_Meshes[i].Draw(cmd, pipelineLayout, drawExtent, sampler, pushConstants, descriptorWriter);
     }
 
     void VulkanModel::DestroyModel() const
@@ -74,6 +115,7 @@ namespace Zero
         for (size_t i = 0; i < mesh->mNumVertices; i++)
         {
             Vertex vertex;
+            SetVertexBoneDataToDefault(vertex);
             // process vertex positions, normals and texture coordinates
             vertex.Position =
                 glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
@@ -99,7 +141,7 @@ namespace Zero
                 vertex.UvX = 0;
                 vertex.UvY = 0;
             }
-
+            
             vertices.emplace_back(vertex);
         }
 
@@ -122,6 +164,8 @@ namespace Zero
                                                                            aiTextureType_SPECULAR, "texture_specular");
             textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
         }
+
+        ExtractBoneWeightForVertices(vertices, mesh, scene);
 
         return VulkanMesh(vertices, indices, textures);
     }

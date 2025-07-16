@@ -62,5 +62,5 @@ layout(set = 1, binding = 0) uniform sampler2D displayTexture;
 layout(scalar, set = 1, binding = 1) readonly buffer AnimationData
 {
 	int animated;
-	// mat4 finalBonesMatrices[MAX_BONES];
+	mat4 finalBonesMatrices[MAX_BONES];
 } animationData;

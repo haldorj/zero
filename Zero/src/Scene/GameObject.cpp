@@ -126,6 +126,9 @@ namespace Zero
     void GameObject::UpdateAnimation(float deltaTime)
     {
         if (m_Animator && m_Animation)
+        {
             m_Animator->UpdateAnimation(deltaTime);
+        }
+            
     }
 }

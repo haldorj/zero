@@ -378,7 +378,7 @@ namespace Zero
             pushConstants.ModelMatrix = gameObj->GetTransform().GetMatrix();
             pushConstants.CameraPos = Application::Get().GetActiveCamera().GetPosition();
 
-            gameObj->GetModel()->Draw(cmd, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerLinear, pushConstants, gameObj->GetAnimator().get());
+            gameObj->GetModel()->Draw(cmd, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerLinear, pushConstants, gameObj->GetAnimator());
         }
 
         vkCmdEndRendering(cmd);

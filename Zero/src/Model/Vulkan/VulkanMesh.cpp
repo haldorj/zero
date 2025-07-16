@@ -24,7 +24,7 @@ namespace Zero
     }
 
     void VulkanMesh::Draw(const VkCommandBuffer& cmd, const VkPipelineLayout& pipelineLayout, VkExtent2D drawExtent,
-                          const VkSampler& sampler, GPUDrawPushConstants& pushConstants, Animator* animator)
+                          const VkSampler& sampler, GPUDrawPushConstants& pushConstants, DescriptorWriter& descriptorWriter)
     {
         const auto renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
         if (!renderer)
@@ -34,8 +34,6 @@ namespace Zero
         }
 
         //// TEXTURES /////////////////////////////////////////////////////////////////////////////////////////////////
-
-        DescriptorWriter descriptorWriter{};
 
         const VkDescriptorSet imageSet = renderer->GetCurrentFrame().FrameDescriptors.Allocate(
             renderer->GetDevice(), renderer->GetSingleImageDescriptorLayout());
@@ -53,33 +51,6 @@ namespace Zero
         //vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &imageSet, 0, nullptr);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        //// STORAGE BUFFER //////////////////////////////////////////////////////////////////////////////////////////
-
-        //allocate a new uniform buffer for the scene data
-        AllocatedBuffer gpuObjectDataBuffer = VulkanBufferManager::CreateBuffer(renderer->GetAllocator(),
-            sizeof(GPUObjectData), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
-
-        //add it to the deletion queue of this frame so it gets deleted once its been used
-        renderer->GetCurrentFrame().DeletionQueue.PushFunction([=, this]() {
-            VulkanBufferManager::DestroyBuffer(renderer->GetAllocator(), gpuObjectDataBuffer);
-            });
-
-        //write the buffer
-        GPUObjectData* objectUniformData = (GPUObjectData*)gpuObjectDataBuffer.Info.pMappedData;
-        *objectUniformData = m_GPUObjectData;
-
-        if (animator)
-        {
-            objectUniformData->Animated = true;
-        }
-        else
-		{
-			objectUniformData->Animated = false;
-		}
-
-		descriptorWriter.WriteBuffer(1, gpuObjectDataBuffer.Buffer, sizeof(GPUObjectData), 0,
-			VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
 
         descriptorWriter.UpdateSet(renderer->GetDevice(), imageSet);
 

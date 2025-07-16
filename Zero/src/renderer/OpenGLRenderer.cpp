@@ -104,7 +104,7 @@ namespace Zero
             {
                 glUniform1i(glGetUniformLocation(m_ShaderProgram->GetID(), "Animated"), 1);
 
-                const auto transforms = gameObj->GetAnimator()->GetFinalBoneMatrices();
+                const std::vector transforms = gameObj->GetAnimator()->GetFinalBoneMatrices();
                 for (int i = 0; i < transforms.size(); ++i)
                 {
                     std::string str = "finalBonesMatrices[" + std::to_string(i) + "]";

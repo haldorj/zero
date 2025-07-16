@@ -22,8 +22,7 @@ namespace Zero {
 		          VkExtent2D drawExtent,
 		          const VkSampler& sampler,
 		          GPUDrawPushConstants& pushConstants,
-				  class Animator* animator
-		);
+				  DescriptorWriter& descriptorWriter);
 
 		void DestroyMesh() const;
 
@@ -37,7 +36,6 @@ namespace Zero {
 		std::vector<uint32_t> m_Indices{};
 		std::vector<VulkanTexture> m_Textures{};
 		GPUMeshBuffers m_GPUMeshBuffers{};
-		GPUObjectData m_GPUObjectData{};
 	};
 
 }
