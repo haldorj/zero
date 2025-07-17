@@ -11,6 +11,7 @@
 #include <Scene/GameObject.h>
 
 #include "OpenGL/OpenGLUtils.h"
+#include <Scene/Skybox/Skybox.h>
 
 namespace Zero {
 
@@ -21,7 +22,7 @@ namespace Zero {
         void InitImGui() override;
         void Shutdown() override;
         void SetClearColor(glm::vec4 clearColor) override { m_ClearColor = clearColor; }
-        void Draw(Scene* scene) override;
+        void Draw   (Scene* scene) override;
 
         void SetUniformValues(OpenGLShader* shader, Scene* scene);
 
@@ -38,6 +39,8 @@ namespace Zero {
 
         size_t m_SpotLightCount{};
         std::array<UniformSpotLight, MAX_SPOT_LIGHTS> m_UniformSpotLights{};
+
+        Skybox* m_Skybox{};
 
         int m_Width{};
         int m_Height{};

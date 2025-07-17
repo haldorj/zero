@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Scene\Skybox\Skybox.h" />
     <ClInclude Include="src\Animation\Animation.h" />
     <ClInclude Include="src\Animation\Animator.h" />
     <ClInclude Include="src\Animation\Bone.h" />
@@ -614,6 +615,7 @@
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Scene\Skybox\Skybox.cpp" />
     <ClCompile Include="src\Animation\Animation.cpp" />
     <ClCompile Include="src\Animation\Animator.cpp" />
     <ClCompile Include="src\Animation\Bone.cpp" />

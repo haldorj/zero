@@ -10,6 +10,7 @@
 #include <Scene/Scene.h>
 
 #include <Animation/Animator.h>
+
 namespace Zero
 {
     enum class RendererAPI : uint8_t
@@ -106,7 +107,7 @@ namespace Zero
 
         float m_Fov{ 0.0f };
 
-        RendererAPI m_RendererType{ RendererAPI::Vulkan };
+        RendererAPI m_RendererType{ RendererAPI::OpenGL };
 
         bool m_EditorMode{ true };
         bool m_IsInitialized{ false };
