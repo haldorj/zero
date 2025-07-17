@@ -13,6 +13,7 @@
 #include <Model/Vulkan/VulkanMesh.h>
 #include <Model/Vulkan/VulkanModel.h>
 #include "Vulkan/VulkanTexture.h"
+#include <Scene/Skybox/VulkanSkybox.h>
 
 namespace Zero {
 
@@ -76,7 +77,8 @@ namespace Zero {
 
         VkDevice& GetDevice() { return m_Device; }
 		VkPhysicalDevice& GetPhysicalDevice() { return m_PhysicalDevice; }
-        VkDescriptorSetLayout GetSingleImageDescriptorLayout() const { return m_SingleImageDescriptorLayout; }
+		VkDescriptorSetLayout GetGpuSceneDataDescriptorLayout() const { return m_GpuSceneDataDescriptorLayout; }
+        VkDescriptorSetLayout GetSingleImageDescriptorLayout() const { return m_GameObjectDescriptorLayout; }
         VmaAllocator& GetAllocator() { return m_Allocator; }
         DeletionQueue& GetMainDeletionQueue() { return m_MainDeletionQueue; }
 
@@ -90,8 +92,8 @@ namespace Zero {
         void InitDescriptors();
         void InitPipelines();
 
-        void InitPlainPipeline();
         void InitTexturedPipeline();
+		void InitSkyboxPipeline();
 
         void CreateSwapchain(uint32_t width, uint32_t height);
         void DestroySwapchain() const;
@@ -136,8 +138,8 @@ namespace Zero {
         VkDescriptorSet m_DrawImageDescriptors{};
         VkDescriptorSetLayout m_DrawImageDescriptorLayout{};
 
-        VkPipelineLayout m_PlainPipelineLayout{};
-        VkPipeline m_PlainPipeline{};
+        VkPipelineLayout m_SkyboxPipelineLayout{};
+        VkPipeline m_SkyboxPipeline{};
 
         VkPipelineLayout m_TexturedPipelineLayout{};
         VkPipeline m_TexturedPipeline{};
@@ -148,19 +150,17 @@ namespace Zero {
         VkCommandBuffer m_ImmCommandBuffer{};
         VkCommandPool m_ImmCommandPool{};
 
-        // VulkanTexture m_ErrorCheckerboardImage;
         VulkanTexture m_DefaultTexture;
 
         VkSampler m_DefaultSamplerLinear{};
         VkSampler m_DefaultSamplerNearest{};
 
-        VkDescriptorSetLayout m_SingleImageDescriptorLayout{};
-
-        // VulkanMesh m_Pyramid{};
-
-        std::vector<std::shared_ptr<GameObject>> m_GameObjects{};
+        VkDescriptorSetLayout m_GameObjectDescriptorLayout{};
 
         GPUSceneData m_SceneData{};
+		GPUCameraData m_CameraData{};
         VkDescriptorSetLayout m_GpuSceneDataDescriptorLayout{};
+
+		VulkanSkybox* m_Skybox{};
     };
 }

@@ -35,7 +35,7 @@ namespace Zero
 
         //// TEXTURES /////////////////////////////////////////////////////////////////////////////////////////////////
 
-        const VkDescriptorSet imageSet = renderer->GetCurrentFrame().FrameDescriptors.Allocate(
+        const VkDescriptorSet descriptorSet = renderer->GetCurrentFrame().FrameDescriptors.Allocate(
             renderer->GetDevice(), renderer->GetSingleImageDescriptorLayout());
 
         for (auto& texture : m_Textures)
@@ -45,18 +45,16 @@ namespace Zero
                 VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
                 VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 
-            descriptorWriter.UpdateSet(renderer->GetDevice(), imageSet);
+            descriptorWriter.UpdateSet(renderer->GetDevice(), descriptorSet);
         }
 
-        //vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &imageSet, 0, nullptr);
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        descriptorWriter.UpdateSet(renderer->GetDevice(), descriptorSet);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        descriptorWriter.UpdateSet(renderer->GetDevice(), imageSet);
-
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &imageSet, 0, nullptr);
+        vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &descriptorSet, 0, nullptr);
 
         pushConstants.VertexBuffer = m_GPUMeshBuffers.VertexBufferAddress;
 

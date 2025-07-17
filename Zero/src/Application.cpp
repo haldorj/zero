@@ -43,7 +43,7 @@ namespace Zero
         std::shared_ptr<GameObject> blackBison = std::make_shared<GameObject>(GameObject::Create());
         blackBison->SetModel(ModelFactory::CreateModel(modelPaths[0].c_str(), m_RendererType));
         blackBison->GetTransform().Position = {15, 10, 0};
-        blackBison->GetTransform().Scale = glm::vec3{0.01f};
+        blackBison->GetTransform().Scale = glm::vec3{0.005f};
         blackBison->GetRigidBody().Mass = 5;
         blackBison->SetCollider(std::make_shared<CapsuleCollider>(glm::vec3{0, 3.5, 0}, 1.0f, 5.0f));
         //blackBison->SetCollider(std::make_shared<SphereCollider>(glm::vec3{0, 0, 0}, 1.0f));

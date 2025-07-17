@@ -32,5 +32,5 @@ public:
     void SetColorAttachmentFormat(VkFormat format);
     void SetDepthFormat(VkFormat format);
     void DisableDepthTest();
-    void EnableDepthTest(bool depthWriteEnable, VkCompareOp op);
+    void EnableDepthTest(VkBool32 depthTestEnable, VkBool32 depthWriteEnable, VkCompareOp op);
 };

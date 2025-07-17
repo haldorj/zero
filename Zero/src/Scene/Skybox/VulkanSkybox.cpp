@@ -25,6 +25,20 @@ namespace Zero {
 			printf("VulkanSkybox::Draw: Renderer is not of type VulkanRenderer");
 			return;
 		}
+
+		const VkDescriptorSet descriptorSet = renderer->GetCurrentFrame().FrameDescriptors.Allocate(
+			renderer->GetDevice(), renderer->GetGpuSceneDataDescriptorLayout());
+
+		descriptorWriter.WriteImage(
+			2, 
+			m_Image.ImageView, 
+			m_Sampler,
+			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER
+		);
+
+		descriptorWriter.UpdateSet(renderer->GetDevice(), descriptorSet);
+
+		vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		
 		pushConstants.VertexBuffer = m_GPUMeshBuffers.VertexBufferAddress;
 
@@ -33,6 +47,25 @@ namespace Zero {
 		vkCmdBindIndexBuffer(cmd, m_GPUMeshBuffers.IndexBuffer.Buffer, 0, VK_INDEX_TYPE_UINT32);
 
 		vkCmdDrawIndexed(cmd, static_cast<uint32_t>(m_Indices.size()), 1, 0, 0, 0);
+	}
+
+	void VulkanSkybox::Destroy() const
+	{
+		const auto renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+
+		if (!renderer)
+		{
+			printf("VulkanSkybox::~VulkanSkybox: Renderer is not of type VulkanRenderer");
+			return;
+		}
+
+		vkDeviceWaitIdle(renderer->GetDevice());
+
+		vkDestroyImageView(renderer->GetDevice(), m_Image.ImageView, nullptr);
+		vmaDestroyImage(renderer->GetAllocator(), m_Image.Image, m_Image.Allocation);
+		vkDestroySampler(renderer->GetDevice(), m_Sampler, nullptr);
+		VulkanBufferManager::DestroyBuffer(renderer->GetAllocator(), m_GPUMeshBuffers.IndexBuffer);
+		VulkanBufferManager::DestroyBuffer(renderer->GetAllocator(), m_GPUMeshBuffers.VertexBuffer);
 	}
 
 	AllocatedImage VulkanSkybox::CreateCubeMap(const std::vector<std::string>& faceLocations)
@@ -177,6 +210,11 @@ namespace Zero {
 	void VulkanSkybox::CreateSkyboxMesh()
 	{
 		const auto renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+		if (!renderer)
+		{
+			printf("VulkanSkybox::CreateSkyboxMesh: Renderer is not of type VulkanRenderer");
+			return;
+		}
 
 		m_Indices.reserve(36);
 		m_Indices = {
@@ -205,24 +243,43 @@ namespace Zero {
 		std::array<Vertex, 8> vertices{};
 
 		vertices[0].Position = {-1.0f, 1.0f, -1.0f};
+		vertices[0].UvX = 0.0f;
+		vertices[0].UvY = 0.0f;
+
 		vertices[1].Position = { -1.0f, -1.0f, -1.0f };
+		vertices[1].UvX = 0.0f;
+		vertices[1].UvY = 1.0f;
+
 		vertices[2].Position = { 1.0f, 1.0f, -1.0f };
+		vertices[2].UvX = 1.0f;
+		vertices[2].UvY = 0.0f;
+
 		vertices[3].Position = { 1.0f, -1.0f, -1.0f };
+		vertices[3].UvX = 1.0f;
+		vertices[3].UvY = 1.0f;
+
 		vertices[4].Position = { -1.0f, 1.0f, 1.0f };
+		vertices[4].UvX = 0.0f;
+		vertices[4].UvY = 0.0f;
+
 		vertices[5].Position = { 1.0f, 1.0f, 1.0f };
+		vertices[5].UvX = 1.0f;
+		vertices[5].UvY = 0.0f;
+
 		vertices[6].Position = { -1.0f, -1.0f, 1.0f };
+		vertices[6].UvX = 0.0f;
+		vertices[6].UvY = 1.0f;
+
 		vertices[7].Position = { 1.0f, -1.0f, 1.0f };
+		vertices[7].UvX = 1.0f;
+		vertices[7].UvY = 1.0f;
 
 		for (size_t i = 0; i < vertices.size(); ++i)
 		{
 			m_Vertices.emplace_back(vertices[i]);
 		}
 
-		if (renderer)
-		{
-			m_GPUMeshBuffers = renderer->UploadMesh(m_Indices, vertices);
-		}
-			
+		m_GPUMeshBuffers = renderer->UploadMesh(m_Indices, m_Vertices);		
 	}
 
 	void VulkanSkybox::CreateSampler()
@@ -249,11 +306,11 @@ namespace Zero {
 		VkPhysicalDeviceProperties properties = {};
 		vkGetPhysicalDeviceProperties(renderer->GetPhysicalDevice(), &properties);
 
-		if (features.samplerAnisotropy)
-		{
-			samplerInfo.maxAnisotropy = properties.limits.maxSamplerAnisotropy;
-			samplerInfo.anisotropyEnable = VK_TRUE;
-		}
+		//if (features.samplerAnisotropy)
+		//{
+		//	samplerInfo.maxAnisotropy = properties.limits.maxSamplerAnisotropy;
+		//	samplerInfo.anisotropyEnable = VK_TRUE;
+		//}
 
 		VK_CHECK(vkCreateSampler(renderer->GetDevice(), &samplerInfo, nullptr, &m_Sampler));
 	}

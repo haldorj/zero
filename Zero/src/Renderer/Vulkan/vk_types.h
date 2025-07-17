@@ -96,12 +96,15 @@ struct MaterialData
     float Shininess;
 };
 
+struct GPUCameraData
+{
+	glm::mat4 View;
+	glm::mat4 Proj;
+	glm::mat4 Viewproj;
+};
+
 struct GPUSceneData
 {
-    glm::mat4 View;
-    glm::mat4 Proj;
-    glm::mat4 Viewproj;
-
     int PointLightCount;
     int SpotLightCount;
 
@@ -114,5 +117,5 @@ struct GPUSceneData
 struct GPUObjectData
 {
 	int Animated{ 0 };
-    std::array<glm::mat4, 100> BoneMatrices{}; // max 100 bones
+    std::array<glm::mat4, MAX_BONES> BoneMatrices{}; // max 100 bones
 };

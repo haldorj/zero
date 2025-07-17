@@ -613,7 +613,7 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrap.h" />
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h" />
-    <ClInclude Include="VulkanSkybox.h" />
+    <ClInclude Include="src\Scene\Skybox\VulkanSkybox.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Animation\Animation.cpp" />
@@ -665,7 +665,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="vendor\stb_image\stb_image.cpp" />
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp" />
-    <ClCompile Include="VulkanSkybox.cpp" />
+    <ClCompile Include="src\Scene\Skybox\VulkanSkybox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

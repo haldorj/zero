@@ -52,6 +52,15 @@ namespace Zero
         InitDescriptors();
         InitPipelines();
         InitTextures();
+
+        m_Skybox = new VulkanSkybox({
+            "../assets/skybox/mp_st/st_rt.tga",
+            "../assets/skybox/mp_st/st_lf.tga",
+            "../assets/skybox/mp_st/st_up.tga",
+            "../assets/skybox/mp_st/st_dn.tga",
+            "../assets/skybox/mp_st/st_bk.tga",
+            "../assets/skybox/mp_st/st_ft.tga"
+            });
     }
 
     void VulkanRenderer::InitImGui()
@@ -197,16 +206,9 @@ namespace Zero
         VkUtil::TransitionImage(cmd, m_DrawImage.Image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL);
         VkUtil::TransitionImage(cmd, m_DepthImage.Image, VK_IMAGE_LAYOUT_UNDEFINED,
             VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL);
-        //DrawGeometry(cmd);
 
-        if (scene)
-        {
-            DrawGeometryTextured(scene, cmd);
-        }
-       
-
-        // vkCmdEndRendering(cmd);
-
+        DrawGeometryTextured(scene, cmd);
+        
         // Both the draw image and the swapchain image are transitioned into their respective transfer layouts using vkutil::transition_image(). 
         // This prepares them for the copy operation.
         VkUtil::TransitionImage(cmd, m_DrawImage.Image, VK_IMAGE_LAYOUT_GENERAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
@@ -278,7 +280,8 @@ namespace Zero
 
     void VulkanRenderer::DrawGeometryTextured(Scene* scene, VkCommandBuffer cmd)
     {
-        //begin a render pass  connected to our draw image
+		if (!scene) return;
+
         VkRenderingAttachmentInfo colorAttachment = VkInit::AttachmentInfo(m_DrawImage.ImageView, nullptr,
                                                                            VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
         VkRenderingAttachmentInfo depthAttachment = VkInit::DepthAttachmentInfo(
@@ -306,27 +309,36 @@ namespace Zero
 
         vkCmdSetScissor(cmd, 0, 1, &scissor);
 
-        vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TexturedPipeline);
-
         glm::mat4 view = Application::Get().GetActiveCamera().GetViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(Application::Get().GetActiveCamera().GetFOV()),
             (float)m_DrawExtent.width / (float)m_DrawExtent.height, 0.1f, 10000.f);
 
         projection[1][1] *= -1;
 
-        //allocate a new uniform buffer for the scene data
+		// SCENE DATA BUFFER CREATION
         AllocatedBuffer gpuSceneDataBuffer = VulkanBufferManager::CreateBuffer(m_Allocator, sizeof(GPUSceneData), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
 
-        //add it to the deletion queue of this frame so it gets deleted once its been used
         GetCurrentFrame().DeletionQueue.PushFunction([=, this]() {
             VulkanBufferManager::DestroyBuffer(m_Allocator, gpuSceneDataBuffer);
             });
 
-        //write the buffer
         GPUSceneData* sceneUniformData = (GPUSceneData*)gpuSceneDataBuffer.Allocation->GetMappedData();
         *sceneUniformData = m_SceneData;
 
-        sceneUniformData->Viewproj = projection * view;
+		// CAMERA DATA BUFFER CREATION
+        AllocatedBuffer gpuCameraDataBuffer = VulkanBufferManager::CreateBuffer(m_Allocator, sizeof(GPUCameraData), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+
+        GetCurrentFrame().DeletionQueue.PushFunction([=, this]() {
+            VulkanBufferManager::DestroyBuffer(m_Allocator, gpuCameraDataBuffer);
+            });
+
+        GPUCameraData* cameraUniformData = (GPUCameraData*)gpuCameraDataBuffer.Allocation->GetMappedData();
+        *cameraUniformData = m_CameraData;
+
+		cameraUniformData->View = view;
+		cameraUniformData->Proj = projection;
+        cameraUniformData->Viewproj = projection * view;
+
         sceneUniformData->DirectionalLight.Base.Color = scene->GetDirectionalLight()->GetColor();
         sceneUniformData->DirectionalLight.Base.AmbientIntensity = scene->GetDirectionalLight()->GetAmbientIntensity();
         sceneUniformData->DirectionalLight.Base.DiffuseIntensity = scene->GetDirectionalLight()->GetDiffuseIntensity();
@@ -367,14 +379,26 @@ namespace Zero
 
         DescriptorWriter writer;
         writer.WriteBuffer(0, gpuSceneDataBuffer.Buffer, sizeof(GPUSceneData), 0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
-        writer.UpdateSet(m_Device, sceneDataDescriptor);
+		writer.WriteBuffer(1, gpuCameraDataBuffer.Buffer, sizeof(GPUCameraData), 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+		writer.UpdateSet(m_Device, sceneDataDescriptor);
 
-		vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TexturedPipelineLayout, 0, 1,
-			&sceneDataDescriptor, 0, nullptr);
+        GPUDrawPushConstants pushConstants{};
+        
+        vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline);
+
+        vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipelineLayout, 0, 1,
+            &sceneDataDescriptor, 0, nullptr);
+
+        m_Skybox->Draw(cmd, m_SkyboxPipelineLayout, m_DrawExtent, pushConstants, writer);
+
+        vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TexturedPipeline);
+
+        vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TexturedPipelineLayout, 0, 1,
+            &sceneDataDescriptor, 0, nullptr);
 
         for (const auto& gameObj : scene->GetGameObjects())
         {
-            GPUDrawPushConstants pushConstants{};
+            // GPUDrawPushConstants pushConstants{};
             pushConstants.ModelMatrix = gameObj->GetTransform().GetMatrix();
             pushConstants.CameraPos = Application::Get().GetActiveCamera().GetPosition();
 
@@ -411,6 +435,11 @@ namespace Zero
     void VulkanRenderer::Shutdown()
     {
         vkDeviceWaitIdle(m_Device);
+
+		if (m_Skybox)
+		{
+			m_Skybox->Destroy();
+		}
 
         // Free per-frame structures and deletion queue
         for (auto& frame : m_Frames)
@@ -655,14 +684,15 @@ namespace Zero
 
         {
             DescriptorLayoutBuilder builder;
-            builder.AddBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
+            builder.AddBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);           // Scene data
+			builder.AddBinding(1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);           // View projection matrix
+			builder.AddBinding(2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);   // Texture sampler for skybox
             m_GpuSceneDataDescriptorLayout = builder.Build(m_Device, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
         }
 
         {
             DescriptorLayoutBuilder builder;
             builder.AddBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-            builder.AddBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
             m_DrawImageDescriptorLayout = builder.Build(m_Device, VK_SHADER_STAGE_COMPUTE_BIT);
         }
 
@@ -681,7 +711,7 @@ namespace Zero
             m_GlobalDescriptorAllocator.DestroyPool(m_Device);
 
             vkDestroyDescriptorSetLayout(m_Device, m_DrawImageDescriptorLayout, nullptr);
-            vkDestroyDescriptorSetLayout(m_Device, m_SingleImageDescriptorLayout, nullptr);
+            vkDestroyDescriptorSetLayout(m_Device, m_GameObjectDescriptorLayout, nullptr);
             vkDestroyDescriptorSetLayout(m_Device, m_GpuSceneDataDescriptorLayout, nullptr);
         });
 
@@ -708,78 +738,8 @@ namespace Zero
 
     void VulkanRenderer::InitPipelines()
     {
-        // InitPlainPipeline();
+		InitSkyboxPipeline();
         InitTexturedPipeline();
-    }
-
-    void VulkanRenderer::InitPlainPipeline()
-    {
-        VkShaderModule triangleFragShader;
-        if (!VkUtil::LoadShaderModule("../shaders/compiled/plain.frag.spv", m_Device, &triangleFragShader))
-        {
-            printf("Error when building the triangle fragment shader module \n");
-        }
-        else
-        {
-            printf("Triangle fragment shader successfully loaded \n");
-        }
-
-        VkShaderModule triangleVertexShader;
-        if (!VkUtil::LoadShaderModule("../shaders/compiled/textured.vert.spv", m_Device, &triangleVertexShader))
-        {
-            printf("Error when building the triangle vertex shader module \n");
-        }
-        else
-        {
-            printf("Triangle vertex shader successfully loaded \n");
-        }
-
-        VkPushConstantRange bufferRange{};
-        bufferRange.offset = 0;
-        bufferRange.size = sizeof(GPUDrawPushConstants);
-        bufferRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-
-        VkPipelineLayoutCreateInfo pipelineLayoutInfo = VkInit::PipelineLayoutCreateInfo();
-        pipelineLayoutInfo.pPushConstantRanges = &bufferRange;
-        pipelineLayoutInfo.pushConstantRangeCount = 1;
-
-        VK_CHECK(vkCreatePipelineLayout(m_Device, &pipelineLayoutInfo, nullptr, &m_PlainPipelineLayout));
-
-        PipelineBuilder pipelineBuilder;
-
-        //use the triangle layout we created
-        pipelineBuilder.PipelineLayout = m_PlainPipelineLayout;
-        //connecting the vertex and pixel shaders to the pipeline
-        pipelineBuilder.SetShaders(triangleVertexShader, triangleFragShader);
-        //it will draw triangles
-        pipelineBuilder.SetInputTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
-        //filled triangles
-        pipelineBuilder.SetPolygonMode(VK_POLYGON_MODE_FILL);
-        //no backface culling
-        pipelineBuilder.SetCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE);
-        //no multisampling
-        pipelineBuilder.SetMultisamplingNone();
-        //no blending
-        pipelineBuilder.DisableBlending();
-
-        pipelineBuilder.EnableDepthTest(true, VK_COMPARE_OP_LESS);
-
-        //connect the image format we will draw into, from draw image
-        pipelineBuilder.SetColorAttachmentFormat(m_DrawImage.ImageFormat);
-        pipelineBuilder.SetDepthFormat(m_DepthImage.ImageFormat);
-
-        //finally build the pipeline
-        m_PlainPipeline = pipelineBuilder.BuildPipeline(m_Device);
-
-        //clean structures
-        vkDestroyShaderModule(m_Device, triangleFragShader, nullptr);
-        vkDestroyShaderModule(m_Device, triangleVertexShader, nullptr);
-
-        m_MainDeletionQueue.PushFunction([&]()
-        {
-            vkDestroyPipelineLayout(m_Device, m_PlainPipelineLayout, nullptr);
-            vkDestroyPipeline(m_Device, m_PlainPipeline, nullptr);
-        });
     }
 
     void VulkanRenderer::InitTexturedPipeline()
@@ -789,19 +749,11 @@ namespace Zero
         {
             printf("Error when building the fragment shader module \n");
         }
-        else
-        {
-            printf("Fragment shader successfully loaded \n");
-        }
 
         VkShaderModule triangleVertexShader;
         if (!VkUtil::LoadShaderModule("../shaders/vulkan/compiled/default_vk.vert.spv", m_Device, &triangleVertexShader))
         {
             printf("Error when building the vertex shader module \n");
-        }
-        else
-        {
-            printf("Vertex shader successfully loaded \n");
         }
 
         VkPushConstantRange bufferRange{};
@@ -811,11 +763,11 @@ namespace Zero
 
         DescriptorLayoutBuilder layoutBuilder;
         layoutBuilder.AddBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER); // Texture
-		layoutBuilder.AddBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);     // Scene data
+		layoutBuilder.AddBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);         // Animation data
 
-        m_SingleImageDescriptorLayout = layoutBuilder.Build(m_Device, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
+        m_GameObjectDescriptorLayout = layoutBuilder.Build(m_Device, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
 
-        VkDescriptorSetLayout layouts[] = { m_GpuSceneDataDescriptorLayout, m_SingleImageDescriptorLayout };
+        VkDescriptorSetLayout layouts[] = { m_GpuSceneDataDescriptorLayout, m_GameObjectDescriptorLayout };
 
         VkPipelineLayoutCreateInfo pipelineLayoutInfo = VkInit::PipelineLayoutCreateInfo();
         pipelineLayoutInfo.pPushConstantRanges = &bufferRange;
@@ -841,7 +793,7 @@ namespace Zero
         //pipelineBuilder.disable_blending();
         pipelineBuilder.DisableBlending();
         //no depth testing
-        pipelineBuilder.EnableDepthTest(true, VK_COMPARE_OP_GREATER_OR_EQUAL);
+        pipelineBuilder.EnableDepthTest(VK_TRUE, VK_TRUE, VK_COMPARE_OP_GREATER_OR_EQUAL);
 
         //connect the image format we will draw into, from draw image
         pipelineBuilder.SetColorAttachmentFormat(m_DrawImage.ImageFormat);
@@ -859,6 +811,61 @@ namespace Zero
             vkDestroyPipelineLayout(m_Device, m_TexturedPipelineLayout, nullptr);
             vkDestroyPipeline(m_Device, m_TexturedPipeline, nullptr);
         });
+    }
+
+    void VulkanRenderer::InitSkyboxPipeline()
+    {
+        VkShaderModule fragmentShader;
+        if (!VkUtil::LoadShaderModule("../shaders/vulkan/compiled/skybox_vk.frag.spv", m_Device, &fragmentShader))
+        {
+            printf("Error when building the fragment shader module \n");
+            return;
+        }
+
+        VkShaderModule vertexShader;
+        if (!VkUtil::LoadShaderModule("../shaders/vulkan/compiled/skybox_vk.vert.spv", m_Device, &vertexShader))
+        {
+            printf("Error when building the vertex shader module \n");
+            return;
+        }
+
+        VkPushConstantRange bufferRange{};
+        bufferRange.offset = 0;
+        bufferRange.size = sizeof(GPUDrawPushConstants);
+        bufferRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+        VkDescriptorSetLayout layouts[] = { m_GpuSceneDataDescriptorLayout };
+		VkPipelineLayoutCreateInfo pipelineLayoutInfo = VkInit::PipelineLayoutCreateInfo();
+        pipelineLayoutInfo.pPushConstantRanges = &bufferRange;
+        pipelineLayoutInfo.pushConstantRangeCount = 1;
+		pipelineLayoutInfo.pSetLayouts = layouts;
+		pipelineLayoutInfo.setLayoutCount = 1;
+		VK_CHECK(vkCreatePipelineLayout(m_Device, &pipelineLayoutInfo, nullptr, &m_SkyboxPipelineLayout));
+
+		PipelineBuilder pipelineBuilder;
+
+		pipelineBuilder.PipelineLayout = m_SkyboxPipelineLayout;
+
+		pipelineBuilder.SetShaders(vertexShader, fragmentShader);
+		pipelineBuilder.SetInputTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+		pipelineBuilder.SetPolygonMode(VK_POLYGON_MODE_FILL);
+		pipelineBuilder.SetCullMode(VK_CULL_MODE_BACK_BIT, VK_FRONT_FACE_COUNTER_CLOCKWISE);
+		pipelineBuilder.SetMultisamplingNone();
+		pipelineBuilder.DisableBlending();
+		pipelineBuilder.EnableDepthTest(VK_FALSE, VK_FALSE, VK_COMPARE_OP_LESS_OR_EQUAL);
+		pipelineBuilder.SetColorAttachmentFormat(m_DrawImage.ImageFormat);
+		pipelineBuilder.SetDepthFormat(m_DepthImage.ImageFormat);
+
+		m_SkyboxPipeline = pipelineBuilder.BuildPipeline(m_Device);
+
+		vkDestroyShaderModule(m_Device, fragmentShader, nullptr);
+		vkDestroyShaderModule(m_Device, vertexShader, nullptr);
+
+		m_MainDeletionQueue.PushFunction([&]()
+		{
+			vkDestroyPipelineLayout(m_Device, m_SkyboxPipelineLayout, nullptr);
+			vkDestroyPipeline(m_Device, m_SkyboxPipeline, nullptr);
+		});
     }
 
     void VulkanRenderer::CreateSwapchain(uint32_t width, uint32_t height)

@@ -2,6 +2,7 @@
 
 constexpr unsigned int MAX_POINT_LIGHTS = 25;
 constexpr unsigned int MAX_SPOT_LIGHTS = 25;
+constexpr unsigned int MAX_BONES = 100;
 
 struct UniformDirectionalLight
 {

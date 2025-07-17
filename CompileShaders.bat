@@ -15,4 +15,10 @@
 "%VULKAN_SDK%\Bin\spirv-val.exe" --target-env vulkan1.3 --scalar-block-layout "shaders/Vulkan/Compiled/default_vk.vert.spv"
 "%VULKAN_SDK%\Bin\spirv-val.exe" --target-env vulkan1.3 --scalar-block-layout "shaders/Vulkan/Compiled/default_vk.frag.spv"
 
+"%VULKAN_SDK%\Bin\glslangValidator.exe" -V "shaders/Vulkan/skybox_vk.vert" -o "shaders/Vulkan/Compiled/skybox_vk.vert.spv"
+"%VULKAN_SDK%\Bin\glslangValidator.exe" -V "shaders/Vulkan/skybox_vk.frag" -o "shaders/Vulkan/Compiled/skybox_vk.frag.spv"
+
+"%VULKAN_SDK%\Bin\spirv-val.exe" --target-env vulkan1.3 --scalar-block-layout "shaders/Vulkan/Compiled/skybox_vk.vert.spv"
+"%VULKAN_SDK%\Bin\spirv-val.exe" --target-env vulkan1.3 --scalar-block-layout "shaders/Vulkan/Compiled/skybox_vk.frag.spv"
+
 pause

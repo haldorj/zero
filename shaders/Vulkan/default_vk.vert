@@ -11,24 +11,6 @@ layout (location = 2) out vec2 outUV;
 layout (location = 3) out vec3 outPosition;
 layout (location = 4) out vec3 outCameraPos;
 
-struct Vertex 
-{
-	// The reason the uv parameters are interleaved is is due to alignement limitations on GPUs. 
-	// The GPU expects an alignment to 16 bytes by default (vec4 is smallest valid variable).
-
-	vec3 position;
-	float uv_x;
-	vec3 normal;
-	float uv_y;
-	vec4 color;
-
-	vec3 tangents;
-	vec3 bitangents;
-
-	ivec4 boneIds;
-	vec4 weights;
-}; 
-
 layout(buffer_reference, scalar) readonly buffer VertexBuffer
 { 
 	Vertex vertices[];
@@ -68,7 +50,7 @@ void main()
     }
 
 	//output data
-	gl_Position = sceneData.viewproj * PushConstants.model * totalPosition;
+	gl_Position = cameraData.viewproj * PushConstants.model * totalPosition;
 
 	outColor = v.color.xyz;
 	outUV.x = v.uv_x;
