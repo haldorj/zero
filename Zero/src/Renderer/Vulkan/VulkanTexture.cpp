@@ -9,7 +9,6 @@ namespace Zero {
 
     VulkanTexture::VulkanTexture(std::string filepath, std::string type, bool mipmapped)
     {
-        VulkanRenderer* renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
         m_FilePath = filepath;
         m_Type = type;
         m_Image = CreateImageFromFile(
@@ -139,7 +138,6 @@ namespace Zero {
 		{
 			format = VK_FORMAT_R8G8B8A8_UNORM;
 		}
-
 
         const VkExtent3D imageExtent = {
             static_cast<uint32_t>(texWidth),

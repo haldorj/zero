@@ -188,6 +188,19 @@ VkImageSubresourceRange VkInit::ImageSubresourceRange(VkImageAspectFlags aspectM
 
     return subImage;
 }
+
+VkImageSubresourceRange VkInit::CubemapSubresourceRange(VkImageAspectFlags aspectMask)
+{
+    VkImageSubresourceRange subImage{};
+    subImage.aspectMask = aspectMask;
+    subImage.baseMipLevel = 0;
+    subImage.levelCount = VK_REMAINING_MIP_LEVELS;
+    subImage.baseArrayLayer = 0;
+    subImage.layerCount = 6;
+
+    return subImage;
+}
+
 //< subresource
 
 
@@ -281,6 +294,32 @@ VkImageCreateInfo VkInit::ImageCreateInfo(VkFormat format, VkImageUsageFlags usa
     //optimal tiling, which means the image is stored on the best gpu format
     info.tiling = VK_IMAGE_TILING_OPTIMAL;
     info.usage = usageFlags;
+
+    return info;
+}
+
+VkImageCreateInfo VkInit::CubemapImageCreateInfo(VkFormat format, VkImageUsageFlags usageFlags, VkExtent3D extent)
+{
+    VkImageCreateInfo info = {};
+    info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+    info.pNext = nullptr;
+
+    info.imageType = VK_IMAGE_TYPE_2D;
+
+    info.format = format;
+    info.extent = extent;
+
+    info.mipLevels = 1;
+	info.arrayLayers = 6; // 6 layers for a cubemap
+
+    //for MSAA. we will not be using it by default, so default it to 1 sample per pixel.
+    info.samples = VK_SAMPLE_COUNT_1_BIT;
+
+    //optimal tiling, which means the image is stored on the best gpu format
+    info.tiling = VK_IMAGE_TILING_OPTIMAL;
+    info.usage = usageFlags;
+
+	info.flags = VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT; // Flag for cubemap compatibility
 
     return info;
 }

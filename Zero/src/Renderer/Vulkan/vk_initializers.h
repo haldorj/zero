@@ -34,6 +34,8 @@ namespace VkInit
 
     VkImageSubresourceRange ImageSubresourceRange(VkImageAspectFlags aspectMask);
 
+    VkImageSubresourceRange CubemapSubresourceRange(VkImageAspectFlags aspectMask);
+
     VkSemaphoreSubmitInfo SemaphoreSubmitInfo(VkPipelineStageFlags2 stageMask, VkSemaphore semaphore);
     VkDescriptorSetLayoutBinding DescriptorSetLayoutBinding(VkDescriptorType type, VkShaderStageFlags stageFlags,
                                                             uint32_t binding);
@@ -46,6 +48,7 @@ namespace VkInit
     VkDescriptorBufferInfo BufferInfo(VkBuffer buffer, VkDeviceSize offset, VkDeviceSize range);
 
     VkImageCreateInfo ImageCreateInfo(VkFormat format, VkImageUsageFlags usageFlags, VkExtent3D extent);
+    VkImageCreateInfo CubemapImageCreateInfo(VkFormat format, VkImageUsageFlags usageFlags, VkExtent3D extent);
     VkImageViewCreateInfo ImageviewCreateInfo(VkFormat format, VkImage image, VkImageAspectFlags aspectFlags);
     VkPipelineLayoutCreateInfo PipelineLayoutCreateInfo();
     VkPipelineShaderStageCreateInfo PipelineShaderStageCreateInfo(VkShaderStageFlagBits stage,

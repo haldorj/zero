@@ -12,8 +12,8 @@ namespace Zero {
 		AllocatedImage CreateImage(VkExtent3D size, VkFormat format, VkImageUsageFlags usage, bool mipmapped = false);
 		AllocatedImage CreateImage(void* data, VkExtent3D size, VkFormat format, VkImageUsageFlags usage,
 			bool mipmapped = false);
-		AllocatedImage CreateImageFromFile(const std::string& filePath, VkFormat format, VkImageUsageFlags usage,
-			bool mipmapped);
+		AllocatedImage CreateImageFromFile(const std::string& filePath, VkFormat format, 
+			VkImageUsageFlags usage, bool mipmapped);
 
 		void DestroyImage();
 

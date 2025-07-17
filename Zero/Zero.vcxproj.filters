@@ -55,6 +55,9 @@
     <Filter Include="src\Scene\Material">
       <UniqueIdentifier>{E89F533B-D483-1491-3DE4-0EE429E7FE12}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Scene\Skybox">
+      <UniqueIdentifier>{D93183A4-C52A-A2F6-EE5C-877BDAB48102}</UniqueIdentifier>
+    </Filter>
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
     </Filter>
@@ -248,6 +251,9 @@
     </ClInclude>
     <ClInclude Include="src\Scene\Scene.h">
       <Filter>src\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\Skybox\Skybox.h">
+      <Filter>src\Scene\Skybox</Filter>
     </ClInclude>
     <ClInclude Include="src\Scene\Transform.h">
       <Filter>src\Scene</Filter>
@@ -1512,7 +1518,7 @@
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scene\Skybox\Skybox.h" />
+    <ClInclude Include="VulkanSkybox.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Animation\Animation.cpp">
@@ -1650,6 +1656,9 @@
     <ClCompile Include="src\Scene\Scene.cpp">
       <Filter>src\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\Scene\Skybox\Skybox.cpp">
+      <Filter>src\Scene\Skybox</Filter>
+    </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -1659,6 +1668,6 @@
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene\Skybox\Skybox.cpp" />
+    <ClCompile Include="VulkanSkybox.cpp" />
   </ItemGroup>
 </Project>

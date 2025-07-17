@@ -75,6 +75,7 @@ namespace Zero {
         FrameData& GetCurrentFrame() { return m_Frames[m_FrameNumber % FRAME_OVERLAP]; }
 
         VkDevice& GetDevice() { return m_Device; }
+		VkPhysicalDevice& GetPhysicalDevice() { return m_PhysicalDevice; }
         VkDescriptorSetLayout GetSingleImageDescriptorLayout() const { return m_SingleImageDescriptorLayout; }
         VmaAllocator& GetAllocator() { return m_Allocator; }
         DeletionQueue& GetMainDeletionQueue() { return m_MainDeletionQueue; }
