@@ -25,6 +25,11 @@ namespace Zero {
 				continue;
 			}
 
+			if (obj->GetTransform().Position.y < 0)
+			{
+				obj->GetTransform().Position.y = 0.0f;
+			}
+
 			obj->GetRigidBody().Force = obj->GetRigidBody().Mass * GRAVITY;
 			obj->GetRigidBody().Velocity += obj->GetRigidBody().Force / obj->GetRigidBody().Mass * dt;
 			obj->GetTransform().Position += obj->GetRigidBody().Velocity * dt;

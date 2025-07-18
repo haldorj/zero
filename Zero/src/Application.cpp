@@ -166,6 +166,16 @@ namespace Zero
 
         InitGameObjects();
 
+        m_Scene->SetSkybox(SkyboxFactory::CreateSkybox(m_RendererType));
+        m_Scene->GetSkybox()->LoadCubeMap({
+        "../assets/skybox/mp_st/st_rt.tga",
+        "../assets/skybox/mp_st/st_lf.tga",
+        "../assets/skybox/mp_st/st_up.tga",
+        "../assets/skybox/mp_st/st_dn.tga",
+        "../assets/skybox/mp_st/st_bk.tga",
+        "../assets/skybox/mp_st/st_ft.tga"
+            });
+
         // everything went fine
         m_IsInitialized = true;
     }

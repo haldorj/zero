@@ -1,11 +1,33 @@
-#include "Skybox.h"
+#include "OpenGLSkybox.h"
 #include <glm/gtc/type_ptr.hpp>
 
 
 namespace Zero {
-	
-	Skybox::Skybox(std::vector<std::string> faceLocations)
+
+	void OpenGLSkybox::Draw(const glm::mat4& projection, const glm::mat4& view)
 	{
+		glm::mat4 viewNoTranslation = glm::mat4(glm::mat3(view));
+		glDepthMask(GL_FALSE);
+		glDepthFunc(GL_LEQUAL);
+
+		m_ShaderProgram->Activate();
+		glUniformMatrix4fv(glGetUniformLocation(m_ShaderProgram->GetID(), "view"), 1, GL_FALSE, glm::value_ptr(viewNoTranslation));
+		glUniformMatrix4fv(glGetUniformLocation(m_ShaderProgram->GetID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+		glBindVertexArray(skyboxVAO);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_TextureID);
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
+
+		glDepthFunc(GL_LESS);
+		glDepthMask(GL_TRUE);
+	}
+
+	void OpenGLSkybox::LoadCubeMap(const std::vector<std::string>& faceLocations)
+	{
+		stbi_set_flip_vertically_on_load(false);
+
 		m_ShaderProgram = new OpenGLShader(
 			"../shaders/opengl/skybox.vert",
 			"../shaders/opengl/skybox.frag"
@@ -29,7 +51,7 @@ namespace Zero {
 
 			glTexImage2D(
 				GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-			
+
 
 			stbi_image_free(data);
 		}
@@ -86,27 +108,6 @@ namespace Zero {
 		glBindVertexArray(0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
-
-	void Skybox::Draw(const glm::mat4& projection, const glm::mat4& view)
-	{
-		glm::mat4 viewNoTranslation = glm::mat4(glm::mat3(view));
-		glDepthMask(GL_FALSE);
-		glDepthFunc(GL_LEQUAL);
-
-		m_ShaderProgram->Activate();
-		glUniformMatrix4fv(glGetUniformLocation(m_ShaderProgram->GetID(), "view"), 1, GL_FALSE, glm::value_ptr(viewNoTranslation));
-		glUniformMatrix4fv(glGetUniformLocation(m_ShaderProgram->GetID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-
-		glBindVertexArray(skyboxVAO);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, m_TextureID);
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-		glBindVertexArray(0);
-
-		glDepthFunc(GL_LESS);
-		glDepthMask(GL_TRUE);
-	}
-
 
 }
 

@@ -1,29 +1,27 @@
 #pragma once
-#include <string>
 
-#include <Model/OpenGL/OpenGLMesh.h>
+#include <glm/ext/matrix_float4x4.hpp>
 #include <vector>
+#include <string>
+#include <Renderer/Vulkan/vk_types.h>
+#include <Renderer/Vulkan/vk_descriptors.h>
 
 namespace Zero {
 
 	class Skybox
 	{
 	public:
-		Skybox() = default;
-		Skybox(std::vector<std::string> faceLocations);
-		~Skybox() = default;
+		virtual ~Skybox() = default;
 
-		void Draw(const glm::mat4& projection, const glm::mat4& view);
+		virtual void LoadCubeMap(const std::vector<std::string>& faceLocations) {};
 
-	private:
-		OpenGLMesh* m_Mesh = nullptr;
-		OpenGLShader* m_ShaderProgram = nullptr;
+		virtual void Draw(const glm::mat4& projection, const glm::mat4& view) {};
 
-		GLuint m_TextureID = 0;
-		GLuint m_UniformProjection = 0;
-		GLuint m_UniformView = 0;
+		virtual void Draw(const VkCommandBuffer& cmd, const VkPipelineLayout& pipelineLayout,
+			VkExtent2D drawExtent, GPUDrawPushConstants& pushConstants,
+			DescriptorWriter& descriptorWriter) {}; 
 
-		GLuint skyboxVAO{}, skyboxVBO{}, skyboxEBO{};
+		virtual void Destroy() const {};
 	};
 
-}
+} 

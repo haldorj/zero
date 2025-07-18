@@ -160,7 +160,5 @@ namespace Zero {
         GPUSceneData m_SceneData{};
 		GPUCameraData m_CameraData{};
         VkDescriptorSetLayout m_GpuSceneDataDescriptorLayout{};
-
-		VulkanSkybox* m_Skybox{};
     };
 }

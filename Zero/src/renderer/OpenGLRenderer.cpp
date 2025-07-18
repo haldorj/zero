@@ -48,24 +48,6 @@ namespace Zero
 
         // Enable depth testing for 3D
         glEnable(GL_DEPTH_TEST);
-
-		m_Skybox = new Skybox({
-			"../assets/skybox/mp_st/st_rt.tga",
-			"../assets/skybox/mp_st/st_lf.tga",
-			"../assets/skybox/mp_st/st_up.tga",
-			"../assets/skybox/mp_st/st_dn.tga",
-			"../assets/skybox/mp_st/st_bk.tga",
-			"../assets/skybox/mp_st/st_ft.tga"
-			});
-
-   //     m_Skybox = new Skybox({
-   //         "../assets/skybox/mp_cupertin/cupertin-lake_rt.tga",
-			//"../assets/skybox/mp_cupertin/cupertin-lake_lf.tga",
-			//"../assets/skybox/mp_cupertin/cupertin-lake_up.tga",
-			//"../assets/skybox/mp_cupertin/cupertin-lake_dn.tga",
-			//"../assets/skybox/mp_cupertin/cupertin-lake_bk.tga",
-			//"../assets/skybox/mp_cupertin/cupertin-lake_ft.tga"
-   //         });
     }
 
     void OpenGLRenderer::InitImGui()
@@ -110,7 +92,7 @@ namespace Zero
         glm::mat4 projection = glm::perspective(glm::radians(Application::Get().GetActiveCamera().GetFOV()),
             (float)m_Width / (float)m_Height, 0.1f, 10000.0f);
 
-        m_Skybox->Draw(projection, Application::Get().GetActiveCamera().GetViewMatrix());
+        scene->GetSkybox()->Draw(projection, Application::Get().GetActiveCamera().GetViewMatrix());
 
         glm::mat4 model = glm::mat4(1.0f);
 

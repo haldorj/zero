@@ -1,25 +1,23 @@
 #pragma once
 
-#include <vector>
-#include <string>
-#include <Renderer/Vulkan/vk_types.h>
-#include <Renderer/Vulkan/vk_descriptors.h>
+#include "Skybox.h"
 #include <Model/Vertex.h>
 
 namespace Zero {
 
-	class VulkanSkybox
+	class VulkanSkybox : public Skybox
 	{
 	public:
 		VulkanSkybox() = default;
-		VulkanSkybox(std::vector<std::string> faceLocations);
 		~VulkanSkybox() = default;
 
-		void Draw(const VkCommandBuffer& cmd, const VkPipelineLayout& pipelineLayout, 
-				  VkExtent2D drawExtent, GPUDrawPushConstants& pushConstants,
-				  DescriptorWriter& descriptorWriter);
+		void LoadCubeMap(const std::vector<std::string>& faceLocations) override;
 
-		void Destroy() const;
+		virtual void Draw(const VkCommandBuffer& cmd, const VkPipelineLayout& pipelineLayout, 
+				  VkExtent2D drawExtent, GPUDrawPushConstants& pushConstants,
+				  DescriptorWriter& descriptorWriter) override;
+
+		void Destroy() const override;
 	private:
 		AllocatedImage CreateCubeMap(const std::vector<std::string>& faceLocations);
 		AllocatedImage CreateImage(VkExtent3D size, VkFormat format, VkImageUsageFlags usage, bool mipmapped);

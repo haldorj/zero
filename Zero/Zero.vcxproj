@@ -191,7 +191,9 @@
     <ClInclude Include="src\Scene\Light\SpotLight.h" />
     <ClInclude Include="src\Scene\Material\Material.h" />
     <ClInclude Include="src\Scene\Scene.h" />
+    <ClInclude Include="src\Scene\Skybox\OpenGLSkybox.h" />
     <ClInclude Include="src\Scene\Skybox\Skybox.h" />
+    <ClInclude Include="src\Scene\Skybox\VulkanSkybox.h" />
     <ClInclude Include="src\Scene\Transform.h" />
     <ClInclude Include="vendor\VMA\vk_mem_alloc.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
@@ -613,7 +615,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrap.h" />
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h" />
-    <ClInclude Include="src\Scene\Skybox\VulkanSkybox.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Animation\Animation.cpp" />
@@ -661,11 +662,11 @@
     <ClCompile Include="src\Scene\Light\SpotLight.cpp" />
     <ClCompile Include="src\Scene\Material\Material.cpp" />
     <ClCompile Include="src\Scene\Scene.cpp" />
-    <ClCompile Include="src\Scene\Skybox\Skybox.cpp" />
+    <ClCompile Include="src\Scene\Skybox\OpenGLSkybox.cpp" />
+    <ClCompile Include="src\Scene\Skybox\VulkanSkybox.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="vendor\stb_image\stb_image.cpp" />
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp" />
-    <ClCompile Include="src\Scene\Skybox\VulkanSkybox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

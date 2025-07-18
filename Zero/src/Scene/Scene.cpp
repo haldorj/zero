@@ -26,6 +26,7 @@ namespace Zero {
 
 	void Scene::Destroy()
 	{
+		m_Skybox->Destroy();
 		for (auto& gameObj : m_GameObjects)
 		{
 			if (!gameObj)

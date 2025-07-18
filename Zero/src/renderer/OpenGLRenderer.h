@@ -40,8 +40,6 @@ namespace Zero {
         size_t m_SpotLightCount{};
         std::array<UniformSpotLight, MAX_SPOT_LIGHTS> m_UniformSpotLights{};
 
-        Skybox* m_Skybox{};
-
         int m_Width{};
         int m_Height{};
     };

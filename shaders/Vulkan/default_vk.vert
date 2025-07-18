@@ -34,7 +34,7 @@ void main()
 
     if (animationData.animated == 1) // <-- ONLY if animated
     {
-        //totalPosition = vec4(0.0f);
+        totalPosition = vec4(0.0f);
         for (int i = 0; i < MAX_BONE_INFLUENCE; i++)
         {
             if (v.boneIds[i] == -1)

@@ -8,7 +8,7 @@
 
 namespace Zero {
 
-	VulkanSkybox::VulkanSkybox(std::vector<std::string> faceLocations)
+	void VulkanSkybox::LoadCubeMap(const std::vector<std::string>& faceLocations)
 	{
 		CreateSkyboxMesh();
 		CreateSampler();

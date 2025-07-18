@@ -52,15 +52,6 @@ namespace Zero
         InitDescriptors();
         InitPipelines();
         InitTextures();
-
-        m_Skybox = new VulkanSkybox({
-            "../assets/skybox/mp_st/st_rt.tga",
-            "../assets/skybox/mp_st/st_lf.tga",
-            "../assets/skybox/mp_st/st_up.tga",
-            "../assets/skybox/mp_st/st_dn.tga",
-            "../assets/skybox/mp_st/st_bk.tga",
-            "../assets/skybox/mp_st/st_ft.tga"
-            });
     }
 
     void VulkanRenderer::InitImGui()
@@ -389,7 +380,7 @@ namespace Zero
         vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipelineLayout, 0, 1,
             &sceneDataDescriptor, 0, nullptr);
 
-        m_Skybox->Draw(cmd, m_SkyboxPipelineLayout, m_DrawExtent, pushConstants, writer);
+        scene->GetSkybox()->Draw(cmd, m_SkyboxPipelineLayout, m_DrawExtent, pushConstants, writer);
 
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TexturedPipeline);
 
@@ -435,11 +426,6 @@ namespace Zero
     void VulkanRenderer::Shutdown()
     {
         vkDeviceWaitIdle(m_Device);
-
-		if (m_Skybox)
-		{
-			m_Skybox->Destroy();
-		}
 
         // Free per-frame structures and deletion queue
         for (auto& frame : m_Frames)
