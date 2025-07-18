@@ -200,7 +200,9 @@ namespace Zero {
 
 		// build an image-view for the image
 		VkImageViewCreateInfo viewInfo = VkInit::ImageviewCreateInfo(format, newImage.Image, aspectFlag);
+		viewInfo.viewType = VK_IMAGE_VIEW_TYPE_CUBE; // Set view type for cubemap (samplerCube uniform in glsl)
 		viewInfo.subresourceRange.levelCount = img_info.mipLevels;
+		viewInfo.subresourceRange.layerCount = 6;
 
 		VK_CHECK(vkCreateImageView(renderer->GetDevice(), &viewInfo, nullptr, &newImage.ImageView));
 
@@ -243,36 +245,13 @@ namespace Zero {
 		std::array<Vertex, 8> vertices{};
 
 		vertices[0].Position = {-1.0f, 1.0f, -1.0f};
-		vertices[0].UvX = 0.0f;
-		vertices[0].UvY = 0.0f;
-
 		vertices[1].Position = { -1.0f, -1.0f, -1.0f };
-		vertices[1].UvX = 0.0f;
-		vertices[1].UvY = 1.0f;
-
 		vertices[2].Position = { 1.0f, 1.0f, -1.0f };
-		vertices[2].UvX = 1.0f;
-		vertices[2].UvY = 0.0f;
-
 		vertices[3].Position = { 1.0f, -1.0f, -1.0f };
-		vertices[3].UvX = 1.0f;
-		vertices[3].UvY = 1.0f;
-
 		vertices[4].Position = { -1.0f, 1.0f, 1.0f };
-		vertices[4].UvX = 0.0f;
-		vertices[4].UvY = 0.0f;
-
 		vertices[5].Position = { 1.0f, 1.0f, 1.0f };
-		vertices[5].UvX = 1.0f;
-		vertices[5].UvY = 0.0f;
-
 		vertices[6].Position = { -1.0f, -1.0f, 1.0f };
-		vertices[6].UvX = 0.0f;
-		vertices[6].UvY = 1.0f;
-
 		vertices[7].Position = { 1.0f, -1.0f, 1.0f };
-		vertices[7].UvX = 1.0f;
-		vertices[7].UvY = 1.0f;
 
 		for (size_t i = 0; i < vertices.size(); ++i)
 		{
