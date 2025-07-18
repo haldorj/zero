@@ -27,50 +27,9 @@ namespace Zero {
 				continue;
 			}
 
-			// Rotate Clockwise (TOP)
-			if (i == 2)
-			{
-				unsigned char* rotated = new unsigned char[width * height * numChannels];
-				for (int y = 0; y < height; ++y)
-				{
-					for (int x = 0; x < width; ++x)
-					{
-						for (int c = 0; c < numChannels; ++c)
-						{
-							// (x, y) in src -> (y, width - x - 1) in dst
-							rotated[(y + (width - x - 1) * height) * numChannels + c] =
-								data[(y * width + x) * numChannels + c];
-						}
-					}
-				}
-				glTexImage2D(
-					GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, height, width, 0, GL_RGB, GL_UNSIGNED_BYTE, rotated);
-				delete[] rotated;
-			}
-			// Rotate Counter Clockwise (Bottom)
-			else if (i == 3)
-			{
-				unsigned char* rotated = new unsigned char[width * height * numChannels];
-				for (int y = 0; y < height; ++y)
-				{
-					for (int x = 0; x < width; ++x)
-					{
-						for (int c = 0; c < numChannels; c++) 
-						{
-							rotated[(x * height + (height - y - 1)) * numChannels + c] =
-								data[(y * width + x) * numChannels + c];
-						}
-					}
-				}
-				glTexImage2D(
-					GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, height, width, 0, GL_RGB, GL_UNSIGNED_BYTE, rotated);
-				delete[] rotated;
-			}
-			else
-			{
-				glTexImage2D(
-					GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-			}
+			glTexImage2D(
+				GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+			
 
 			stbi_image_free(data);
 		}

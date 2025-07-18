@@ -124,7 +124,7 @@ namespace Zero {
         }
         else if (texChannels == 1)
         {
-            format = VK_FORMAT_R8G8B8_UNORM;
+            format = VK_FORMAT_R8_UNORM;
         }
         else if (texChannels == 2)
         {
