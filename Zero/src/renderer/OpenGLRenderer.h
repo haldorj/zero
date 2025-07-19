@@ -12,6 +12,7 @@
 
 #include "OpenGL/OpenGLUtils.h"
 #include <Scene/Skybox/Skybox.h>
+#include <Scene/Shadowmap/OpenGLShadowmap.h>
 
 namespace Zero {
 
@@ -24,13 +25,18 @@ namespace Zero {
         void SetClearColor(glm::vec4 clearColor) override { m_ClearColor = clearColor; }
         void Draw   (Scene* scene) override;
 
+		void CreateFullscreenQuad();
+
         void SetUniformValues(OpenGLShader* shader, Scene* scene);
 
     private:
         void InitShaders();
 
+        OpenGLShadowmap* m_Shadowmap{};
+
         glm::vec4 m_ClearColor = {};
         std::shared_ptr<OpenGLShader> m_ShaderProgram = nullptr;
+        std::unique_ptr<OpenGLShader> m_DepthShader = nullptr;
 
         UniformDirectionalLight m_UniformDirectionalLight{};
 
@@ -39,6 +45,9 @@ namespace Zero {
 
         size_t m_SpotLightCount{};
         std::array<UniformSpotLight, MAX_SPOT_LIGHTS> m_UniformSpotLights{};
+
+        GLuint m_QuadVAO = 0;
+        GLuint m_QuadVBO = 0;
 
         int m_Width{};
         int m_Height{};

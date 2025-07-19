@@ -93,6 +93,7 @@ namespace Zero
         void SpawnSphereAtLocation(const glm::vec3& location, float scale);
 
         bool IsEditorMode() const { return m_EditorMode; }
+        bool ShowShadowmap() const { return m_ShowShadowmap; }
 
         static Application& Get();
 
@@ -131,6 +132,7 @@ namespace Zero
         bool m_IsInitialized{ false };
         bool m_StopRendering{ false };
 
+        bool m_ShowShadowmap{ false };
 
     };
 } // namespace Zero

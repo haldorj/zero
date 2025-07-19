@@ -13,10 +13,12 @@ out vec4 color;
 out vec2 texCoord;
 out vec3 normal;
 out vec3 fragPos;
+out vec4 fragPosLight;
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform mat4 lightTransform;
 
 const int MAX_BONES = 100;
 const int MAX_BONE_INFLUENCE = 4;
@@ -45,10 +47,12 @@ void main()
         }
     }
 
-    gl_Position = projection * view * model * totalPosition;
-
     color = Color;
     texCoord = vec2(UV_x, UV_y);
     normal = mat3(transpose(inverse(model))) * Normal;
+
     fragPos = (model * totalPosition).xyz;
+    fragPosLight = lightTransform * vec4(fragPos, 1.0f);
+
+    gl_Position = projection * view * model * totalPosition;
 }

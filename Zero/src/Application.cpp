@@ -60,7 +60,7 @@ namespace Zero
         std::shared_ptr<GameObject> plane = std::make_shared<GameObject>(GameObject::Create());
         plane->SetModel(ModelFactory::CreateModel(modelPaths[2].c_str(), m_RendererType));
         plane->GetTransform().Position = {0, 0, 0};
-        plane->GetTransform().Scale = glm::vec3{200.f};
+        plane->GetTransform().Scale = glm::vec3{50.f};
         plane->SetCollider(std::make_shared<PlaneCollider>(plane->GetTransform().GetUpVector(), 500.f));
         plane->EnableGravity = false;
         plane->EnableCollision = true;
@@ -168,12 +168,12 @@ namespace Zero
 
         m_Scene->SetSkybox(SkyboxFactory::CreateSkybox(m_RendererType));
         m_Scene->GetSkybox()->LoadCubeMap({
-        "../assets/skybox/mp_st/st_rt.tga",
-        "../assets/skybox/mp_st/st_lf.tga",
-        "../assets/skybox/mp_st/st_up.tga",
-        "../assets/skybox/mp_st/st_dn.tga",
-        "../assets/skybox/mp_st/st_bk.tga",
-        "../assets/skybox/mp_st/st_ft.tga"
+            "../assets/skybox/sb_strato/stratosphere_rt.tga",
+            "../assets/skybox/sb_strato/stratosphere_lf.tga",
+            "../assets/skybox/sb_strato/stratosphere_up.tga",
+            "../assets/skybox/sb_strato/stratosphere_dn.tga",
+            "../assets/skybox/sb_strato/stratosphere_bk.tga",
+            "../assets/skybox/sb_strato/stratosphere_ft.tga"
             });
 
         // everything went fine
@@ -297,6 +297,7 @@ namespace Zero
         ImGui::Text("FPS: %i", static_cast<int>(1.0f / m_DeltaTime));
         //ImGui::Checkbox("VSync ", &m_Renderer->VSync);
         ImGui::Checkbox("Editor Mode", &m_EditorMode);
+        ImGui::Checkbox("Show Shadow Map", &m_ShowShadowmap);
         ImGui::End();
 
         ImGui::Begin("Camera");

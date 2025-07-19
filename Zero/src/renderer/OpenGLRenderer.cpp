@@ -15,7 +15,7 @@ namespace Zero
     void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
     {
         // Adjusts the viewport to the new window dimensions
-        glViewport(0, 0, width, height);
+         glViewport(0, 0, width, height);
     }
 
     void OpenGLRenderer::Init()
@@ -45,9 +45,9 @@ namespace Zero
         std::cout << "\t" << renderer << "\n";
 
         InitShaders();
+		m_Shadowmap = new OpenGLShadowmap;
 
-        // Enable depth testing for 3D
-        glEnable(GL_DEPTH_TEST);
+        CreateFullscreenQuad();
     }
 
     void OpenGLRenderer::InitImGui()
@@ -56,7 +56,7 @@ namespace Zero
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
-        (void)io;
+        //(void)io;
         // Setup Platform/Renderer bindings
         ImGui_ImplGlfw_InitForOpenGL(Application::Get().GetWindow(), true);
         // GLSL ver. 450
@@ -78,16 +78,21 @@ namespace Zero
 
     void OpenGLRenderer::Draw(Scene* scene)
     {
-        // Specify the color of the background
-        glClearColor(m_ClearColor.r, m_ClearColor.g, m_ClearColor.b, m_ClearColor.a);
-        // Clean the back buffer and assign the new color to it
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+        glEnable(GL_DEPTH_TEST);
+
+        // Specify the color of the background
+        glClearColor(m_ClearColor.r, m_ClearColor.g, m_ClearColor.b, m_ClearColor.a);
+
+		m_Shadowmap->Draw(scene);
+
         glfwGetWindowSize(Application::Get().GetWindow(), &m_Width, &m_Height);
+        glfwGetFramebufferSize(glfwGetCurrentContext(), &m_Width, &m_Height);
+		glViewport(0, 0, m_Width, m_Height);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glm::mat4 projection = glm::perspective(glm::radians(Application::Get().GetActiveCamera().GetFOV()),
             (float)m_Width / (float)m_Height, 0.1f, 10000.0f);
@@ -128,14 +133,65 @@ namespace Zero
             gameObj->GetModel()->Draw(*m_ShaderProgram, model);
         }
 
-        Application::Get().UpdateImGui();
+		glActiveTexture(GL_TEXTURE0 + 1);
+		glBindTexture(GL_TEXTURE_2D, m_Shadowmap->GetDepthMapTexture());
+		glUniform1i(glGetUniformLocation(m_ShaderProgram->GetID(), "directionalShadowMap"), 1);
 
-        //make imgui calculate internal draw structures
+        if (Application::Get().ShowShadowmap())
+        {
+            glViewport(0, 0, m_Width, m_Height);
+            glDisable(GL_DEPTH_TEST);
+
+            m_DepthShader->Activate();
+            int loc = glGetUniformLocation(m_DepthShader->GetID(), "depthMap");
+			glUniform1i(loc, 0);
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, m_Shadowmap->GetDepthMapTexture());
+
+            glClear(GL_COLOR_BUFFER_BIT);
+
+            glBindVertexArray(m_QuadVAO);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+
+            glEnable(GL_DEPTH_TEST);
+        }
+
+        Application::Get().UpdateImGui();
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         // Swap the back buffer with the front buffer
         glfwSwapBuffers(Application::Get().GetWindow());
+    }
+
+    void OpenGLRenderer::CreateFullscreenQuad()
+    {
+        float quadVertices[] = {
+            // positions   // texCoords
+            -1.0f,  1.0f,  0.0f, 1.0f,
+            -1.0f, -1.0f,  0.0f, 0.0f,
+             1.0f, -1.0f,  1.0f, 0.0f,
+
+            -1.0f,  1.0f,  0.0f, 1.0f,
+             1.0f, -1.0f,  1.0f, 0.0f,
+             1.0f,  1.0f,  1.0f, 1.0f
+        };
+
+        glGenVertexArrays(1, &m_QuadVAO);
+        glGenBuffers(1, &m_QuadVBO);
+
+        glBindVertexArray(m_QuadVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, m_QuadVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
+
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+        glBindVertexArray(0);
     }
 
     void OpenGLRenderer::SetUniformValues(OpenGLShader* shader, Scene* scene)
@@ -144,6 +200,9 @@ namespace Zero
 
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
+
+		glUniformMatrix4fv(glGetUniformLocation(shader->GetID(), "lightTransform"), 1, GL_FALSE, 
+            glm::value_ptr(scene->GetDirectionalLight()->GetLightTransform()));
 
         // model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
         view = Application::Get().GetActiveCamera().GetViewMatrix();
@@ -270,6 +329,11 @@ namespace Zero
             "../shaders/OpenGL/default.vert", 
             "../shaders/OpenGL/default.frag"
         );
+
+		m_DepthShader = std::make_unique<OpenGLShader>(
+			"../shaders/OpenGL/depth_vis.vert",
+			"../shaders/OpenGL/depth_vis.frag"
+		);
     }
 
 }

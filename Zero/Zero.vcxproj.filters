@@ -255,6 +255,9 @@
     <ClInclude Include="src\Scene\Skybox\OpenGLSkybox.h">
       <Filter>src\Scene\Skybox</Filter>
     </ClInclude>
+    <ClInclude Include="src\Scene\Skybox\Skybox.h">
+      <Filter>src\Scene\Skybox</Filter>
+    </ClInclude>
     <ClInclude Include="src\Scene\Skybox\VulkanSkybox.h">
       <Filter>src\Scene\Skybox</Filter>
     </ClInclude>
@@ -1521,7 +1524,7 @@
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scene\Skybox\Skybox.h" />
+    <ClInclude Include="src\Scene\Shadowmap\OpenGLShadowmap.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Animation\Animation.cpp">
@@ -1674,5 +1677,6 @@
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClCompile>
+    <ClCompile Include="src\Scene\Shadowmap\OpenGLShadowmap.cpp" />
   </ItemGroup>
 </Project>

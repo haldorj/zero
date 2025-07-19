@@ -8,6 +8,5 @@ layout(location = 0) out vec4 outColor;
 
 void main()
 {
-    // Sample using direction vector
     outColor = texture(skyboxTexture, normalize(inDirection));
 }
