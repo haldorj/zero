@@ -76,6 +76,24 @@ namespace Zero
            if (!gameObj->GetModel())  
                continue;
 
+		   if (gameObj->GetAnimator())
+		   {
+			   glUniform1i(glGetUniformLocation(m_ShaderProgram->GetID(), "Animated"), 1);
+
+			   const std::vector transforms = gameObj->GetAnimator()->GetFinalBoneMatrices();
+			   for (int i = 0; i < transforms.size(); ++i)
+			   {
+				   std::string str = "finalBonesMatrices[" + std::to_string(i) + "]";
+
+				   int transformLoc = glGetUniformLocation(m_ShaderProgram->GetID(), str.c_str());
+				   glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transforms[i]));
+			   }
+		   }
+		   else
+		   {
+			   glUniform1i(glGetUniformLocation(m_ShaderProgram->GetID(), "Animated"), 0);
+		   }
+
            glm::mat4 model = gameObj->GetTransform().GetMatrix();  
            glUniformMatrix4fv(glGetUniformLocation(m_ShaderProgram->GetID(), "model"), 1, GL_FALSE, glm::value_ptr(model));  
            gameObj->GetModel()->Draw(*m_ShaderProgram, model);  

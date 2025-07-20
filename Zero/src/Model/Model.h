@@ -14,7 +14,7 @@ namespace Zero {
 	struct BoneInfo
 	{
 		/*id is index in finalBoneMatrices*/
-		int ID;
+		int32_t ID;
 
 		/*offset matrix transforms vertex from model space to bone space*/
 		glm::mat4 Offset;
