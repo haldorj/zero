@@ -24,10 +24,9 @@ namespace Zero
         }
     }
 
-    void GameObject::SetAnimation(Animation* animation)
+    void GameObject::SetAnimation(uint32_t index)
     {
-        m_Animation = animation;
-        m_Animator = std::make_shared<Animator>(m_Animation);
+        m_Animator->PlayAnimation(index);
     }
 
     void GameObject::UpdatePlayer(float deltaTime)
@@ -39,9 +38,14 @@ namespace Zero
         const Camera* camera = &Application::Get().GetActiveCamera();
 
         glm::vec3 direction{0};
-        constexpr float moveSpeed = 20;
+        constexpr float moveSpeed = 6;
         float acceleration = 300.0f;
         float rotationSpeed = 15.0f;
+
+		IsGrounded = m_Transform.Position.y <= 1.f; // Simple ground check
+        bool justLanded = IsGrounded && !WasGrounded;
+        bool justJumped = !IsGrounded && WasGrounded;
+        float verticalVelocity = m_RigidBody.Velocity.y;
 
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         {
@@ -71,9 +75,9 @@ namespace Zero
         
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
         {
-            if (!IsJumping)
+            if (!IsJumping && IsGrounded)
             {
-                constexpr float jumpForce = 100.0f;
+                constexpr float jumpForce = 50.0f;
                 if (glm::length(direction) > 0.0001f)
                 {
                     const glm::vec3 jumpDirection = glm::normalize(glm::vec3(0, 1, 0) + glm::normalize(direction));
@@ -121,11 +125,57 @@ namespace Zero
             m_RigidBody.Velocity.x -= velocityDirection.x * acceleration * deltaTime;
             m_RigidBody.Velocity.z -= velocityDirection.z * acceleration * deltaTime;
         }
+
+        if (justLanded && !justJumped)
+        {
+            m_LandingTimer = 0.5f; // time in seconds to show landing animation
+        }
+
+        if (!IsGrounded)
+        {
+            if (verticalVelocity > 0.1f)
+            {
+                // Jumping upward
+                if (m_Animator->GetCurrentAnimationIndex() != 0)
+                    m_Animator->PlayAnimation(0, false);
+            }
+            else if (verticalVelocity < -0.1f)
+            {
+				// Falling down
+                if (m_Animator->GetCurrentAnimationIndex() != 1)
+                    m_Animator->PlayAnimation(1, false);
+            }
+        }
+        else
+        {
+            float threshold = 2.f;
+            if (m_LandingTimer > 0.0f)
+            {
+                m_LandingTimer -= deltaTime;
+                if (m_Animator->GetCurrentAnimationIndex() != 4)
+                    m_Animator->PlayAnimation(4);
+                // Do not switch to run/idle yet — let landing animation play
+            }
+            else if (std::abs(m_RigidBody.Velocity.x) > threshold ||
+                std::abs(m_RigidBody.Velocity.z) > threshold)
+            {
+                // Run
+                if (m_Animator->GetCurrentAnimationIndex() != 7)
+                    m_Animator->PlayAnimation(7);
+            }
+            else
+            {
+                // Idle
+                if (m_Animator->GetCurrentAnimationIndex() != 2)
+                    m_Animator->PlayAnimation(2);
+            }
+        }
+		WasGrounded = IsGrounded;
     }
 
     void GameObject::UpdateAnimation(float deltaTime)
     {
-        if (m_Animator && m_Animation)
+        if (m_Animator)
         {
             m_Animator->UpdateAnimation(deltaTime);
         }

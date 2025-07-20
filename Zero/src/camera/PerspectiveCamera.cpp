@@ -8,7 +8,7 @@ namespace Zero
 {
     void PerspectiveCamera::Update(float deltaTime, const glm::vec3& targetPosition)
     {
-        m_TargetPosition = targetPosition + glm::vec3(0.0f, 5.0f, 0.0f);
+        m_TargetPosition = targetPosition + glm::vec3(0.0f, 1.0f, 0.0f);
         
         m_Transform.Position.x = m_TargetPosition.x + m_DistanceFromTarget * cos(m_Pitch) * sin(m_Yaw);
         m_Transform.Position.y = m_TargetPosition.y + m_DistanceFromTarget * sin(m_Pitch);

@@ -35,6 +35,6 @@ namespace Zero
         float m_Pitch{ 0.f };
         float m_Yaw{ 180.f };
 
-        float m_DistanceFromTarget = 15.0f;
+        float m_DistanceFromTarget = 3.0f;
     };
 }

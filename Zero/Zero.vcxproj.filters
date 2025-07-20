@@ -55,6 +55,9 @@
     <Filter Include="src\Scene\Material">
       <UniqueIdentifier>{E89F533B-D483-1491-3DE4-0EE429E7FE12}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Scene\Shadowmap">
+      <UniqueIdentifier>{FDFF681D-6961-462B-F2CE-8CDD5E2F7DEA}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Scene\Skybox">
       <UniqueIdentifier>{D93183A4-C52A-A2F6-EE5C-877BDAB48102}</UniqueIdentifier>
     </Filter>
@@ -251,6 +254,9 @@
     </ClInclude>
     <ClInclude Include="src\Scene\Scene.h">
       <Filter>src\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\Shadowmap\OpenGLShadowmap.h">
+      <Filter>src\Scene\Shadowmap</Filter>
     </ClInclude>
     <ClInclude Include="src\Scene\Skybox\OpenGLSkybox.h">
       <Filter>src\Scene\Skybox</Filter>
@@ -1524,7 +1530,6 @@
     <ClInclude Include="vendor\vk-bootstrap\VkBootstrapDispatch.h">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scene\Shadowmap\OpenGLShadowmap.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Animation\Animation.cpp">
@@ -1662,6 +1667,9 @@
     <ClCompile Include="src\Scene\Scene.cpp">
       <Filter>src\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\Scene\Shadowmap\OpenGLShadowmap.cpp">
+      <Filter>src\Scene\Shadowmap</Filter>
+    </ClCompile>
     <ClCompile Include="src\Scene\Skybox\OpenGLSkybox.cpp">
       <Filter>src\Scene\Skybox</Filter>
     </ClCompile>
@@ -1677,6 +1685,5 @@
     <ClCompile Include="vendor\vk-bootstrap\VkBootstrap.cpp">
       <Filter>vendor\vk-bootstrap</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene\Shadowmap\OpenGLShadowmap.cpp" />
   </ItemGroup>
 </Project>

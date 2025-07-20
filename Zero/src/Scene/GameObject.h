@@ -39,7 +39,7 @@ namespace Zero
 
         std::shared_ptr<Model> GetModel() const { return m_Model; }
 
-        void SetAnimation(Animation* animation);
+        void SetAnimation(uint32_t index);
         std::shared_ptr<Animator>& GetAnimator() { return m_Animator; }
 
         void UpdatePlayer(float deltaTime);
@@ -48,6 +48,8 @@ namespace Zero
         bool EnableGravity{false};
         bool EnableCollision{false};
         bool IsJumping = false;
+		bool IsGrounded = false;
+		bool WasGrounded = false;
 
     private:
         GameObject(IdType objectID) : m_ObjectID(objectID)
@@ -57,11 +59,12 @@ namespace Zero
         IdType m_ObjectID{};
 
         std::shared_ptr<Model> m_Model{};
-        Animation* m_Animation = nullptr;
         std::shared_ptr<Animator> m_Animator = nullptr;
 
         std::shared_ptr<Collider> m_Collider{};
         Transform m_Transform{};
         RigidBody m_RigidBody{};
+
+		float m_LandingTimer{ 0 };
     };
 }

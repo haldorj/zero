@@ -13,6 +13,8 @@
 #include "Physics/Collision/PlaneCollider.h"
 #include "Physics/Collision/SphereCollider.h"
 #include <glm/gtc/type_ptr.hpp>
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
 
 
 namespace Zero
@@ -35,21 +37,23 @@ namespace Zero
         }
 
         const std::array<std::string, 3> modelPaths{
-            "../assets/models/black_bison2.fbx",
+            "../assets/models/Prototyping 1.1/GLTF/dummy_platformer.gltf",
             "../assets/models/green_rhino2.fbx",
             "../assets/models/plane.glb",
         };
 
-        std::shared_ptr<GameObject> blackBison = std::make_shared<GameObject>(GameObject::Create());
-        blackBison->SetModel(ModelFactory::CreateModel(modelPaths[0].c_str(), m_RendererType));
-        blackBison->GetTransform().Position = {15, 10, 0};
-        blackBison->GetTransform().Scale = glm::vec3{0.005f};
-        blackBison->GetRigidBody().Mass = 5;
-        blackBison->SetCollider(std::make_shared<CapsuleCollider>(glm::vec3{0, 3.5, 0}, 1.0f, 5.0f));
-        //blackBison->SetCollider(std::make_shared<SphereCollider>(glm::vec3{0, 0, 0}, 1.0f));
-        blackBison->EnableGravity = true;
-        blackBison->EnableCollision = true;
-        blackBison->SetAnimation(new Animation(modelPaths[0], blackBison->GetModel().get()));
+        std::shared_ptr<GameObject> player = std::make_shared<GameObject>(GameObject::Create());
+        player->SetModel(ModelFactory::CreateModel(modelPaths[0].c_str(), m_RendererType));
+        player->GetTransform().Position = {15, 10, 0};
+        player->GetTransform().Scale = glm::vec3{1.0f};
+        player->GetRigidBody().Mass = 5;
+        player->SetCollider(std::make_shared<CapsuleCollider>(glm::vec3{0, 1.2, 0}, 0.5f, 1.5f));
+        player->EnableGravity = true;
+        player->EnableCollision = true;
+
+        player->GetAnimator() = std::make_shared<Animator>();
+		player->GetAnimator()->LoadAnimations(modelPaths[0], player->GetModel().get());
+        player->SetAnimation(2);
 
         std::shared_ptr<GameObject> greenRhino = std::make_shared<GameObject>(GameObject::Create());
         greenRhino->SetModel(ModelFactory::CreateModel(modelPaths[1].c_str(), m_RendererType));
@@ -74,7 +78,7 @@ namespace Zero
 
         m_Scene = std::make_shared<Scene>(dirLight);
 
-        m_Scene->AddGameObject(blackBison);
+        m_Scene->AddGameObject(player);
         m_Scene->AddGameObject(greenRhino);
         m_Scene->AddGameObject(plane);
 

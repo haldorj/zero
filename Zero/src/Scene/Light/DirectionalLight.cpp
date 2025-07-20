@@ -9,8 +9,9 @@ namespace Zero {
 	{
 		m_Direction = direction;
 
-		float nearPlane = 1.0f, farPlane = 120.0f;
-		m_ProjectionMatrix = glm::ortho(-45.0f, 45.0f, -45.0f, 45.0f, nearPlane, farPlane);
+		float nearPlane = 1.0f, farPlane = 20.0f;
+		float size = 30.0f; // Size of the orthographic projection
+		m_ProjectionMatrix = glm::ortho(-size, size, -size, size, nearPlane, farPlane);
 	}
 
 	void DirectionalLight::Update(glm::vec3 color, float ambientIntensity, 
@@ -28,7 +29,7 @@ namespace Zero {
 		glm::vec3 origin = glm::vec3{0.0f};
 		glm::vec3 up = glm::vec3{ 0.0f, 1.0f, 0.0f };
 
-		glm::vec3 position = glm::normalize(m_Direction) * 40.0f;
+		glm::vec3 position = glm::normalize(m_Direction) * 10.0f;
 
 		return m_ProjectionMatrix * glm::lookAt(position, origin, up);
 	}

@@ -22,7 +22,7 @@ namespace Zero {
 	{
 	public:
         Animation() = default;
-        Animation(const std::string& animationPath, Model* model);
+        Animation(const std::string& animationPath, Model* model, uint32_t index);
         ~Animation() = default;
 
         Bone* FindBone(const std::string& name);

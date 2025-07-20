@@ -6,16 +6,19 @@
 
 namespace Zero {
 
-	Animation::Animation(const std::string& animationPath, Model* model)
+	Animation::Animation(const std::string& animationPath, Model* model, uint32_t index)
 	{
         Assimp::Importer importer;
         const aiScene* scene = importer.ReadFile(animationPath, aiProcess_Triangulate);
         assert(scene && scene->mRootNode);
-        auto animation = scene->mAnimations[0];
+
+        aiAnimation* animation = scene->mAnimations[index];
         m_Duration = static_cast<float>(animation->mDuration);
         m_TicksPerSecond = static_cast<float>(animation->mTicksPerSecond);
         ReadHeirarchyData(m_RootNode, scene->mRootNode);
         ReadMissingBones(animation, *model);
+
+        printf("Animation loaded: %s at index %i.\n", animation->mName.C_Str(), index);
 	}
 
     Bone* Animation::FindBone(const std::string& name)
