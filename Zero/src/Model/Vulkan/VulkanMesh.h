@@ -19,7 +19,6 @@ namespace Zero {
 
 		void Draw(const VkCommandBuffer& cmd,
 		          const VkPipelineLayout& pipelineLayout,
-		          VkExtent2D drawExtent,
 		          const VkSampler& sampler,
 		          GPUDrawPushConstants& pushConstants,
 				  DescriptorWriter& descriptorWriter);

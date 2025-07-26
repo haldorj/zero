@@ -393,7 +393,7 @@ namespace Zero
             pushConstants.ModelMatrix = gameObj->GetTransform().GetMatrix();
             pushConstants.CameraPos = Application::Get().GetActiveCamera().GetPosition();
 
-            gameObj->GetModel()->Draw(cmd, m_TexturedPipelineLayout, m_DrawExtent, m_DefaultSamplerLinear, pushConstants, gameObj->GetAnimator());
+            gameObj->GetModel()->Draw(cmd, m_TexturedPipelineLayout, m_DefaultSamplerLinear, pushConstants, gameObj->GetAnimator());
         }
 
         vkCmdEndRendering(cmd);
@@ -871,7 +871,7 @@ namespace Zero
                                           .colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR
                                       })
                                       // Use vsync present mode
-                                      .set_desired_present_mode(VK_PRESENT_MODE_FIFO_KHR)
+                                      .set_desired_present_mode(VK_PRESENT_MODE_IMMEDIATE_KHR)
                                       .set_desired_extent(width, height)
                                       .add_image_usage_flags(VK_IMAGE_USAGE_TRANSFER_DST_BIT)
                                       .build()

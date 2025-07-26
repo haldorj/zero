@@ -65,25 +65,23 @@ namespace Zero {
 
     void Animator::CalculateBoneTransform(const AssimpNodeData* node, glm::mat4 parentTransform)
     {
-        std::string nodeName = node->name;
+        const std::string& nodeName = node->name;
         glm::mat4 nodeTransform = node->transformation;
 
-        Bone* Bone = m_CurrentAnimation->FindBone(nodeName);
-
-        if (Bone)
+        if (Bone* bone = m_CurrentAnimation->FindBone(nodeName))
         {
-            Bone->Update(m_CurrentTime);
-            nodeTransform = Bone->GetLocalTransform();
+            bone->Update(m_CurrentTime);
+            nodeTransform = bone->GetLocalTransform();
         }
 
         glm::mat4 globalTransformation = parentTransform * nodeTransform;
 
-        auto boneInfoMap = m_CurrentAnimation->GetBoneIDMap();
-        if (boneInfoMap.find(nodeName) != boneInfoMap.end())
+        const auto& boneInfoMap = m_CurrentAnimation->GetBoneIDMap();
+        auto it = boneInfoMap.find(nodeName);
+        if (it != boneInfoMap.end())
         {
-            int index = boneInfoMap[nodeName].ID;
-            glm::mat4 offset = boneInfoMap[nodeName].Offset;
-            m_FinalBoneMatrices[index] = globalTransformation * offset;
+            const BoneInfo& info = it->second;
+            m_FinalBoneMatrices[info.ID] = globalTransformation * info.Offset;
         }
 
         for (int i = 0; i < node->childrenCount; i++)

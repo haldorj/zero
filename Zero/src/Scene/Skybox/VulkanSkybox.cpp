@@ -8,6 +8,11 @@
 
 namespace Zero {
 
+	VulkanSkybox::VulkanSkybox(const std::vector<std::string>& faceLocations)
+	{
+		VulkanSkybox::LoadCubeMap(faceLocations);
+	}
+
 	void VulkanSkybox::LoadCubeMap(const std::vector<std::string>& faceLocations)
 	{
 		CreateSkyboxMesh();

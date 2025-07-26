@@ -17,7 +17,7 @@ namespace Zero
         using IdType = uint64_t;
 
         GameObject() = default;
-        // Delete copy constructor and assignment operator
+        // Delete copy constructor
         // to prevent duplicating/copying of GameObjects
         GameObject(const GameObject&) = delete;
         GameObject& operator=(const GameObject&) = delete;

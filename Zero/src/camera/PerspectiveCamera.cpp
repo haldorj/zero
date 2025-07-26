@@ -27,7 +27,6 @@ namespace Zero
         // Mouse input
         double mouseX, mouseY;
         glfwGetCursorPos(window, &mouseX, &mouseY);
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
         static double lastMouseX = mouseX, lastMouseY = mouseY;
         const double deltaX = mouseX - lastMouseX;
@@ -38,6 +37,19 @@ namespace Zero
         // Calculate the new rotation for the GameObject
         m_Pitch -= static_cast<float>(0.016 * (deltaY * m_RotationSpeed));
         m_Yaw -= static_cast<float>(0.016 * (deltaX * m_RotationSpeed));
+
+        if (m_Pitch > glm::radians(89.0f))
+			m_Pitch = glm::radians(89.0f);
+		if (m_Pitch < glm::radians(-89.0f))
+            m_Pitch = glm::radians(-89.0f);
+
+        if (m_Yaw > glm::radians(360.0f))
+            m_Yaw -= glm::radians(360.0f);
+        if (m_Yaw < 0)
+            m_Yaw += glm::radians(360.0f);
+
+        // Update the camera's position and rotation
+		Update(deltaTime, m_TargetPosition);
     }
 
     glm::mat4 PerspectiveCamera::GetViewMatrix() const

@@ -19,7 +19,7 @@ namespace Zero
     enum class RendererAPI : uint8_t
     {
         OpenGL,
-        Vulkan
+        Vulkan,
     };
 
     class RendererFactory
@@ -93,13 +93,13 @@ namespace Zero
         void SpawnSphereAtLocation(const glm::vec3& location, float scale);
 
         bool IsEditorMode() const { return m_EditorMode; }
-        bool ShowShadowmap() const { return m_ShowShadowmap; }
+        bool ShowShadowmap() const { return m_ShowShadowMap; }
 
-        static Application& Get();
+        inline static Application& Get() { return *s_Instance; }
 
         Renderer* GetRenderer() const { return m_Renderer; }
-        RendererAPI GetRendererType() const { return m_RendererType; }
         GLFWwindow* GetWindow() const { return m_Window; }
+        RendererAPI GetRendererType() const { return m_RendererType; }
         Camera& GetActiveCamera() const { return *m_ActiveCamera; }
 
     private:
@@ -108,11 +108,11 @@ namespace Zero
 
         PhysicsWorld m_PhysicsWorld{};
 
+        std::shared_ptr<Scene> m_Scene{};
+
         Camera* m_ActiveCamera = nullptr;
         GLFWwindow* m_Window = nullptr;
         Renderer* m_Renderer = nullptr;
-
-        std::shared_ptr<Scene> m_Scene{};
 
         glm::vec4 m_DirectionalLightColor{0.4f, 0.7f, 1.0f, 0.3f};
         glm::vec3 m_DirectionalLightDirection{ 0.0f, 1.0, -1.0f };
@@ -126,13 +126,12 @@ namespace Zero
 
         float m_Fov{ 0.0f };
 
-        RendererAPI m_RendererType{ RendererAPI::OpenGL };
+        RendererAPI m_RendererType{ RendererAPI::Vulkan };
 
         bool m_EditorMode{ true };
-        bool m_IsInitialized{ false };
-        bool m_StopRendering{ false };
+        bool m_ShowShadowMap{ false };
 
-        bool m_ShowShadowmap{ false };
+        static Application* s_Instance;
 
     };
 } // namespace Zero

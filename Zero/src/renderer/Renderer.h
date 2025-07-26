@@ -32,7 +32,5 @@ namespace Zero
         virtual void SetClearColor(glm::vec4 clearColor) = 0;
 
         virtual void Draw(Scene* Scene) = 0;
-
-        // bool VSync = true;
     };
 }

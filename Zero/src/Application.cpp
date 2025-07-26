@@ -16,11 +16,9 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 
-
 namespace Zero
 {
-    Application* LoadedEngine = nullptr;
-    Application& Application::Get() { return *LoadedEngine; }
+    Application* Application::s_Instance = nullptr;
 
     void Application::InitGameObjects()
     {
@@ -156,8 +154,8 @@ namespace Zero
     void Application::Init()
     {
         // Only one engine initialization is allowed with the application.
-        assert(LoadedEngine == nullptr);
-        LoadedEngine = this;
+        assert(s_Instance == nullptr);
+        s_Instance = this;
 
         InitGLFW(m_RendererType);
 
@@ -179,23 +177,17 @@ namespace Zero
             "../assets/skybox/sb_strato/stratosphere_bk.tga",
             "../assets/skybox/sb_strato/stratosphere_ft.tga"
             });
-
-        // everything went fine
-        m_IsInitialized = true;
     }
 
     void Application::Cleanup() const
     {
-        if (m_IsInitialized)
-        {
-            m_Scene->Destroy();
-            m_Renderer->Shutdown();
+        m_Scene->Destroy();
+        m_Renderer->Shutdown();
 
-            glfwDestroyWindow(m_Window);
-            glfwTerminate();
-        }
+        glfwDestroyWindow(m_Window);
+        glfwTerminate();
 
-        LoadedEngine = nullptr;
+        s_Instance = nullptr;
     }
 
     bool Pressed = false;
@@ -301,7 +293,7 @@ namespace Zero
         ImGui::Text("FPS: %i", static_cast<int>(1.0f / m_DeltaTime));
         //ImGui::Checkbox("VSync ", &m_Renderer->VSync);
         ImGui::Checkbox("Editor Mode", &m_EditorMode);
-        ImGui::Checkbox("Show Shadow Map", &m_ShowShadowmap);
+        ImGui::Checkbox("Show Shadow Map", &m_ShowShadowMap);
         ImGui::End();
 
         ImGui::Begin("Camera");
@@ -315,7 +307,7 @@ namespace Zero
         ImGui::End();
 
         ImGui::Begin("Objects");
-        ImGui::Text("Number of Objects: %i", m_Scene->GetGameObjects().size());
+        ImGui::Text("Number of Objects: %i", static_cast<int>(m_Scene->GetGameObjects().size()));
         ImGui::End();
 
         ImGui::Begin("Directional Light");

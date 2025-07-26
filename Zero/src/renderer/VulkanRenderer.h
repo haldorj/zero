@@ -78,7 +78,7 @@ namespace Zero {
         VkDevice& GetDevice() { return m_Device; }
 		VkPhysicalDevice& GetPhysicalDevice() { return m_PhysicalDevice; }
 		VkDescriptorSetLayout GetGpuSceneDataDescriptorLayout() const { return m_GpuSceneDataDescriptorLayout; }
-        VkDescriptorSetLayout GetSingleImageDescriptorLayout() const { return m_GameObjectDescriptorLayout; }
+        VkDescriptorSetLayout GetGameObjectDescriptorLayout() const { return m_GameObjectDescriptorLayout; }
         VmaAllocator& GetAllocator() { return m_Allocator; }
         DeletionQueue& GetMainDeletionQueue() { return m_MainDeletionQueue; }
 

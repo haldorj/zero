@@ -100,13 +100,13 @@ namespace Zero
 
         if (glm::length(direction) > 0.0001f)
         {
+            // Create quaternion from direction
             direction = glm::normalize(direction);
             const glm::quat targetRotation = glm::quatLookAt(-direction, glm::vec3(0, 1, 0));
-            // Create quaternion from direction
 
             // Interpolate between current and target rotation
-            m_Transform.RotationQuat = glm::slerp(m_Transform.RotationQuat, targetRotation, rotationSpeed * deltaTime);
-            m_Transform.Rotation = glm::eulerAngles(m_Transform.RotationQuat);
+            const glm::quat& RotationQuat = glm::slerp(glm::quat(m_Transform.Rotation), targetRotation, rotationSpeed * deltaTime);
+            m_Transform.Rotation = glm::eulerAngles(RotationQuat);
         }
 
         m_RigidBody.Velocity.x += direction.x * acceleration * deltaTime;

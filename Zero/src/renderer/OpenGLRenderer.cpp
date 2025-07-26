@@ -38,7 +38,7 @@ namespace Zero
         glfwGetFramebufferSize(Application::Get().GetWindow(), &m_Width, &m_Height);
         glViewport(0, 0, m_Width, m_Height);
 
-        glfwSwapInterval(1); // vsync
+        glfwSwapInterval(0); // vsync
 
         const GLubyte* renderer = glGetString(GL_RENDERER);
         std::cout << "Chosen GPU: " << "\n";
@@ -52,16 +52,11 @@ namespace Zero
 
     void OpenGLRenderer::InitImGui()
     {
-        // Setup Dear ImGui context
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
-        ImGuiIO& io = ImGui::GetIO();
-        //(void)io;
-        // Setup Platform/Renderer bindings
         ImGui_ImplGlfw_InitForOpenGL(Application::Get().GetWindow(), true);
         // GLSL ver. 450
         ImGui_ImplOpenGL3_Init("#version 450");
-        // Setup Dear ImGui style
         ImGui::StyleColorsDark();
     }
 
@@ -79,7 +74,7 @@ namespace Zero
     void OpenGLRenderer::Draw(Scene* scene)
     {
         ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
+		ImGui_ImplGlfw_NewFrame(); // Todo look into cursor issues
         ImGui::NewFrame();
 
         glEnable(GL_DEPTH_TEST);
@@ -194,7 +189,7 @@ namespace Zero
         glBindVertexArray(0);
     }
 
-    void OpenGLRenderer::SetUniformValues(OpenGLShader* shader, Scene* scene)
+    void OpenGLRenderer::SetUniformValues(const OpenGLShader* shader, Scene* scene)
     {
         if (!shader) return;
 
@@ -207,13 +202,13 @@ namespace Zero
         // model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
         view = Application::Get().GetActiveCamera().GetViewMatrix();
         projection = glm::perspective(glm::radians(Application::Get().GetActiveCamera().GetFOV()),
-            (float)m_Width / (float)m_Height, 0.1f, 10000.0f);
+            static_cast<float>(m_Width) / static_cast<float>(m_Height), 0.1f, 10000.0f);
 
-        int viewLoc = glGetUniformLocation(shader->GetID(), "view");
+        const int viewLoc = glGetUniformLocation(shader->GetID(), "view");
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        int projLoc = glGetUniformLocation(shader->GetID(), "projection");
+        const int projLoc = glGetUniformLocation(shader->GetID(), "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-        int viewPos = glGetUniformLocation(shader->GetID(), "viewPos");
+        const int viewPos = glGetUniformLocation(shader->GetID(), "viewPos");
         glUniform3fv(viewPos, 1, glm::value_ptr(Application::Get().GetActiveCamera().GetPosition()));
 
         // Directional Light
@@ -230,10 +225,10 @@ namespace Zero
         glUniform3fv(m_UniformDirectionalLight.Direction, 1, glm::value_ptr(scene->GetDirectionalLight()->GetDirection()));
 
         // Material
-        int specularIntensity = glGetUniformLocation(shader->GetID(), "material.specularIntensity");
+        const int specularIntensity = glGetUniformLocation(shader->GetID(), "material.specularIntensity");
         glUniform1f(specularIntensity, scene->GetMaterial()->GetSpecularIntensity());
 
-        int shininess = glGetUniformLocation(shader->GetID(), "material.shininess");
+        const int shininess = glGetUniformLocation(shader->GetID(), "material.shininess");
         glUniform1f(shininess, scene->GetMaterial()->GetShininess());
 
         // Point Lights

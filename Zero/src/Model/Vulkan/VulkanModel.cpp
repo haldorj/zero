@@ -17,7 +17,7 @@ namespace Zero
         LoadModel(path);
     }
 
-    void VulkanModel::Draw(VkCommandBuffer& cmd, VkPipelineLayout& pipelineLayout, const VkExtent2D drawExtent,
+    void VulkanModel::Draw(VkCommandBuffer& cmd, VkPipelineLayout& pipelineLayout,
                            VkSampler& sampler, GPUDrawPushConstants& pushConstants, std::shared_ptr<Animator> animator)
     {
         const auto renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
@@ -61,7 +61,7 @@ namespace Zero
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
         for (unsigned int i = 0; i < m_Meshes.size(); i++)
-            m_Meshes[i].Draw(cmd, pipelineLayout, drawExtent, sampler, pushConstants, descriptorWriter);
+            m_Meshes[i].Draw(cmd, pipelineLayout, sampler, pushConstants, descriptorWriter);
     }
 
     void VulkanModel::DestroyModel() const

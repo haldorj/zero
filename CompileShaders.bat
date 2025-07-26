@@ -21,4 +21,11 @@
 "%VULKAN_SDK%\Bin\spirv-val.exe" --target-env vulkan1.3 --scalar-block-layout "shaders/Vulkan/Compiled/skybox_vk.vert.spv"
 "%VULKAN_SDK%\Bin\spirv-val.exe" --target-env vulkan1.3 --scalar-block-layout "shaders/Vulkan/Compiled/skybox_vk.frag.spv"
 
+"%VULKAN_SDK%\Bin\glslangValidator.exe" -V "shaders/Vulkan/shadowmap_vk.vert" -o "shaders/Vulkan/Compiled/shadowmap_vk.vert.spv"
+"%VULKAN_SDK%\Bin\glslangValidator.exe" -V "shaders/Vulkan/shadowmap_vk.frag" -o "shaders/Vulkan/Compiled/shadowmap_vk.frag.spv"
+
+"%VULKAN_SDK%\Bin\spirv-val.exe" --target-env vulkan1.3 --scalar-block-layout "shaders/Vulkan/Compiled/shadowmap_vk.vert.spv"
+"%VULKAN_SDK%\Bin\spirv-val.exe" --target-env vulkan1.3 --scalar-block-layout "shaders/Vulkan/Compiled/shadowmap_vk.frag.spv"
+
+
 pause

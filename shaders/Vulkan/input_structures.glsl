@@ -62,6 +62,7 @@ layout(scalar, set = 0, binding = 0) readonly buffer SceneData
 	int spotLightCount;
 	
 	DirectionalLight directionalLight;
+	mat4 directionalLightTransform;
 	PointLight pointLights[MAX_POINT_LIGHTS];
 	SpotLight spotLights[MAX_SPOT_LIGHTS];
 	Material material;

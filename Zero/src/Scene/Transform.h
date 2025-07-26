@@ -15,8 +15,6 @@ namespace Zero {
 		glm::vec3 Rotation{ 0.0f };
 		glm::vec3 Scale{ 1.0f };
 
-		glm::quat RotationQuat = glm::quat(Rotation);
-
 		glm::mat4 GetMatrix() const
 		{
 			return glm::translate(glm::mat4(1.0f), Position) *

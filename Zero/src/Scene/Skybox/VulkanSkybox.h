@@ -5,17 +5,19 @@
 
 namespace Zero {
 
-	class VulkanSkybox : public Skybox
+	class VulkanSkybox final : public Skybox
 	{
 	public:
 		VulkanSkybox() = default;
-		~VulkanSkybox() = default;
+		~VulkanSkybox() override = default;
 
+		VulkanSkybox(const std::vector<std::string>& faceLocations);
+		
 		void LoadCubeMap(const std::vector<std::string>& faceLocations) override;
 
-		virtual void Draw(const VkCommandBuffer& cmd, const VkPipelineLayout& pipelineLayout, 
-				  VkExtent2D drawExtent, GPUDrawPushConstants& pushConstants,
-				  DescriptorWriter& descriptorWriter) override;
+		void Draw(const VkCommandBuffer& cmd, const VkPipelineLayout& pipelineLayout, 
+		          VkExtent2D drawExtent, GPUDrawPushConstants& pushConstants,
+		          DescriptorWriter& descriptorWriter) override;
 
 		void Destroy() const override;
 	private:

@@ -27,7 +27,7 @@ namespace Zero {
 
 		void CreateFullscreenQuad();
 
-        void SetUniformValues(OpenGLShader* shader, Scene* scene);
+        void SetUniformValues(const OpenGLShader* shader, Scene* scene);
 
     private:
         void InitShaders();
@@ -46,8 +46,8 @@ namespace Zero {
         size_t m_SpotLightCount{};
         std::array<UniformSpotLight, MAX_SPOT_LIGHTS> m_UniformSpotLights{};
 
-        GLuint m_QuadVAO = 0;
-        GLuint m_QuadVBO = 0;
+        GLuint m_QuadVAO{};
+        GLuint m_QuadVBO{};
 
         int m_Width{};
         int m_Height{};

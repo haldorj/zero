@@ -9,7 +9,7 @@ namespace Zero
     VulkanMesh::VulkanMesh(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices,
                            const std::vector<VulkanTexture>& textures)
     {
-        const auto renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+        const auto& renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
 
         m_Vertices = vertices;
         m_Indices = indices;
@@ -23,10 +23,10 @@ namespace Zero
         m_GPUMeshBuffers = renderer->UploadMesh(indices, vertices);
     }
 
-    void VulkanMesh::Draw(const VkCommandBuffer& cmd, const VkPipelineLayout& pipelineLayout, VkExtent2D drawExtent,
+    void VulkanMesh::Draw(const VkCommandBuffer& cmd, const VkPipelineLayout& pipelineLayout,
                           const VkSampler& sampler, GPUDrawPushConstants& pushConstants, DescriptorWriter& descriptorWriter)
     {
-        const auto renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+        const auto& renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
         if (!renderer)
         {
             printf("VkMesh::Draw: Renderer is not of type VulkanRenderer");
@@ -36,7 +36,7 @@ namespace Zero
         //// TEXTURES /////////////////////////////////////////////////////////////////////////////////////////////////
 
         const VkDescriptorSet descriptorSet = renderer->GetCurrentFrame().FrameDescriptors.Allocate(
-            renderer->GetDevice(), renderer->GetSingleImageDescriptorLayout());
+            renderer->GetDevice(), renderer->GetGameObjectDescriptorLayout());
 
         for (auto& texture : m_Textures)
         {
@@ -67,7 +67,7 @@ namespace Zero
 
     void VulkanMesh::DestroyMesh() const
     {
-        const auto renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+        const auto& renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
         vkDeviceWaitIdle(renderer->GetDevice());
         
         VulkanBufferManager::DestroyBuffer(renderer->GetAllocator(), m_GPUMeshBuffers.IndexBuffer);

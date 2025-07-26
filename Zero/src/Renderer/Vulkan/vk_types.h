@@ -109,6 +109,7 @@ struct GPUSceneData
     int SpotLightCount;
 
     DirectionalLightData DirectionalLight;
+	glm::mat4 LightSpaceMatrix;
     PointLightData PointLights[MAX_POINT_LIGHTS];
 	SpotLightData SpotLights[MAX_SPOT_LIGHTS];
     MaterialData Material;

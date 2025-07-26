@@ -32,7 +32,6 @@ namespace Zero {
 		virtual void Draw(
 			VkCommandBuffer& cmd,
 			VkPipelineLayout& pipelineLayout,
-			VkExtent2D drawExtent,
 			VkSampler& sampler,
 			GPUDrawPushConstants& pushConstants,
 			std::shared_ptr<class Animator> animator) {};
