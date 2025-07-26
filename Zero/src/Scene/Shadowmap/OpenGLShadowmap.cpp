@@ -23,8 +23,8 @@ namespace Zero
 	void OpenGLShadowmap::Init()
 	{
 		m_ShaderProgram = new OpenGLShader(
-			"../shaders/OpenGL/shadowmap.vert",
-			"../shaders/OpenGL/shadowmap.frag"
+			"shaders/OpenGL/shadowmap.vert",
+			"shaders/OpenGL/shadowmap.frag"
 		);
 
 		// Create a framebuffer object (FBO) that will hold the depth map:

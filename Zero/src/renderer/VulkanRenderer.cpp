@@ -121,7 +121,7 @@ namespace Zero
 
     void VulkanRenderer::InitTextures()
     {
-        m_DefaultTexture = VulkanTexture("../assets/images/plain.png", "texture_diffuse", true);
+        m_DefaultTexture = VulkanTexture("assets/images/plain.png", "texture_diffuse", true);
 
         VkSamplerCreateInfo samplerCreateInfo = {.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO};
 
@@ -335,6 +335,8 @@ namespace Zero
         sceneUniformData->DirectionalLight.Base.DiffuseIntensity = scene->GetDirectionalLight()->GetDiffuseIntensity();
         sceneUniformData->DirectionalLight.Direction = scene->GetDirectionalLight()->GetDirection();
  
+        sceneUniformData->LightSpaceMatrix = scene->GetDirectionalLight()->GetLightTransform();
+
         sceneUniformData->Material.SpecularIntensity = scene->GetMaterial()->GetSpecularIntensity();
         sceneUniformData->Material.Shininess = scene->GetMaterial()->GetShininess();
 
@@ -731,13 +733,13 @@ namespace Zero
     void VulkanRenderer::InitTexturedPipeline()
     {
         VkShaderModule triangleFragShader;
-        if (!VkUtil::LoadShaderModule("../shaders/vulkan/compiled/default_vk.frag.spv", m_Device, &triangleFragShader))
+        if (!VkUtil::LoadShaderModule("shaders/vulkan/compiled/default_vk.frag.spv", m_Device, &triangleFragShader))
         {
             printf("Error when building the fragment shader module \n");
         }
 
         VkShaderModule triangleVertexShader;
-        if (!VkUtil::LoadShaderModule("../shaders/vulkan/compiled/default_vk.vert.spv", m_Device, &triangleVertexShader))
+        if (!VkUtil::LoadShaderModule("shaders/vulkan/compiled/default_vk.vert.spv", m_Device, &triangleVertexShader))
         {
             printf("Error when building the vertex shader module \n");
         }
@@ -802,14 +804,14 @@ namespace Zero
     void VulkanRenderer::InitSkyboxPipeline()
     {
         VkShaderModule fragmentShader;
-        if (!VkUtil::LoadShaderModule("../shaders/vulkan/compiled/skybox_vk.frag.spv", m_Device, &fragmentShader))
+        if (!VkUtil::LoadShaderModule("shaders/vulkan/compiled/skybox_vk.frag.spv", m_Device, &fragmentShader))
         {
             printf("Error when building the fragment shader module \n");
             return;
         }
 
         VkShaderModule vertexShader;
-        if (!VkUtil::LoadShaderModule("../shaders/vulkan/compiled/skybox_vk.vert.spv", m_Device, &vertexShader))
+        if (!VkUtil::LoadShaderModule("shaders/vulkan/compiled/skybox_vk.vert.spv", m_Device, &vertexShader))
         {
             printf("Error when building the vertex shader module \n");
             return;

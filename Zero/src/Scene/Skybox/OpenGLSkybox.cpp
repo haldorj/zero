@@ -29,8 +29,8 @@ namespace Zero {
 		stbi_set_flip_vertically_on_load(false);
 
 		m_ShaderProgram = new OpenGLShader(
-			"../shaders/opengl/skybox.vert",
-			"../shaders/opengl/skybox.frag"
+			"shaders/opengl/skybox.vert",
+			"shaders/opengl/skybox.frag"
 		);
 
 		glGenTextures(1, &m_TextureID);

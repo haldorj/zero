@@ -35,9 +35,9 @@ namespace Zero
         }
 
         const std::array<std::string, 3> modelPaths{
-            "../assets/models/Prototyping 1.1/GLTF/dummy_platformer.gltf",
-            "../assets/models/green_rhino2.fbx",
-            "../assets/models/plane.glb",
+            "assets/models/Prototyping 1.1/GLTF/dummy_platformer.gltf",
+            "assets/models/green_rhino2.fbx",
+            "assets/models/plane.glb",
         };
 
         std::shared_ptr<GameObject> player = std::make_shared<GameObject>(GameObject::Create());
@@ -119,7 +119,7 @@ namespace Zero
         const float x = GetRandomFloat(0.5, 3);
 
         const auto sphere = std::make_shared<GameObject>(GameObject::Create());
-        sphere->SetModel(ModelFactory::CreateModel("../assets/models/sphere.glb", m_RendererType));
+        sphere->SetModel(ModelFactory::CreateModel("assets/models/sphere.glb", m_RendererType));
         sphere->GetTransform().Position = m_EditorCamera.GetPosition();
         sphere->GetTransform().Scale = glm::vec3{x};
         sphere->GetRigidBody().Mass = x;
@@ -137,7 +137,7 @@ namespace Zero
     void Application::SpawnSphereAtLocation(const glm::vec3& location, float scale)
     {
         const auto sphere = std::make_shared<GameObject>(GameObject::Create());
-        sphere->SetModel(ModelFactory::CreateModel("../assets/models/sphere.glb", m_RendererType));
+        sphere->SetModel(ModelFactory::CreateModel("assets/models/sphere.glb", m_RendererType));
         sphere->GetTransform().Position = location;
         sphere->GetTransform().Scale = glm::vec3{scale};
         sphere->GetRigidBody().Mass = scale;
@@ -170,12 +170,12 @@ namespace Zero
 
         m_Scene->SetSkybox(SkyboxFactory::CreateSkybox(m_RendererType));
         m_Scene->GetSkybox()->LoadCubeMap({
-            "../assets/skybox/sb_strato/stratosphere_rt.tga",
-            "../assets/skybox/sb_strato/stratosphere_lf.tga",
-            "../assets/skybox/sb_strato/stratosphere_up.tga",
-            "../assets/skybox/sb_strato/stratosphere_dn.tga",
-            "../assets/skybox/sb_strato/stratosphere_bk.tga",
-            "../assets/skybox/sb_strato/stratosphere_ft.tga"
+            "assets/skybox/sb_strato/stratosphere_rt.tga",
+            "assets/skybox/sb_strato/stratosphere_lf.tga",
+            "assets/skybox/sb_strato/stratosphere_up.tga",
+            "assets/skybox/sb_strato/stratosphere_dn.tga",
+            "assets/skybox/sb_strato/stratosphere_bk.tga",
+            "assets/skybox/sb_strato/stratosphere_ft.tga"
             });
     }
 
@@ -235,14 +235,12 @@ namespace Zero
             {
                 m_EditorCamera.ProcessInput(m_Window, m_DeltaTime);
                 m_EditorCamera.Update(m_DeltaTime);
-                // m_Scene->GetGameObjects()[0]->EnableGravity = false;
             }
             else
             {
                 
                 m_PlayerCamera.ProcessInput(m_Window, m_DeltaTime);
                 m_PlayerCamera.Update(m_DeltaTime, m_Scene->GetGameObjects()[0]->GetTransform().Position);
-                // m_Scene->GetGameObjects()[0]->EnableGravity = true;
             }
             
             if (Loaded)

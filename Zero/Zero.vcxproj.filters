@@ -258,6 +258,9 @@
     <ClInclude Include="src\Scene\Shadowmap\OpenGLShadowmap.h">
       <Filter>src\Scene\Shadowmap</Filter>
     </ClInclude>
+    <ClInclude Include="src\Scene\Shadowmap\VulkanShadowmap.h">
+      <Filter>src\Scene\Shadowmap</Filter>
+    </ClInclude>
     <ClInclude Include="src\Scene\Skybox\OpenGLSkybox.h">
       <Filter>src\Scene\Skybox</Filter>
     </ClInclude>
@@ -1668,6 +1671,9 @@
       <Filter>src\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Scene\Shadowmap\OpenGLShadowmap.cpp">
+      <Filter>src\Scene\Shadowmap</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\Shadowmap\VulkanShadowmap.cpp">
       <Filter>src\Scene\Shadowmap</Filter>
     </ClCompile>
     <ClCompile Include="src\Scene\Skybox\OpenGLSkybox.cpp">

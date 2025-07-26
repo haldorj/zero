@@ -91,6 +91,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>opengl32.lib;$(VULKAN_SDK)\Lib\vulkan-1.lib;Vendor\assimp\lib\Release\assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /Q /E /Y /I $(SolutionDir)\assets ..\bin\Debug-windows-x86_64\Zero\assets
+xcopy /Q /E /Y /I $(SolutionDir)\shaders ..\bin\Debug-windows-x86_64\Zero\shaders
+IF EXIST $(SolutionDir)\Zero\assimp-vc143-mt.dll\ (xcopy /Q /E /Y /I $(SolutionDir)\Zero\assimp-vc143-mt.dll ..\bin\Debug-windows-x86_64\Zero &gt; nul) ELSE (xcopy /Q /Y /I $(SolutionDir)\Zero\assimp-vc143-mt.dll ..\bin\Debug-windows-x86_64\Zero &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -113,6 +118,11 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>opengl32.lib;$(VULKAN_SDK)\Lib\vulkan-1.lib;Vendor\assimp\lib\Release\assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /Q /E /Y /I $(SolutionDir)\assets ..\bin\Release-windows-x86_64\Zero\assets
+xcopy /Q /E /Y /I $(SolutionDir)\shaders ..\bin\Release-windows-x86_64\Zero\shaders
+IF EXIST $(SolutionDir)\Zero\assimp-vc143-mt.dll\ (xcopy /Q /E /Y /I $(SolutionDir)\Zero\assimp-vc143-mt.dll ..\bin\Release-windows-x86_64\Zero &gt; nul) ELSE (xcopy /Q /Y /I $(SolutionDir)\Zero\assimp-vc143-mt.dll ..\bin\Release-windows-x86_64\Zero &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
     <ClCompile>
@@ -135,6 +145,11 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>opengl32.lib;$(VULKAN_SDK)\Lib\vulkan-1.lib;Vendor\assimp\lib\Release\assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /Q /E /Y /I $(SolutionDir)\assets ..\bin\Dist-windows-x86_64\Zero\assets
+xcopy /Q /E /Y /I $(SolutionDir)\shaders ..\bin\Dist-windows-x86_64\Zero\shaders
+IF EXIST $(SolutionDir)\Zero\assimp-vc143-mt.dll\ (xcopy /Q /E /Y /I $(SolutionDir)\Zero\assimp-vc143-mt.dll ..\bin\Dist-windows-x86_64\Zero &gt; nul) ELSE (xcopy /Q /Y /I $(SolutionDir)\Zero\assimp-vc143-mt.dll ..\bin\Dist-windows-x86_64\Zero &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Animation\Animation.h" />

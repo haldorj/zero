@@ -101,7 +101,6 @@ namespace Zero {
 
         void DestroyImage(const AllocatedImage& image) const;
 
-
         int m_FrameNumber{0};
         VkExtent2D m_WindowExtent{EXTENT_WIDTH, EXTENT_HEIGHT};
 

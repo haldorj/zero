@@ -321,13 +321,13 @@ namespace Zero
     {
         // Create Shader object
         m_ShaderProgram = std::make_unique<OpenGLShader>(
-            "../shaders/OpenGL/default.vert", 
-            "../shaders/OpenGL/default.frag"
+            "shaders/OpenGL/default.vert", 
+            "shaders/OpenGL/default.frag"
         );
 
 		m_DepthShader = std::make_unique<OpenGLShader>(
-			"../shaders/OpenGL/depth_vis.vert",
-			"../shaders/OpenGL/depth_vis.frag"
+			"shaders/OpenGL/depth_vis.vert",
+			"shaders/OpenGL/depth_vis.frag"
 		);
     }
 

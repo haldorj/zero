@@ -13,7 +13,7 @@ namespace Zero
         if (m_Textures.empty())
         {
             // If no textures are loaded, load a default texture
-            const OpenGLTexture defaultTexture("../assets/images/plain.png", "texture_diffuse", 0, GL_UNSIGNED_BYTE);
+            const OpenGLTexture defaultTexture("assets/images/plain.png", "texture_diffuse", 0, GL_UNSIGNED_BYTE);
             m_Textures.emplace_back(defaultTexture);
         }
 

@@ -11,6 +11,8 @@ workspace "Zero"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+debugdir "%{wks.location}"
+
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
 IncludeDir["GLFW"] = "Zero/vendor/GLFW/include"
@@ -87,6 +89,16 @@ project "Zero"
 	{
 		"GLFW_INCLUDE_NONE"
 	}
+
+postbuildcommands 
+{
+    -- Copy assets folder to output dir
+    "{COPYDIR} %{wks.location}/assets %{cfg.targetdir}/assets",
+    "{COPYDIR} %{wks.location}/shaders %{cfg.targetdir}/shaders",
+
+    -- Copy DLLs to output dir
+    "{COPY} %{wks.location}/Zero/assimp-vc143-mt.dll %{cfg.targetdir}"
+}
 
 
 	filter "configurations:Debug"
