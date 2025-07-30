@@ -11,8 +11,9 @@ namespace Zero
     VulkanShadowmap::VulkanShadowmap()
     {
         CreateSampler();
+        CreatePipeline();
         m_OffscreenImage = CreateImage(
-            {SHADOW_WIDTH, SHADOW_HEIGHT, 1},
+            { SHADOW_WIDTH, SHADOW_HEIGHT, 1 },
             VK_FORMAT_D32_SFLOAT,
             VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
             false);
@@ -105,6 +106,27 @@ namespace Zero
         VK_CHECK(vkCreateSampler(renderer->GetDevice(), &samplerInfo, nullptr, &m_DepthSampler));
     }
 
+    void VulkanShadowmap::CreatePipeline()
+    {
+
+    }
+
+    void VulkanShadowmap::Destroy()
+    {
+        const auto renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+
+        if (!renderer)
+        {
+            printf("VulkanShadowmap::~VulkanShadowmap: Renderer is not valid");
+            return;
+        }
+
+        vkDeviceWaitIdle(renderer->GetDevice());
+
+        vkDestroyImageView(renderer->GetDevice(), m_OffscreenImage.ImageView, nullptr);
+        vmaDestroyImage(renderer->GetAllocator(), m_OffscreenImage.Image, m_OffscreenImage.Allocation);
+        vkDestroySampler(renderer->GetDevice(), m_DepthSampler, nullptr);
+    }
 
     AllocatedImage VulkanShadowmap::CreateImage(VkExtent3D size, VkFormat format, VkImageUsageFlags usage,
                                                 bool mipmapped)

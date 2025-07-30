@@ -14,6 +14,7 @@
 #include <Model/Vulkan/VulkanModel.h>
 #include "Vulkan/VulkanTexture.h"
 #include <Scene/Skybox/VulkanSkybox.h>
+#include <Scene/Shadowmap/VulkanShadowmap.h>
 
 namespace Zero {
 
@@ -76,8 +77,8 @@ namespace Zero {
         FrameData& GetCurrentFrame() { return m_Frames[m_FrameNumber % FRAME_OVERLAP]; }
 
         VkDevice& GetDevice() { return m_Device; }
-		VkPhysicalDevice& GetPhysicalDevice() { return m_PhysicalDevice; }
-		VkDescriptorSetLayout GetGpuSceneDataDescriptorLayout() const { return m_GpuSceneDataDescriptorLayout; }
+        VkPhysicalDevice& GetPhysicalDevice() { return m_PhysicalDevice; }
+        VkDescriptorSetLayout GetGpuSceneDataDescriptorLayout() const { return m_GpuSceneDataDescriptorLayout; }
         VkDescriptorSetLayout GetGameObjectDescriptorLayout() const { return m_GameObjectDescriptorLayout; }
         VmaAllocator& GetAllocator() { return m_Allocator; }
         DeletionQueue& GetMainDeletionQueue() { return m_MainDeletionQueue; }
@@ -92,8 +93,11 @@ namespace Zero {
         void InitDescriptors();
         void InitPipelines();
 
+        void CreateQuadMesh();
+
         void InitTexturedPipeline();
-		void InitSkyboxPipeline();
+        void InitQuadPipeline();
+        void InitSkyboxPipeline();
 
         void CreateSwapchain(uint32_t width, uint32_t height);
         void DestroySwapchain() const;
@@ -101,8 +105,8 @@ namespace Zero {
 
         void DestroyImage(const AllocatedImage& image) const;
 
-        int m_FrameNumber{0};
-        VkExtent2D m_WindowExtent{EXTENT_WIDTH, EXTENT_HEIGHT};
+        int m_FrameNumber{ 0 };
+        VkExtent2D m_WindowExtent{ EXTENT_WIDTH, EXTENT_HEIGHT };
 
         VkInstance m_Instance{}; // Vulkan API context, used to access drivers.
         VkDebugUtilsMessengerEXT m_DebugMessenger{}; // Vulkan debug output handle
@@ -143,7 +147,8 @@ namespace Zero {
         VkPipelineLayout m_TexturedPipelineLayout{};
         VkPipeline m_TexturedPipeline{};
 
-        GPUMeshBuffers m_Rectangle{};
+        VkPipelineLayout m_QuadPipelineLayout{};
+        VkPipeline m_QuadPipeline{};
 
         VkFence m_ImmFence{};
         VkCommandBuffer m_ImmCommandBuffer{};
@@ -157,7 +162,11 @@ namespace Zero {
         VkDescriptorSetLayout m_GameObjectDescriptorLayout{};
 
         GPUSceneData m_SceneData{};
-		GPUCameraData m_CameraData{};
+        GPUCameraData m_CameraData{};
         VkDescriptorSetLayout m_GpuSceneDataDescriptorLayout{};
+
+        VulkanShadowmap* m_ShadowMap{};
+
+        GPUMeshBuffers m_DebugQuad{};
     };
 }

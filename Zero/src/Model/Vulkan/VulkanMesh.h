@@ -15,6 +15,7 @@ namespace Zero {
 	{
 	public:
 		VulkanMesh() = default;
+		VulkanMesh(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices);
 		VulkanMesh(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices, const std::vector<VulkanTexture>& textures);
 
 		void Draw(const VkCommandBuffer& cmd,

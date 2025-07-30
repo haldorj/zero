@@ -6,6 +6,19 @@
 
 namespace Zero
 {
+    VulkanMesh::VulkanMesh(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices)
+    {
+        const auto& renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+        m_Vertices = vertices;
+        m_Indices = indices;
+        if (m_Vertices.empty() || m_Indices.empty())
+        {
+            printf("VulkanMesh: Vertices or indices are empty, cannot create mesh.\n");
+            return;
+        }
+        m_GPUMeshBuffers = renderer->UploadMesh(indices, vertices);
+    }
+
     VulkanMesh::VulkanMesh(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices,
                            const std::vector<VulkanTexture>& textures)
     {
@@ -35,10 +48,10 @@ namespace Zero
 
         //// TEXTURES /////////////////////////////////////////////////////////////////////////////////////////////////
 
-        const VkDescriptorSet descriptorSet = renderer->GetCurrentFrame().FrameDescriptors.Allocate(
+        const VkDescriptorSet& descriptorSet = renderer->GetCurrentFrame().FrameDescriptors.Allocate(
             renderer->GetDevice(), renderer->GetGameObjectDescriptorLayout());
 
-        for (auto& texture : m_Textures)
+        for (const auto& texture : m_Textures)
         {
             // DescriptorWriter descriptorWriter;
             descriptorWriter.WriteImage(0, texture.GetImage().ImageView, sampler,

@@ -52,6 +52,10 @@ namespace Zero
         InitDescriptors();
         InitPipelines();
         InitTextures();
+
+        // TODO: Move this somewhere else.
+        CreateQuadMesh();
+        m_ShadowMap = new VulkanShadowmap();
     }
 
     void VulkanRenderer::InitImGui()
@@ -398,6 +402,19 @@ namespace Zero
             gameObj->GetModel()->Draw(cmd, m_TexturedPipelineLayout, m_DefaultSamplerLinear, pushConstants, gameObj->GetAnimator());
         }
 
+		//// Draw Debug Quad
+		//vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_QuadPipeline);
+  //      vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_QuadPipelineLayout, 0, 1,
+		//	&sceneDataDescriptor, 0, nullptr);
+
+  //      pushConstants = GPUDrawPushConstants();
+  //      pushConstants.VertexBuffer = m_DebugQuad.VertexBufferAddress;
+
+  //      vkCmdPushConstants(cmd, m_QuadPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants), &pushConstants);
+  //      vkCmdBindIndexBuffer(cmd, m_DebugQuad.IndexBuffer.Buffer, 0, VK_INDEX_TYPE_UINT32);
+
+  //      vkCmdDrawIndexed(cmd, 6, 1, 0, 0, 0);
+
         vkCmdEndRendering(cmd);
     }
 
@@ -428,6 +445,13 @@ namespace Zero
     void VulkanRenderer::Shutdown()
     {
         vkDeviceWaitIdle(m_Device);
+
+        if (m_ShadowMap)
+        {
+            m_ShadowMap->Destroy();
+            delete m_ShadowMap;
+            m_ShadowMap = nullptr;
+		}
 
         // Free per-frame structures and deletion queue
         for (auto& frame : m_Frames)
@@ -728,18 +752,50 @@ namespace Zero
     {
 		InitSkyboxPipeline();
         InitTexturedPipeline();
+        InitQuadPipeline();
+    }
+
+    void VulkanRenderer::CreateQuadMesh()
+    {
+        // Create a quad mesh for rendering
+        std::array<Vertex, 4> vertices{};
+
+        vertices[0].Position = { -1.0f, -1.0f, 0.0f };
+        vertices[0].UvX = { 0.0f };
+        vertices[0].UvY = { 0.0f };
+
+        vertices[1].Position = { 1.0f, -1.0f, 0.0f };
+        vertices[1].UvX = { 1.0f };
+        vertices[1].UvY = { 0.0f };
+
+        vertices[2].Position = { -1.0f, 1.0f, 0.0f };
+        vertices[2].UvX = { 0.0f };
+        vertices[2].UvY = { 1.0f };
+
+		vertices[3].Position = { 1.0f, 1.0f, 0.0f };
+		vertices[3].UvX = { 1.0f };
+		vertices[3].UvY = { 1.0f };
+
+        std::array<uint32_t, 6> indices = { 2, 0, 1, 2, 1, 3 };
+        m_DebugQuad = UploadMesh(indices, vertices);
+
+        m_MainDeletionQueue.PushFunction([&]()
+        {
+            VulkanBufferManager::DestroyBuffer(m_Allocator, m_DebugQuad.VertexBuffer);
+            VulkanBufferManager::DestroyBuffer(m_Allocator, m_DebugQuad.IndexBuffer);
+		});
     }
 
     void VulkanRenderer::InitTexturedPipeline()
     {
-        VkShaderModule triangleFragShader;
-        if (!VkUtil::LoadShaderModule("shaders/vulkan/compiled/default_vk.frag.spv", m_Device, &triangleFragShader))
+        VkShaderModule fragmentShader;
+        if (!VkUtil::LoadShaderModule("shaders/vulkan/compiled/default_vk.frag.spv", m_Device, &fragmentShader))
         {
             printf("Error when building the fragment shader module \n");
         }
 
-        VkShaderModule triangleVertexShader;
-        if (!VkUtil::LoadShaderModule("shaders/vulkan/compiled/default_vk.vert.spv", m_Device, &triangleVertexShader))
+        VkShaderModule vertexShader;
+        if (!VkUtil::LoadShaderModule("shaders/vulkan/compiled/default_vk.vert.spv", m_Device, &vertexShader))
         {
             printf("Error when building the vertex shader module \n");
         }
@@ -768,7 +824,7 @@ namespace Zero
         //use the triangle layout we created
         pipelineBuilder.PipelineLayout = m_TexturedPipelineLayout;
         //connecting the vertex and pixel shaders to the pipeline
-        pipelineBuilder.SetShaders(triangleVertexShader, triangleFragShader);
+        pipelineBuilder.SetShaders(vertexShader, fragmentShader);
         //it will draw triangles
         pipelineBuilder.SetInputTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
         //filled triangles
@@ -791,14 +847,85 @@ namespace Zero
         m_TexturedPipeline = pipelineBuilder.BuildPipeline(m_Device);
 
         //clean structures
-        vkDestroyShaderModule(m_Device, triangleFragShader, nullptr);
-        vkDestroyShaderModule(m_Device, triangleVertexShader, nullptr);
+        vkDestroyShaderModule(m_Device, fragmentShader, nullptr);
+        vkDestroyShaderModule(m_Device, vertexShader, nullptr);
 
         m_MainDeletionQueue.PushFunction([&]()
         {
             vkDestroyPipelineLayout(m_Device, m_TexturedPipelineLayout, nullptr);
             vkDestroyPipeline(m_Device, m_TexturedPipeline, nullptr);
         });
+    }
+
+    void VulkanRenderer::InitQuadPipeline()
+    {
+        VkShaderModule fragmentShader;
+        if (!VkUtil::LoadShaderModule("shaders/vulkan/compiled/quad.frag.spv", m_Device, &fragmentShader))
+        {
+            printf("Error when building the fragment shader module \n");
+        }
+
+        VkShaderModule vertexShader;
+        if (!VkUtil::LoadShaderModule("shaders/vulkan/compiled/quad.vert.spv", m_Device, &vertexShader))
+        {
+            printf("Error when building the vertex shader module \n");
+        }
+
+        VkPushConstantRange bufferRange{};
+        bufferRange.offset = 0;
+        bufferRange.size = sizeof(GPUDrawPushConstants);
+        bufferRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+        DescriptorLayoutBuilder layoutBuilder;
+        layoutBuilder.AddBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER); // Texture
+        layoutBuilder.AddBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);         // Scene data
+
+        // m_GameObjectDescriptorLayout = layoutBuilder.Build(m_Device, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
+
+        VkDescriptorSetLayout layouts[] = { m_GpuSceneDataDescriptorLayout, m_GameObjectDescriptorLayout };
+
+        VkPipelineLayoutCreateInfo pipelineLayoutInfo = VkInit::PipelineLayoutCreateInfo();
+        pipelineLayoutInfo.pPushConstantRanges = &bufferRange;
+        pipelineLayoutInfo.pushConstantRangeCount = 1;
+        pipelineLayoutInfo.pSetLayouts = layouts;
+        pipelineLayoutInfo.setLayoutCount = 2;
+        VK_CHECK(vkCreatePipelineLayout(m_Device, &pipelineLayoutInfo, nullptr, &m_QuadPipelineLayout));
+
+        PipelineBuilder pipelineBuilder;
+        //use the triangle layout we created
+        pipelineBuilder.PipelineLayout = m_QuadPipelineLayout;
+        //connecting the vertex and pixel shaders to the pipeline
+        pipelineBuilder.SetShaders(vertexShader, fragmentShader);
+        //it will draw triangles
+        pipelineBuilder.SetInputTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+        //filled triangles
+        pipelineBuilder.SetPolygonMode(VK_POLYGON_MODE_FILL);
+        //no backface culling
+        pipelineBuilder.SetCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE);
+        //no multisampling
+        pipelineBuilder.SetMultisamplingNone();
+        //no blending
+        //pipelineBuilder.disable_blending();
+        pipelineBuilder.DisableBlending();
+        //no depth testing
+        pipelineBuilder.EnableDepthTest(VK_TRUE, VK_TRUE, VK_COMPARE_OP_GREATER_OR_EQUAL);
+
+        //connect the image format we will draw into, from draw image
+        pipelineBuilder.SetColorAttachmentFormat(m_DrawImage.ImageFormat);
+        pipelineBuilder.SetDepthFormat(m_DepthImage.ImageFormat);
+
+        //finally build the pipeline
+        m_QuadPipeline = pipelineBuilder.BuildPipeline(m_Device);
+
+        //clean structures
+        vkDestroyShaderModule(m_Device, fragmentShader, nullptr);
+        vkDestroyShaderModule(m_Device, vertexShader, nullptr);
+
+        m_MainDeletionQueue.PushFunction([&]()
+            {
+                vkDestroyPipelineLayout(m_Device, m_QuadPipelineLayout, nullptr);
+                vkDestroyPipeline(m_Device, m_QuadPipeline, nullptr);
+            });
     }
 
     void VulkanRenderer::InitSkyboxPipeline()

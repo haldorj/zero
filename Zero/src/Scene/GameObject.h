@@ -14,7 +14,7 @@ namespace Zero
     class GameObject
     {
     public:
-        using IdType = uint64_t;
+        using IdType = uint32_t;
 
         GameObject() = default;
         // Delete copy constructor

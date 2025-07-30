@@ -16,6 +16,8 @@ namespace Zero {
 
         void CreateSampler();
         void CreatePipeline();
+
+        void Destroy();
     private:
         // Shadow mapping
         VkPipelineLayout m_OffscreenPipelineLayout{};

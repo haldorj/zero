@@ -132,6 +132,5 @@ namespace Zero
         bool m_ShowShadowMap{ false };
 
         static Application* s_Instance;
-
     };
 } // namespace Zero

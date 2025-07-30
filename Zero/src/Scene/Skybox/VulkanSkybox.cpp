@@ -60,7 +60,7 @@ namespace Zero {
 
 		if (!renderer)
 		{
-			printf("VulkanSkybox::~VulkanSkybox: Renderer is not of type VulkanRenderer");
+			printf("VulkanSkybox::~VulkanSkybox: Renderer is not valid.");
 			return;
 		}
 
