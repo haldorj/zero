@@ -281,7 +281,6 @@ VkImageCreateInfo VkInit::ImageCreateInfo(VkFormat format, VkImageUsageFlags usa
     info.pNext = nullptr;
 
     info.imageType = VK_IMAGE_TYPE_2D;
-
     info.format = format;
     info.extent = extent;
 
@@ -294,6 +293,9 @@ VkImageCreateInfo VkInit::ImageCreateInfo(VkFormat format, VkImageUsageFlags usa
     //optimal tiling, which means the image is stored on the best gpu format
     info.tiling = VK_IMAGE_TILING_OPTIMAL;
     info.usage = usageFlags;
+
+    info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 
     return info;
 }

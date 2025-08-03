@@ -194,11 +194,16 @@ void PipelineBuilder::DisableBlending()
     ColorBlendAttachment.blendEnable = VK_FALSE;
 }
 
-void PipelineBuilder::SetColorAttachmentFormat(const VkFormat format)
+void PipelineBuilder::SetDepthBias(VkBool32 enabled)
+{
+    Rasterizer.depthBiasEnable = enabled;
+}
+
+void PipelineBuilder::SetColorAttachmentFormat(const VkFormat format, int32_t colorAttachmentCount)
 {
     ColorAttachmentFormat = format;
     // connect the format to the renderInfo  structure
-    RenderInfo.colorAttachmentCount = 1;
+    RenderInfo.colorAttachmentCount = colorAttachmentCount;
     RenderInfo.pColorAttachmentFormats = &ColorAttachmentFormat;
 }
 

@@ -53,15 +53,10 @@ namespace Zero
 
         for (const auto& texture : m_Textures)
         {
-            // DescriptorWriter descriptorWriter;
             descriptorWriter.WriteImage(0, texture.GetImage().ImageView, sampler,
                 VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
                 VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
-
-            descriptorWriter.UpdateSet(renderer->GetDevice(), descriptorSet);
         }
-
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         descriptorWriter.UpdateSet(renderer->GetDevice(), descriptorSet);
 

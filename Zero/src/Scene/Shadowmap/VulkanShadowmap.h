@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Renderer/Vulkan/vk_types.h"
+#include "Renderer/Vulkan/vk_descriptors.h"
 
 namespace Zero {
     class Scene;
@@ -9,7 +10,7 @@ namespace Zero {
     public:
         VulkanShadowmap();
         
-        void DrawShadowMapTexture(Scene* scene, VkCommandBuffer cmd);
+        void DrawShadowMapTexture(Scene* scene, VkCommandBuffer cmd, DescriptorWriter& descriptorWriter);
         AllocatedImage CreateImage(VkExtent3D size, VkFormat format, VkImageUsageFlags usage, bool mipmapped = false);
         AllocatedImage CreateImage(void* data, VkExtent3D size, VkFormat format, VkImageUsageFlags usage,
             bool mipmapped = false);
@@ -17,12 +18,13 @@ namespace Zero {
         void CreateSampler();
         void CreatePipeline();
 
-        void Destroy();
+		AllocatedImage GetOffscreenImage() const { return m_OffscreenImage; }
+
+        void Destroy() const;
     private:
         // Shadow mapping
         VkPipelineLayout m_OffscreenPipelineLayout{};
         VkPipeline m_OffscreenPipeline{};
-        VkDescriptorSet m_OffscreenDescriptorSet{};
         AllocatedImage m_OffscreenImage{};
 
         VkSampler m_DepthSampler{};

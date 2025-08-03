@@ -18,7 +18,7 @@ namespace Zero {
 		Scene();
 		Scene(DirectionalLight* light);
 
-		void Destroy();
+		void Destroy() const;
 
 		void AddPointLight(std::shared_ptr<PointLight> pointLight);
 		void AddSpotLight(std::shared_ptr<SpotLight> spotLight);

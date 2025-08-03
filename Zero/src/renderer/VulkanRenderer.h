@@ -168,5 +168,7 @@ namespace Zero {
         VulkanShadowmap* m_ShadowMap{};
 
         GPUMeshBuffers m_DebugQuad{};
+		VulkanTexture* TestQuadImage = nullptr;
+        GPUObjectData m_GPUObjectData{};
     };
 }

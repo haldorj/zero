@@ -24,7 +24,7 @@ namespace Zero {
 		// m_Material = std::make_shared<Material>(1.0f, 32.0f);
 	}
 
-	void Scene::Destroy()
+	void Scene::Destroy() const
 	{
 		m_Skybox->Destroy();
 		for (auto& gameObj : m_GameObjects)

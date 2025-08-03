@@ -1,6 +1,7 @@
 #include "DirectionalLight.h"
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
+#include "Application.h"
 
 namespace Zero {
 
@@ -12,6 +13,11 @@ namespace Zero {
 		float nearPlane = 1.0f, farPlane = 20.0f;
 		float size = 30.0f; // Size of the orthographic projection
 		m_ProjectionMatrix = glm::ortho(-size, size, -size, size, nearPlane, farPlane);
+
+		if (Application::Get().GetRendererType() == RendererAPI::Vulkan)
+		{
+			m_ProjectionMatrix[1][1] *= -1; // Invert Y-axis for Vulkan
+		}
 	}
 
 	void DirectionalLight::Update(glm::vec3 color, float ambientIntensity, 

@@ -5,6 +5,7 @@
 #include "Renderer/Vulkan/vk_images.h"
 #include "Renderer/Vulkan/vk_initializers.h"
 #include "Renderer/Vulkan/VulkanBuffer.h"
+#include <Renderer/Vulkan/vk_pipelines.h>
 
 namespace Zero
 {
@@ -19,11 +20,13 @@ namespace Zero
             false);
     }
 
-    void VulkanShadowmap::DrawShadowMapTexture(Scene* scene, VkCommandBuffer cmd)
+    void VulkanShadowmap::DrawShadowMapTexture(Scene* scene, VkCommandBuffer cmd, DescriptorWriter& descriptorWriter)
     {
+        VulkanRenderer* renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+
         // Clear value for depth
         VkClearValue clearValue{};
-        clearValue.depthStencil = {1.0f, 0};
+        clearValue.depthStencil = { 1.f, 0 };
 
         // Depth attachment info
         VkRenderingAttachmentInfo depthAttachment{};
@@ -42,6 +45,13 @@ namespace Zero
         renderingInfo.layerCount = 1;
         renderingInfo.pDepthAttachment = &depthAttachment;
 
+        VkUtil::TransitionImageShadowMap(
+            cmd,
+            m_OffscreenImage.Image,
+            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+            VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL
+        );
+
         vkCmdBeginRendering(cmd, &renderingInfo);
 
         // Set viewport & scissor
@@ -50,8 +60,8 @@ namespace Zero
         viewport.y = 0;
         viewport.width = static_cast<float>(SHADOW_WIDTH);
         viewport.height = static_cast<float>(SHADOW_HEIGHT);
-        viewport.minDepth = 1.f;
-        viewport.maxDepth = 0.f;
+        viewport.minDepth = 0.f;
+        viewport.maxDepth = 1.f;
         vkCmdSetViewport(cmd, 0, 1, &viewport);
 
         VkRect2D scissor = {};
@@ -61,19 +71,31 @@ namespace Zero
         scissor.extent.height = SHADOW_HEIGHT;
         vkCmdSetScissor(cmd, 0, 1, &scissor);
 
+        const VkDescriptorSet descriptorSet = renderer->GetCurrentFrame().FrameDescriptors.Allocate(
+            renderer->GetDevice(), renderer->GetGpuSceneDataDescriptorLayout());
+
+        descriptorWriter.WriteImage(
+            2,
+            m_OffscreenImage.ImageView,
+            m_DepthSampler,
+            VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL,
+            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER
+        );
+
+        descriptorWriter.UpdateSet(renderer->GetDevice(), descriptorSet);
+
         // Depth bias to avoid shadow acne
         vkCmdSetDepthBias(cmd, m_DepthBiasConstant, 0.0f, m_DepthBiasSlope);
 
         // Bind pipeline and descriptor sets
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_OffscreenPipeline);
         vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_OffscreenPipelineLayout, 0, 1,
-                                &m_OffscreenDescriptorSet, 0, nullptr);
+                                &descriptorSet, 0, nullptr);
 
         GPUDrawPushConstants pushConstants{};
 
         for (const auto& gameObj : scene->GetGameObjects())
         {
-            // GPUDrawPushConstants pushConstants{};
             pushConstants.ModelMatrix = gameObj->GetTransform().GetMatrix();
             pushConstants.CameraPos = Application::Get().GetActiveCamera().GetPosition();
 
@@ -82,6 +104,13 @@ namespace Zero
         }
 
         vkCmdEndRendering(cmd);
+
+        VkUtil::TransitionImageShadowMap(
+            cmd,
+            m_OffscreenImage.Image,
+            VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL,
+            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+        );
     }
 
     void VulkanShadowmap::CreateSampler()
@@ -108,10 +137,75 @@ namespace Zero
 
     void VulkanShadowmap::CreatePipeline()
     {
+        VulkanRenderer* renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
+        if (!renderer)
+        {
+            printf("VulkanShadowmap::CreatePipeline: Renderer is not valid");
+            return;
+		}
 
+        VkShaderModule fragmentShader;
+        if (!VkUtil::LoadShaderModule("shaders/vulkan/compiled/shadowmap_vk.frag.spv", renderer->GetDevice(), &fragmentShader))
+        {
+            printf("Error when building the fragment shader module \n");
+        }
+
+        VkShaderModule vertexShader;
+        if (!VkUtil::LoadShaderModule("shaders/vulkan/compiled/shadowmap_vk.vert.spv", renderer->GetDevice(), &vertexShader))
+        {
+            printf("Error when building the vertex shader module \n");
+        }
+
+        VkPushConstantRange bufferRange{};
+        bufferRange.offset = 0;
+        bufferRange.size = sizeof(GPUDrawPushConstants);
+        bufferRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+        VkDescriptorSetLayout layouts[] = 
+        { 
+            renderer->GetGpuSceneDataDescriptorLayout(),
+            renderer->GetGameObjectDescriptorLayout() 
+        };
+
+        VkPipelineLayoutCreateInfo pipelineLayoutInfo = VkInit::PipelineLayoutCreateInfo();
+        pipelineLayoutInfo.pPushConstantRanges = &bufferRange;
+        pipelineLayoutInfo.pushConstantRangeCount = 1;
+        pipelineLayoutInfo.pSetLayouts = layouts;
+        pipelineLayoutInfo.setLayoutCount = 2;
+        VK_CHECK(vkCreatePipelineLayout(renderer->GetDevice() , &pipelineLayoutInfo, nullptr, &m_OffscreenPipelineLayout));
+
+        PipelineBuilder pipelineBuilder{};
+
+        pipelineBuilder.PipelineLayout = m_OffscreenPipelineLayout;
+        pipelineBuilder.SetShaders(vertexShader, fragmentShader);
+        pipelineBuilder.SetInputTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+        pipelineBuilder.SetPolygonMode(VK_POLYGON_MODE_FILL);
+
+        pipelineBuilder.SetMultisamplingNone();
+        pipelineBuilder.DisableBlending();
+
+        // Disable culling, so all faces contribute to shadows
+        pipelineBuilder.SetCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE);
+        pipelineBuilder.EnableDepthTest(VK_TRUE, VK_TRUE, VK_COMPARE_OP_LESS_OR_EQUAL);
+        pipelineBuilder.SetDepthFormat(VK_FORMAT_D32_SFLOAT);
+		pipelineBuilder.SetDepthBias(VK_TRUE);
+
+        // No blend attachment states (no color attachments used)
+        pipelineBuilder.SetColorAttachmentFormat(VK_FORMAT_UNDEFINED, 0);
+
+        m_OffscreenPipeline = pipelineBuilder.BuildPipeline(renderer->GetDevice());
+        if (m_OffscreenPipeline == VK_NULL_HANDLE)
+        {
+            printf("VulkanShadowmap::CreatePipeline: Failed to create offscreen pipeline\n");
+            return;
+		}
+
+        //clean structures
+        vkDestroyShaderModule(renderer->GetDevice(), fragmentShader, nullptr);
+        vkDestroyShaderModule(renderer->GetDevice(), vertexShader, nullptr);
     }
 
-    void VulkanShadowmap::Destroy()
+    void VulkanShadowmap::Destroy() const
     {
         const auto renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
 
@@ -122,6 +216,9 @@ namespace Zero
         }
 
         vkDeviceWaitIdle(renderer->GetDevice());
+
+        vkDestroyPipelineLayout(renderer->GetDevice(), m_OffscreenPipelineLayout, nullptr);
+        vkDestroyPipeline(renderer->GetDevice(), m_OffscreenPipeline, nullptr);
 
         vkDestroyImageView(renderer->GetDevice(), m_OffscreenImage.ImageView, nullptr);
         vmaDestroyImage(renderer->GetAllocator(), m_OffscreenImage.Image, m_OffscreenImage.Allocation);
@@ -138,11 +235,9 @@ namespace Zero
         newImage.ImageExtent = size;
 
         VkImageCreateInfo imgInfo = VkInit::ImageCreateInfo(format, usage, size);
-        if (mipmapped)
-        {
-            imgInfo.mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(size.width, size.height)))) + 1;
-        }
 
+        imgInfo.mipLevels = 1;
+        
         // always allocate images on dedicated GPU memory
         VmaAllocationCreateInfo allocinfo = {};
         allocinfo.usage = VMA_MEMORY_USAGE_GPU_ONLY;
@@ -153,13 +248,10 @@ namespace Zero
             vmaCreateImage(renderer->GetAllocator(), &imgInfo, &allocinfo, &newImage.Image, &newImage.Allocation,
                 nullptr));
 
-        // if the format is a depth format, we will need to have it use the correct
-        // aspect flag
-        VkImageAspectFlags aspectFlag = VK_IMAGE_ASPECT_COLOR_BIT;
-        if (format == VK_FORMAT_D32_SFLOAT)
-        {
-            aspectFlag = VK_IMAGE_ASPECT_DEPTH_BIT;
-        }
+        // if the format is a depth format, we will need to have it use the correct aspect flag
+        VkImageAspectFlags aspectFlag = (format == VK_FORMAT_D32_SFLOAT)
+            ? VK_IMAGE_ASPECT_DEPTH_BIT
+            : VK_IMAGE_ASPECT_COLOR_BIT;
 
         // build an image-view for the image
         VkImageViewCreateInfo viewInfo = VkInit::ImageviewCreateInfo(format, newImage.Image, aspectFlag);
@@ -175,7 +267,8 @@ namespace Zero
     {
         VulkanRenderer* renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
 
-        const uint32_t dataSize = size.depth * size.width * size.height * 4;
+        const uint32_t bytesPerPixel = 4;
+        const uint32_t dataSize = size.width * size.height * size.depth * bytesPerPixel;
 
         AllocatedBuffer uploadBuffer = VulkanBufferManager::CreateBuffer(
             renderer->GetAllocator(), dataSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
@@ -189,7 +282,7 @@ namespace Zero
 
         renderer->ImmediateSubmit([&](VkCommandBuffer cmd)
         {
-            VkUtil::TransitionImage(cmd, new_image.Image, VK_IMAGE_LAYOUT_UNDEFINED,
+            VkUtil::TransitionImageShadowMap(cmd, new_image.Image, VK_IMAGE_LAYOUT_UNDEFINED,
                                     VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
             VkBufferImageCopy copyRegion = {};
@@ -207,8 +300,10 @@ namespace Zero
             vkCmdCopyBufferToImage(cmd, uploadBuffer.Buffer, new_image.Image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1,
                                    &copyRegion);
 
-            VkUtil::TransitionImage(cmd, new_image.Image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                                    VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+            // Fix: Add a final transition to shader-read layout
+            VkUtil::TransitionImageShadowMap(cmd, new_image.Image,
+                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
         });
 
         VulkanBufferManager::DestroyBuffer(renderer->GetAllocator(), uploadBuffer);

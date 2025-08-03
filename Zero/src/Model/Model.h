@@ -35,6 +35,7 @@ namespace Zero {
 			VkSampler& sampler,
 			GPUDrawPushConstants& pushConstants,
 			std::shared_ptr<class Animator> animator) {};
+
 		virtual void DestroyModel() const {}
 
 		auto& GetBoneInfoMap() { return m_BoneInfoMap; }

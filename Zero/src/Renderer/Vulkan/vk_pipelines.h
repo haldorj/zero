@@ -29,7 +29,8 @@ public:
     void SetCullMode(VkCullModeFlags cullMode, VkFrontFace frontFace);
     void SetMultisamplingNone();
     void DisableBlending();
-    void SetColorAttachmentFormat(VkFormat format);
+    void SetDepthBias(VkBool32 enabled);
+    void SetColorAttachmentFormat(VkFormat format, int32_t colorAttachmentCount = 1);
     void SetDepthFormat(VkFormat format);
     void DisableDepthTest();
     void EnableDepthTest(VkBool32 depthTestEnable, VkBool32 depthWriteEnable, VkCompareOp op);

@@ -56,6 +56,7 @@ namespace Zero
         // TODO: Move this somewhere else.
         CreateQuadMesh();
         m_ShadowMap = new VulkanShadowmap();
+        TestQuadImage = new VulkanTexture("assets/images/image.png", "type", false);
     }
 
     void VulkanRenderer::InitImGui()
@@ -143,7 +144,6 @@ namespace Zero
             vkDestroySampler(m_Device, m_DefaultSamplerNearest, nullptr);
             vkDestroySampler(m_Device, m_DefaultSamplerLinear, nullptr);
 
-            //DestroyImage(m_ErrorCheckerboardImage);
             DestroyImage(m_DefaultTexture.GetImage());
         });
     }
@@ -277,33 +277,6 @@ namespace Zero
     {
 		if (!scene) return;
 
-        VkRenderingAttachmentInfo colorAttachment = VkInit::AttachmentInfo(m_DrawImage.ImageView, nullptr,
-                                                                           VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
-        VkRenderingAttachmentInfo depthAttachment = VkInit::DepthAttachmentInfo(
-            m_DepthImage.ImageView, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL);
-
-        VkRenderingInfo renderInfo = VkInit::RenderingInfo(m_DrawExtent, &colorAttachment, &depthAttachment);
-        vkCmdBeginRendering(cmd, &renderInfo);
-
-        //set dynamic viewport and scissor
-        VkViewport viewport = {};
-        viewport.x = 0;
-        viewport.y = 0;
-        viewport.width = static_cast<float>(m_DrawExtent.width);
-        viewport.height = static_cast<float>(m_DrawExtent.height);
-        viewport.minDepth = 1.f;
-        viewport.maxDepth = 0.f;
-
-        vkCmdSetViewport(cmd, 0, 1, &viewport);
-
-        VkRect2D scissor = {};
-        scissor.offset.x = 0;
-        scissor.offset.y = 0;
-        scissor.extent.width = m_DrawExtent.width;
-        scissor.extent.height = m_DrawExtent.height;
-
-        vkCmdSetScissor(cmd, 0, 1, &scissor);
-
         glm::mat4 view = Application::Get().GetActiveCamera().GetViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(Application::Get().GetActiveCamera().GetFOV()),
             (float)m_DrawExtent.width / (float)m_DrawExtent.height, 0.1f, 10000.f);
@@ -380,7 +353,40 @@ namespace Zero
 		writer.UpdateSet(m_Device, sceneDataDescriptor);
 
         GPUDrawPushConstants pushConstants{};
+
+		// Shadow Map ////////////
+
+		m_ShadowMap->DrawShadowMapTexture(scene, cmd, writer);
+
+        VkRenderingAttachmentInfo colorAttachment = VkInit::AttachmentInfo(m_DrawImage.ImageView, nullptr,
+            VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+        VkRenderingAttachmentInfo depthAttachment = VkInit::DepthAttachmentInfo(
+            m_DepthImage.ImageView, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL);
+
+        VkRenderingInfo renderInfo = VkInit::RenderingInfo(m_DrawExtent, &colorAttachment, &depthAttachment);
+        vkCmdBeginRendering(cmd, &renderInfo);
+
+        //set dynamic viewport and scissor
+        VkViewport viewport = {};
+        viewport.x = 0;
+        viewport.y = 0;
+        viewport.width = static_cast<float>(m_DrawExtent.width);
+        viewport.height = static_cast<float>(m_DrawExtent.height);
+        viewport.minDepth = 1.f;
+        viewport.maxDepth = 0.f;
+
+        vkCmdSetViewport(cmd, 0, 1, &viewport);
+
+        VkRect2D scissor = {};
+        scissor.offset.x = 0;
+        scissor.offset.y = 0;
+        scissor.extent.width = m_DrawExtent.width;
+        scissor.extent.height = m_DrawExtent.height;
+
+        vkCmdSetScissor(cmd, 0, 1, &scissor);
         
+        // Skybox ////////////
+
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline);
 
         vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipelineLayout, 0, 1,
@@ -388,34 +394,47 @@ namespace Zero
 
         scene->GetSkybox()->Draw(cmd, m_SkyboxPipelineLayout, m_DrawExtent, pushConstants, writer);
 
-        vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TexturedPipeline);
+        // Scene ////////////
 
-        vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TexturedPipelineLayout, 0, 1,
-            &sceneDataDescriptor, 0, nullptr);
+        vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TexturedPipeline);
 
         for (const auto& gameObj : scene->GetGameObjects())
         {
-            // GPUDrawPushConstants pushConstants{};
             pushConstants.ModelMatrix = gameObj->GetTransform().GetMatrix();
             pushConstants.CameraPos = Application::Get().GetActiveCamera().GetPosition();
 
             gameObj->GetModel()->Draw(cmd, m_TexturedPipelineLayout, m_DefaultSamplerLinear, pushConstants, gameObj->GetAnimator());
         }
 
-		//// Draw Debug Quad
-		//vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_QuadPipeline);
-  //      vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_QuadPipelineLayout, 0, 1,
-		//	&sceneDataDescriptor, 0, nullptr);
+		// Debug Quad ////////////
 
-  //      pushConstants = GPUDrawPushConstants();
-  //      pushConstants.VertexBuffer = m_DebugQuad.VertexBufferAddress;
+		vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_QuadPipeline);
 
-  //      vkCmdPushConstants(cmd, m_QuadPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants), &pushConstants);
-  //      vkCmdBindIndexBuffer(cmd, m_DebugQuad.IndexBuffer.Buffer, 0, VK_INDEX_TYPE_UINT32);
+        pushConstants = GPUDrawPushConstants();
+        pushConstants.VertexBuffer = m_DebugQuad.VertexBufferAddress;
 
-  //      vkCmdDrawIndexed(cmd, 6, 1, 0, 0, 0);
+        const VkDescriptorSet& descriptorSet = GetCurrentFrame().FrameDescriptors.Allocate(
+            GetDevice(), m_GameObjectDescriptorLayout);
+
+        DescriptorWriter descriptorWriter{};
+        descriptorWriter.WriteImage(0, m_ShadowMap->GetOffscreenImage().ImageView, m_DefaultSamplerLinear,
+            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+        
+        descriptorWriter.UpdateSet(GetDevice(), descriptorSet);
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_QuadPipelineLayout, 1, 1, &descriptorSet, 0, nullptr);
+
+        vkCmdPushConstants(cmd, m_QuadPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants), &pushConstants);
+        vkCmdBindIndexBuffer(cmd, m_DebugQuad.IndexBuffer.Buffer, 0, VK_INDEX_TYPE_UINT32);
+
+        vkCmdDrawIndexed(cmd, 6, 1, 0, 0, 0);
 
         vkCmdEndRendering(cmd);
+
+
     }
 
     void VulkanRenderer::NewFrameImGui()
@@ -760,23 +779,28 @@ namespace Zero
         // Create a quad mesh for rendering
         std::array<Vertex, 4> vertices{};
 
-        vertices[0].Position = { -1.0f, -1.0f, 0.0f };
-        vertices[0].UvX = { 0.0f };
-        vertices[0].UvY = { 0.0f };
+        vertices[0].Position = { -1.0f, -1.0f, 0.0f }; // Bottom-left
+        vertices[0].UvX = 0.0f;
+        vertices[0].UvY = 0.0f;
 
-        vertices[1].Position = { 1.0f, -1.0f, 0.0f };
-        vertices[1].UvX = { 1.0f };
-        vertices[1].UvY = { 0.0f };
+        vertices[1].Position = { 1.0f, -1.0f, 0.0f };  // Bottom-right
+        vertices[1].UvX = 1.0f;
+        vertices[1].UvY = 0.0f;
 
-        vertices[2].Position = { -1.0f, 1.0f, 0.0f };
-        vertices[2].UvX = { 0.0f };
-        vertices[2].UvY = { 1.0f };
+        vertices[2].Position = { -1.0f, 1.0f, 0.0f };  // Top-left
+        vertices[2].UvX = 0.0f;
+        vertices[2].UvY = 1.0f;
 
-		vertices[3].Position = { 1.0f, 1.0f, 0.0f };
-		vertices[3].UvX = { 1.0f };
-		vertices[3].UvY = { 1.0f };
+        vertices[3].Position = { 1.0f, 1.0f, 0.0f };   // Top-right
+        vertices[3].UvX = 1.0f;
+        vertices[3].UvY = 1.0f;
 
-        std::array<uint32_t, 6> indices = { 2, 0, 1, 2, 1, 3 };
+
+        std::array<uint32_t, 6> indices = {
+            0, 1, 2,
+            1, 3, 2
+		};
+
         m_DebugQuad = UploadMesh(indices, vertices);
 
         m_MainDeletionQueue.PushFunction([&]()
@@ -821,32 +845,20 @@ namespace Zero
         VK_CHECK(vkCreatePipelineLayout(m_Device, &pipelineLayoutInfo, nullptr, &m_TexturedPipelineLayout));
 
         PipelineBuilder pipelineBuilder;
-        //use the triangle layout we created
         pipelineBuilder.PipelineLayout = m_TexturedPipelineLayout;
-        //connecting the vertex and pixel shaders to the pipeline
         pipelineBuilder.SetShaders(vertexShader, fragmentShader);
-        //it will draw triangles
         pipelineBuilder.SetInputTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
-        //filled triangles
         pipelineBuilder.SetPolygonMode(VK_POLYGON_MODE_FILL);
-        //no backface culling
         pipelineBuilder.SetCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE);
-        //no multisampling
         pipelineBuilder.SetMultisamplingNone();
-        //no blending
-        //pipelineBuilder.disable_blending();
         pipelineBuilder.DisableBlending();
-        //no depth testing
         pipelineBuilder.EnableDepthTest(VK_TRUE, VK_TRUE, VK_COMPARE_OP_GREATER_OR_EQUAL);
 
-        //connect the image format we will draw into, from draw image
         pipelineBuilder.SetColorAttachmentFormat(m_DrawImage.ImageFormat);
         pipelineBuilder.SetDepthFormat(m_DepthImage.ImageFormat);
 
-        //finally build the pipeline
         m_TexturedPipeline = pipelineBuilder.BuildPipeline(m_Device);
 
-        //clean structures
         vkDestroyShaderModule(m_Device, fragmentShader, nullptr);
         vkDestroyShaderModule(m_Device, vertexShader, nullptr);
 
