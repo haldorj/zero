@@ -48,7 +48,7 @@ namespace Zero
         VkUtil::TransitionImageShadowMap(
             cmd,
             m_OffscreenImage.Image,
-            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+            VK_IMAGE_LAYOUT_UNDEFINED,
             VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL
         );
 
@@ -217,11 +217,12 @@ namespace Zero
 
         vkDeviceWaitIdle(renderer->GetDevice());
 
+        vkDestroyImageView(renderer->GetDevice(), m_OffscreenImage.ImageView, nullptr);
+        vmaDestroyImage(renderer->GetAllocator(), m_OffscreenImage.Image, m_OffscreenImage.Allocation);
+
         vkDestroyPipelineLayout(renderer->GetDevice(), m_OffscreenPipelineLayout, nullptr);
         vkDestroyPipeline(renderer->GetDevice(), m_OffscreenPipeline, nullptr);
 
-        vkDestroyImageView(renderer->GetDevice(), m_OffscreenImage.ImageView, nullptr);
-        vmaDestroyImage(renderer->GetAllocator(), m_OffscreenImage.Image, m_OffscreenImage.Allocation);
         vkDestroySampler(renderer->GetDevice(), m_DepthSampler, nullptr);
     }
 
@@ -249,9 +250,7 @@ namespace Zero
                 nullptr));
 
         // if the format is a depth format, we will need to have it use the correct aspect flag
-        VkImageAspectFlags aspectFlag = (format == VK_FORMAT_D32_SFLOAT)
-            ? VK_IMAGE_ASPECT_DEPTH_BIT
-            : VK_IMAGE_ASPECT_COLOR_BIT;
+        VkImageAspectFlags aspectFlag = VK_IMAGE_ASPECT_DEPTH_BIT;
 
         // build an image-view for the image
         VkImageViewCreateInfo viewInfo = VkInit::ImageviewCreateInfo(format, newImage.Image, aspectFlag);
@@ -280,31 +279,31 @@ namespace Zero
                                                usage | VK_IMAGE_USAGE_TRANSFER_DST_BIT |
                                                VK_IMAGE_USAGE_TRANSFER_SRC_BIT, mipmapped);
 
-        renderer->ImmediateSubmit([&](VkCommandBuffer cmd)
-        {
-            VkUtil::TransitionImageShadowMap(cmd, new_image.Image, VK_IMAGE_LAYOUT_UNDEFINED,
-                                    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+        //renderer->ImmediateSubmit([&](VkCommandBuffer cmd)
+        //{
+        //    VkUtil::TransitionImageShadowMap(cmd, new_image.Image, VK_IMAGE_LAYOUT_UNDEFINED,
+        //                            VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
-            VkBufferImageCopy copyRegion = {};
-            copyRegion.bufferOffset = 0;
-            copyRegion.bufferRowLength = 0;
-            copyRegion.bufferImageHeight = 0;
+        //    VkBufferImageCopy copyRegion = {};
+        //    copyRegion.bufferOffset = 0;
+        //    copyRegion.bufferRowLength = 0;
+        //    copyRegion.bufferImageHeight = 0;
 
-            copyRegion.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-            copyRegion.imageSubresource.mipLevel = 0;
-            copyRegion.imageSubresource.baseArrayLayer = 0;
-            copyRegion.imageSubresource.layerCount = 1;
-            copyRegion.imageExtent = size;
+        //    copyRegion.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        //    copyRegion.imageSubresource.mipLevel = 0;
+        //    copyRegion.imageSubresource.baseArrayLayer = 0;
+        //    copyRegion.imageSubresource.layerCount = 1;
+        //    copyRegion.imageExtent = size;
 
-            // copy the buffer into the image
-            vkCmdCopyBufferToImage(cmd, uploadBuffer.Buffer, new_image.Image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1,
-                                   &copyRegion);
+        //    // copy the buffer into the image
+        //    vkCmdCopyBufferToImage(cmd, uploadBuffer.Buffer, new_image.Image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1,
+        //                           &copyRegion);
 
-            // Fix: Add a final transition to shader-read layout
-            VkUtil::TransitionImageShadowMap(cmd, new_image.Image,
-                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-        });
+        //    // Fix: Add a final transition to shader-read layout
+        //    VkUtil::TransitionImageShadowMap(cmd, new_image.Image,
+        //        VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+        //        VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+        //});
 
         VulkanBufferManager::DestroyBuffer(renderer->GetAllocator(), uploadBuffer);
         

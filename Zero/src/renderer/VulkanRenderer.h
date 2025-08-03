@@ -64,7 +64,7 @@ namespace Zero {
         void SetClearColor(const glm::vec4 clearColor) override { m_ClearColor = clearColor; }
         void Draw(Scene* scene) override;
 
-        void DrawBackground(VkCommandBuffer cmd);
+        void DrawBackground(VkCommandBuffer cmd) const;
         void DrawGeometryTextured(Scene* scene, VkCommandBuffer cmd);
 
         void NewFrameImGui();
@@ -168,7 +168,6 @@ namespace Zero {
         VulkanShadowmap* m_ShadowMap{};
 
         GPUMeshBuffers m_DebugQuad{};
-		VulkanTexture* TestQuadImage = nullptr;
         GPUObjectData m_GPUObjectData{};
     };
 }

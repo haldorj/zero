@@ -77,6 +77,8 @@ layout(scalar, set = 0, binding = 1) uniform CameraData
 
 layout(set = 0, binding = 2) uniform samplerCube skyboxTexture;
 
+layout(set = 0, binding = 3) uniform sampler2D directionalShadowMap;
+
 layout(set = 1, binding = 0) uniform sampler2D displayTexture;
 
 layout(scalar, set = 1, binding = 1) readonly buffer AnimationData

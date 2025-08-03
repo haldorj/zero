@@ -10,13 +10,22 @@ namespace Zero {
 	{
 		m_Direction = direction;
 
-		float nearPlane = 1.0f, farPlane = 20.0f;
-		float size = 30.0f; // Size of the orthographic projection
-		m_ProjectionMatrix = glm::ortho(-size, size, -size, size, nearPlane, farPlane);
-
+		float size = 30.0f;
+		float nearPlane{}, farPlane{};
+		
 		if (Application::Get().GetRendererType() == RendererAPI::Vulkan)
 		{
-			m_ProjectionMatrix[1][1] *= -1; // Invert Y-axis for Vulkan
+			nearPlane = -50.0f;
+			farPlane = 50.0f;
+
+			m_ProjectionMatrix = glm::ortho(-size, size, -size, size, nearPlane, farPlane);
+			m_ProjectionMatrix[1][1] *= -1;
+		}
+		else
+		{
+			nearPlane = 0.0f;
+			farPlane = 50.0f;
+			m_ProjectionMatrix = glm::ortho(-size, size, -size, size, nearPlane, farPlane);
 		}
 	}
 
@@ -35,7 +44,7 @@ namespace Zero {
 		glm::vec3 origin = glm::vec3{0.0f};
 		glm::vec3 up = glm::vec3{ 0.0f, 1.0f, 0.0f };
 
-		glm::vec3 position = glm::normalize(m_Direction) * 10.0f;
+		glm::vec3 position = glm::normalize(m_Direction) * 30.0f;
 
 		return m_ProjectionMatrix * glm::lookAt(position, origin, up);
 	}

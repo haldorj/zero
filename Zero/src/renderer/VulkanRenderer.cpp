@@ -56,7 +56,6 @@ namespace Zero
         // TODO: Move this somewhere else.
         CreateQuadMesh();
         m_ShadowMap = new VulkanShadowmap();
-        TestQuadImage = new VulkanTexture("assets/images/image.png", "type", false);
     }
 
     void VulkanRenderer::InitImGui()
@@ -266,7 +265,7 @@ namespace Zero
         m_FrameNumber++;
     }
 
-    void VulkanRenderer::DrawBackground(VkCommandBuffer cmd)
+    void VulkanRenderer::DrawBackground(VkCommandBuffer cmd) const
     {
         VkClearColorValue clearValue{m_ClearColor.r, m_ClearColor.g, m_ClearColor.b, m_ClearColor.a};
         VkImageSubresourceRange clearRange = VkInit::ImageSubresourceRange(VK_IMAGE_ASPECT_COLOR_BIT);
@@ -468,8 +467,6 @@ namespace Zero
         if (m_ShadowMap)
         {
             m_ShadowMap->Destroy();
-            delete m_ShadowMap;
-            m_ShadowMap = nullptr;
 		}
 
         // Free per-frame structures and deletion queue
