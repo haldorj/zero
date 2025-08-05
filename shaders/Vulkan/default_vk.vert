@@ -10,6 +10,7 @@ layout (location = 1) out vec3 outColor;
 layout (location = 2) out vec2 outUV;
 layout (location = 3) out vec3 outPosition;
 layout (location = 4) out vec3 outCameraPos;
+layout (location = 5) out vec4 outFragPosLight;
 
 layout(buffer_reference, scalar) readonly buffer VertexBuffer
 { 
@@ -56,7 +57,9 @@ void main()
 	outUV.x = v.uv_x;
 	outUV.y = v.uv_y;
 	outNormal = mat3(transpose(inverse(PushConstants.model))) * v.normal.xyz;
-	outPosition = vec3(PushConstants.model * vec4(v.position, 1.0));
+	outPosition = vec3(PushConstants.model * totalPosition);
+
+    outFragPosLight = sceneData.directionalLightTransform * vec4(outPosition, 1.0f);
 
 	outCameraPos = PushConstants.cameraPos;
 }

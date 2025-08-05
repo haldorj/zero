@@ -274,7 +274,7 @@ namespace Zero
 
     void VulkanRenderer::DrawGeometryTextured(Scene* scene, VkCommandBuffer cmd)
     {
-		if (!scene) return;
+        if (!scene) return;
 
         glm::mat4 view = Application::Get().GetActiveCamera().GetViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(Application::Get().GetActiveCamera().GetFOV()),
@@ -282,7 +282,7 @@ namespace Zero
 
         projection[1][1] *= -1;
 
-		// SCENE DATA BUFFER CREATION
+        // SCENE DATA BUFFER CREATION
         AllocatedBuffer gpuSceneDataBuffer = VulkanBufferManager::CreateBuffer(m_Allocator, sizeof(GPUSceneData), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
 
         GetCurrentFrame().DeletionQueue.PushFunction([=, this]() {
@@ -292,7 +292,7 @@ namespace Zero
         GPUSceneData* sceneUniformData = (GPUSceneData*)gpuSceneDataBuffer.Allocation->GetMappedData();
         *sceneUniformData = m_SceneData;
 
-		// CAMERA DATA BUFFER CREATION
+        // CAMERA DATA BUFFER CREATION
         AllocatedBuffer gpuCameraDataBuffer = VulkanBufferManager::CreateBuffer(m_Allocator, sizeof(GPUCameraData), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
 
         GetCurrentFrame().DeletionQueue.PushFunction([=, this]() {
@@ -302,15 +302,15 @@ namespace Zero
         GPUCameraData* cameraUniformData = (GPUCameraData*)gpuCameraDataBuffer.Allocation->GetMappedData();
         *cameraUniformData = m_CameraData;
 
-		cameraUniformData->View = view;
-		cameraUniformData->Proj = projection;
+        cameraUniformData->View = view;
+        cameraUniformData->Proj = projection;
         cameraUniformData->Viewproj = projection * view;
 
         sceneUniformData->DirectionalLight.Base.Color = scene->GetDirectionalLight()->GetColor();
         sceneUniformData->DirectionalLight.Base.AmbientIntensity = scene->GetDirectionalLight()->GetAmbientIntensity();
         sceneUniformData->DirectionalLight.Base.DiffuseIntensity = scene->GetDirectionalLight()->GetDiffuseIntensity();
         sceneUniformData->DirectionalLight.Direction = scene->GetDirectionalLight()->GetDirection();
- 
+
         sceneUniformData->LightSpaceMatrix = scene->GetDirectionalLight()->GetLightTransform();
 
         sceneUniformData->Material.SpecularIntensity = scene->GetMaterial()->GetSpecularIntensity();
@@ -321,41 +321,45 @@ namespace Zero
 
         for (int i = 0; i < scene->GetPointLights().size(); i++)
         {
-			sceneUniformData->PointLights[i].Base.Color = scene->GetPointLights()[i]->GetColor();
-			sceneUniformData->PointLights[i].Base.AmbientIntensity = scene->GetPointLights()[i]->GetAmbientIntensity();
-			sceneUniformData->PointLights[i].Base.DiffuseIntensity = scene->GetPointLights()[i]->GetDiffuseIntensity();
-			sceneUniformData->PointLights[i].Position = scene->GetPointLights()[i]->GetPosition();
-			sceneUniformData->PointLights[i].Constant = scene->GetPointLights()[i]->GetConstant();
-			sceneUniformData->PointLights[i].Linear = scene->GetPointLights()[i]->GetLinear();
-			sceneUniformData->PointLights[i].Exponent = scene->GetPointLights()[i]->GetExponent();
-		}   
+            sceneUniformData->PointLights[i].Base.Color = scene->GetPointLights()[i]->GetColor();
+            sceneUniformData->PointLights[i].Base.AmbientIntensity = scene->GetPointLights()[i]->GetAmbientIntensity();
+            sceneUniformData->PointLights[i].Base.DiffuseIntensity = scene->GetPointLights()[i]->GetDiffuseIntensity();
+            sceneUniformData->PointLights[i].Position = scene->GetPointLights()[i]->GetPosition();
+            sceneUniformData->PointLights[i].Constant = scene->GetPointLights()[i]->GetConstant();
+            sceneUniformData->PointLights[i].Linear = scene->GetPointLights()[i]->GetLinear();
+            sceneUniformData->PointLights[i].Exponent = scene->GetPointLights()[i]->GetExponent();
+        }
 
         for (int i = 0; i < scene->GetSpotLights().size(); i++)
         {
-			sceneUniformData->SpotLights[i].Base.Base.Color = scene->GetSpotLights()[i]->GetColor();
-			sceneUniformData->SpotLights[i].Base.Base.AmbientIntensity = scene->GetSpotLights()[i]->GetAmbientIntensity();
-			sceneUniformData->SpotLights[i].Base.Base.DiffuseIntensity = scene->GetSpotLights()[i]->GetDiffuseIntensity();
-			sceneUniformData->SpotLights[i].Base.Position = scene->GetSpotLights()[i]->GetPosition();
-			sceneUniformData->SpotLights[i].Base.Constant = scene->GetSpotLights()[i]->GetConstant();
-			sceneUniformData->SpotLights[i].Base.Linear = scene->GetSpotLights()[i]->GetLinear();
-			sceneUniformData->SpotLights[i].Base.Exponent = scene->GetSpotLights()[i]->GetExponent();
-			sceneUniformData->SpotLights[i].Direction = scene->GetSpotLights()[i]->GetDirection();
+            sceneUniformData->SpotLights[i].Base.Base.Color = scene->GetSpotLights()[i]->GetColor();
+            sceneUniformData->SpotLights[i].Base.Base.AmbientIntensity = scene->GetSpotLights()[i]->GetAmbientIntensity();
+            sceneUniformData->SpotLights[i].Base.Base.DiffuseIntensity = scene->GetSpotLights()[i]->GetDiffuseIntensity();
+            sceneUniformData->SpotLights[i].Base.Position = scene->GetSpotLights()[i]->GetPosition();
+            sceneUniformData->SpotLights[i].Base.Constant = scene->GetSpotLights()[i]->GetConstant();
+            sceneUniformData->SpotLights[i].Base.Linear = scene->GetSpotLights()[i]->GetLinear();
+            sceneUniformData->SpotLights[i].Base.Exponent = scene->GetSpotLights()[i]->GetExponent();
+            sceneUniformData->SpotLights[i].Direction = scene->GetSpotLights()[i]->GetDirection();
             sceneUniformData->SpotLights[i].Edge = scene->GetSpotLights()[i]->GetEdge();
-		}
+        }
 
         //create a descriptor set that binds that buffer and update it
         VkDescriptorSet sceneDataDescriptor = GetCurrentFrame().FrameDescriptors.Allocate(m_Device, m_GpuSceneDataDescriptorLayout);
 
         DescriptorWriter writer;
         writer.WriteBuffer(0, gpuSceneDataBuffer.Buffer, sizeof(GPUSceneData), 0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
-		writer.WriteBuffer(1, gpuCameraDataBuffer.Buffer, sizeof(GPUCameraData), 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
-		writer.UpdateSet(m_Device, sceneDataDescriptor);
+        writer.WriteBuffer(1, gpuCameraDataBuffer.Buffer, sizeof(GPUCameraData), 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+        writer.UpdateSet(m_Device, sceneDataDescriptor);
 
         GPUDrawPushConstants pushConstants{};
 
-		// Shadow Map ////////////
+        // Shadow Map ////////////
 
-		m_ShadowMap->DrawShadowMapTexture(scene, cmd, writer);
+        m_ShadowMap->DrawShadowMapTexture(scene, cmd, writer);
+
+        writer.WriteImage(3, m_ShadowMap->GetOffscreenImage().ImageView, m_DefaultSamplerLinear,
+			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+		writer.UpdateSet(m_Device, sceneDataDescriptor);
 
         VkRenderingAttachmentInfo colorAttachment = VkInit::AttachmentInfo(m_DrawImage.ImageView, nullptr,
             VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
@@ -383,7 +387,7 @@ namespace Zero
         scissor.extent.height = m_DrawExtent.height;
 
         vkCmdSetScissor(cmd, 0, 1, &scissor);
-        
+
         // Skybox ////////////
 
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_SkyboxPipeline);
@@ -405,31 +409,33 @@ namespace Zero
             gameObj->GetModel()->Draw(cmd, m_TexturedPipelineLayout, m_DefaultSamplerLinear, pushConstants, gameObj->GetAnimator());
         }
 
-		// Debug Quad ////////////
+        // Debug Quad ////////////
+        if (Application::Get().ShowShadowmap())
+        {
+            vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_QuadPipeline);
 
-		vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_QuadPipeline);
+            pushConstants = GPUDrawPushConstants();
+            pushConstants.VertexBuffer = m_DebugQuad.VertexBufferAddress;
 
-        pushConstants = GPUDrawPushConstants();
-        pushConstants.VertexBuffer = m_DebugQuad.VertexBufferAddress;
+            const VkDescriptorSet& descriptorSet = GetCurrentFrame().FrameDescriptors.Allocate(
+                GetDevice(), m_GameObjectDescriptorLayout);
 
-        const VkDescriptorSet& descriptorSet = GetCurrentFrame().FrameDescriptors.Allocate(
-            GetDevice(), m_GameObjectDescriptorLayout);
+            DescriptorWriter descriptorWriter{};
+            descriptorWriter.WriteImage(0, m_ShadowMap->GetOffscreenImage().ImageView, m_DefaultSamplerLinear,
+                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 
-        DescriptorWriter descriptorWriter{};
-        descriptorWriter.WriteImage(0, m_ShadowMap->GetOffscreenImage().ImageView, m_DefaultSamplerLinear,
-            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
-        
-        descriptorWriter.UpdateSet(GetDevice(), descriptorSet);
+            descriptorWriter.UpdateSet(GetDevice(), descriptorSet);
 
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_QuadPipelineLayout, 1, 1, &descriptorSet, 0, nullptr);
+            vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_QuadPipelineLayout, 1, 1, &descriptorSet, 0, nullptr);
 
-        vkCmdPushConstants(cmd, m_QuadPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants), &pushConstants);
-        vkCmdBindIndexBuffer(cmd, m_DebugQuad.IndexBuffer.Buffer, 0, VK_INDEX_TYPE_UINT32);
+            vkCmdPushConstants(cmd, m_QuadPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants), &pushConstants);
+            vkCmdBindIndexBuffer(cmd, m_DebugQuad.IndexBuffer.Buffer, 0, VK_INDEX_TYPE_UINT32);
 
-        vkCmdDrawIndexed(cmd, 6, 1, 0, 0, 0);
+            vkCmdDrawIndexed(cmd, 6, 1, 0, 0, 0);
+        }
 
         vkCmdEndRendering(cmd);
 
@@ -715,6 +721,7 @@ namespace Zero
             builder.AddBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);           // Scene data
 			builder.AddBinding(1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);           // View projection matrix
 			builder.AddBinding(2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);   // Texture sampler for skybox
+			builder.AddBinding(3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);   // Texture sampler for shadow map
             m_GpuSceneDataDescriptorLayout = builder.Build(m_Device, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
         }
 

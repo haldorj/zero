@@ -5,29 +5,30 @@
 
 namespace Zero {
 
-	DirectionalLight::DirectionalLight(glm::vec3 color, float ambientIntensity,
-		glm::vec3 direction, float diffuseIntensity) : Light(color, ambientIntensity, diffuseIntensity)
-	{
-		m_Direction = direction;
+    DirectionalLight::DirectionalLight(glm::vec3 color, float ambientIntensity,
+        glm::vec3 direction, float diffuseIntensity)
+        : Light(color, ambientIntensity, diffuseIntensity)
+    {
+        m_Direction = direction;
 
-		float size = 30.0f;
-		float nearPlane{}, farPlane{};
-		
-		if (Application::Get().GetRendererType() == RendererAPI::Vulkan)
-		{
-			nearPlane = -50.0f;
-			farPlane = 50.0f;
+        float size = 30.0f;
+        float nearPlane = 0.1f;
+        float farPlane = 50.0f;
 
-			m_ProjectionMatrix = glm::ortho(-size, size, -size, size, nearPlane, farPlane);
-			m_ProjectionMatrix[1][1] *= -1;
-		}
-		else
-		{
-			nearPlane = 0.0f;
-			farPlane = 50.0f;
-			m_ProjectionMatrix = glm::ortho(-size, size, -size, size, nearPlane, farPlane);
-		}
-	}
+        m_ProjectionMatrix = glm::ortho(-size, size, -size, size, nearPlane, farPlane);
+
+        if (Application::Get().GetRendererType() == RendererAPI::Vulkan)
+        {
+			// Vulkan clip space has inverted Y 
+			// and half Z (converts from [-1,1] to [0,1] space).
+            glm::mat4 clip = glm::mat4(1.0f);
+			clip[1][1] = -1.0f;
+			clip[2][2] = 0.5f;
+			clip[3][2] = 0.5f;
+
+            m_ProjectionMatrix = clip * m_ProjectionMatrix;
+        }
+    }
 
 	void DirectionalLight::Update(glm::vec3 color, float ambientIntensity, 
 		glm::vec3 direction, float diffuseIntensity)

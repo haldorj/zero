@@ -38,10 +38,6 @@ void main()
             totalPosition += localPosition * v.weights[i];
         }
     }
-    else 
-    {
-        totalPosition = vec4(Pos, 1.0);
-    }
     
     gl_Position = sceneData.directionalLightTransform * PushConstants.model * totalPosition;
 }

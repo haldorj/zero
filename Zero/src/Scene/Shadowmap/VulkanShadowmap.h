@@ -29,10 +29,10 @@ namespace Zero {
 
         VkSampler m_DepthSampler{};
         
-        // Depth bias (and slope) are used to avoid shadowing artifacts
-        // Constant depth bias factor (always applied)
-        float m_DepthBiasConstant = 1.25f;
-        // Slope depth bias factor, applied depending on polygon's slope
-        float m_DepthBiasSlope = 1.75f;
+        //// Depth bias (and slope) are used to avoid shadowing artifacts
+        //// Constant depth bias factor (always applied)
+        //float m_DepthBiasConstant = 1.25f;
+        //// Slope depth bias factor, applied depending on polygon's slope
+        //float m_DepthBiasSlope = 1.75f;
     };
 }

@@ -196,6 +196,8 @@ namespace Zero
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
 
+		auto lightTransform = scene->GetDirectionalLight()->GetLightTransform();
+
 		glUniformMatrix4fv(glGetUniformLocation(shader->GetID(), "lightTransform"), 1, GL_FALSE, 
             glm::value_ptr(scene->GetDirectionalLight()->GetLightTransform()));
 

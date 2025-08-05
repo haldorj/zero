@@ -9,10 +9,36 @@ layout (location = 1) in vec3 inColor;
 layout (location = 2) in vec2 inUV;
 layout (location = 3) in vec3 inPosition;
 layout (location = 4) in vec3 inCameraPos;
+layout (location = 5) in vec4 inFragPosLight;
 
 layout (location = 0) out vec4 outFragColor;
 
-vec4 CalcLightByDirection(Light light, vec3 direction)
+float CalcDirectionalShadowFactor(DirectionalLight light)
+{
+    vec4 lightSpacePos = inFragPosLight; // already lightMatrix * worldPos
+    vec3 projCoords = lightSpacePos.xyz / lightSpacePos.w;
+
+    // Only x and y need to be remapped from [-1, 1] to [0, 1]
+    vec2 texCoords = projCoords.xy * 0.5 + 0.5;
+    float currentDepth = projCoords.z; // Already in [0, 1] range if Vulkan projection fix was applied
+
+    if (currentDepth > 1.0 || 
+        texCoords.x < 0.0 || texCoords.x > 1.0 || 
+        texCoords.y < 0.0 || texCoords.y > 1.0)
+    {
+        return 0.0;
+    }
+
+    float closestDepth = texture(directionalShadowMap, texCoords).r;
+
+    float bias = max(0.005 * (1.0 - dot(inNormal, light.direction)), 0.001);
+    float shadow = currentDepth > closestDepth + bias ? 1.0 : 0.0;
+
+    return shadow;
+}
+
+
+vec4 CalcLightByDirection(Light light, vec3 direction, float shadowFactor)
 {
 	vec4 ambientColor = vec4(light.color, 1.0f) * light.ambientIntensity;
 
@@ -31,21 +57,24 @@ vec4 CalcLightByDirection(Light light, vec3 direction)
 		specularColor = vec4(light.color * sceneData.material.specularIntensity * specularFactor, 1.0f);
 	}
 
-	return (ambientColor + diffuseColor + specularColor);
+	return (ambientColor + (1.0f - shadowFactor) * (diffuseColor + specularColor));
 }
 
 vec4 CalcDirectionalLight()
 {
-	return CalcLightByDirection(sceneData.directionalLight.base, sceneData.directionalLight.direction);
+	float shadowFactor = CalcDirectionalShadowFactor(sceneData.directionalLight);
+	return CalcLightByDirection(sceneData.directionalLight.base, sceneData.directionalLight.direction, shadowFactor);
 }
 
 vec4 CalcPointLight(PointLight pLight)
 {
+	float shadowFactor = 0.0f;
+
 	vec3 direction = pLight.position - inPosition;
 	float dist = length(direction);
 	direction = normalize(direction);
 
-	vec4 color = CalcLightByDirection(pLight.base, direction);
+	vec4 color = CalcLightByDirection(pLight.base, direction, shadowFactor);
 	float attenuation = (pLight.exponent * dist * dist	) +
 						(pLight.linear 	 * dist			) +
 						(pLight.constant				);

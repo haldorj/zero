@@ -85,7 +85,7 @@ namespace Zero
         descriptorWriter.UpdateSet(renderer->GetDevice(), descriptorSet);
 
         // Depth bias to avoid shadow acne
-        vkCmdSetDepthBias(cmd, m_DepthBiasConstant, 0.0f, m_DepthBiasSlope);
+        // vkCmdSetDepthBias(cmd, m_DepthBiasConstant, 0.0f, m_DepthBiasSlope);
 
         // Bind pipeline and descriptor sets
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_OffscreenPipeline);
@@ -278,32 +278,6 @@ namespace Zero
         AllocatedImage new_image = CreateImage(size, format,
                                                usage | VK_IMAGE_USAGE_TRANSFER_DST_BIT |
                                                VK_IMAGE_USAGE_TRANSFER_SRC_BIT, mipmapped);
-
-        //renderer->ImmediateSubmit([&](VkCommandBuffer cmd)
-        //{
-        //    VkUtil::TransitionImageShadowMap(cmd, new_image.Image, VK_IMAGE_LAYOUT_UNDEFINED,
-        //                            VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-
-        //    VkBufferImageCopy copyRegion = {};
-        //    copyRegion.bufferOffset = 0;
-        //    copyRegion.bufferRowLength = 0;
-        //    copyRegion.bufferImageHeight = 0;
-
-        //    copyRegion.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        //    copyRegion.imageSubresource.mipLevel = 0;
-        //    copyRegion.imageSubresource.baseArrayLayer = 0;
-        //    copyRegion.imageSubresource.layerCount = 1;
-        //    copyRegion.imageExtent = size;
-
-        //    // copy the buffer into the image
-        //    vkCmdCopyBufferToImage(cmd, uploadBuffer.Buffer, new_image.Image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1,
-        //                           &copyRegion);
-
-        //    // Fix: Add a final transition to shader-read layout
-        //    VkUtil::TransitionImageShadowMap(cmd, new_image.Image,
-        //        VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-        //        VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-        //});
 
         VulkanBufferManager::DestroyBuffer(renderer->GetAllocator(), uploadBuffer);
         
