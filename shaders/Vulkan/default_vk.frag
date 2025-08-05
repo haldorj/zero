@@ -22,17 +22,31 @@ float CalcDirectionalShadowFactor(DirectionalLight light)
     vec2 texCoords = projCoords.xy * 0.5 + 0.5;
     float currentDepth = projCoords.z; // Already in [0, 1] range if Vulkan projection fix was applied
 
+	float shadow = 0.0;
+
     if (currentDepth > 1.0 || 
         texCoords.x < 0.0 || texCoords.x > 1.0 || 
         texCoords.y < 0.0 || texCoords.y > 1.0)
     {
-        return 0.0;
+        return shadow;
     }
 
-    float closestDepth = texture(directionalShadowMap, texCoords).r;
+	if (projCoords.z <= 1.0f)
+	{
+		float bias = max(0.01f * (1.0f - dot(inNormal, normalize(light.direction))), 0.0005f);
 
-    float bias = max(0.005 * (1.0 - dot(inNormal, light.direction)), 0.001);
-    float shadow = currentDepth > closestDepth + bias ? 1.0 : 0.0;
+		int sampleRadius = 2;
+		vec2 texelSize = 1.0 / textureSize(directionalShadowMap, 0);
+		for(int x = -sampleRadius; x <= sampleRadius; ++x)
+		{
+			for(int y = -sampleRadius; y <= sampleRadius; ++y)
+			{
+				float pcfDepth = texture(directionalShadowMap, texCoords.xy + vec2(x, y) * texelSize).r;
+				shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
+			}
+		};
+		shadow /= pow((sampleRadius * 2 + 1), 2);
+	}
 
     return shadow;
 }
