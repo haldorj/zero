@@ -4,3 +4,6 @@
 [submodule "Zero/Vendor/GLFW"]
 	path = Zero/Vendor/GLFW
 	url = https://github.com/haldorj/glfw
+[submodule "Zero/Vendor/imgui"]
+	path = Zero/Vendor/imgui
+	url = https://github.com/haldorj/imgui
