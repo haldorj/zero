@@ -11,9 +11,9 @@ namespace Zero {
     {
         m_Direction = direction;
 
-        float size = 30.0f;
+        float size = 40.0f;
         float nearPlane = 0.1f;
-        float farPlane = 50.0f;
+        float farPlane = 100.0f;
 
         m_ProjectionMatrix = glm::ortho(-size, size, -size, size, nearPlane, farPlane);
 

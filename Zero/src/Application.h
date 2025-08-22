@@ -110,14 +110,17 @@ namespace Zero
 
         std::shared_ptr<Scene> m_Scene{};
 
+		std::shared_ptr<Model> m_PlayerModel{};
+		std::shared_ptr<Model> m_GreenRhinoModel{};
+        std::shared_ptr<Model> m_PlaneModel{};
+		std::shared_ptr<Model> m_SphereModel{};
+
         Camera* m_ActiveCamera = nullptr;
         GLFWwindow* m_Window = nullptr;
         Renderer* m_Renderer = nullptr;
 
         glm::vec4 m_DirectionalLightColor{0.4f, 0.7f, 1.0f, 0.3f};
         glm::vec3 m_DirectionalLightDirection{ 0.0f, 1.0, -1.0f };
-
-        int32_t m_FrameCount{ 0 };
 
         float m_DirectionalLightIntensity{0.3f};
         float m_Time{0.0f};

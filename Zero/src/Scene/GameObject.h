@@ -29,18 +29,19 @@ namespace Zero
         void Destroy() const;
 
         IdType GetID() const { return m_ObjectID; }
+
         Transform& GetTransform() { return m_Transform; }
-
-        std::shared_ptr<Collider> GetCollider() { return m_Collider; }
-        void SetCollider(const std::shared_ptr<Collider>& collider) { m_Collider = collider; }
-
         RigidBody& GetRigidBody() { return m_RigidBody; }
-        void SetModel(const std::shared_ptr<Model>& model) { m_Model = model; }
 
-        std::shared_ptr<Model> GetModel() const { return m_Model; }
+        Collider* GetCollider() { return m_Collider.get(); }
+        void SetCollider(std::unique_ptr<Collider> collider) { m_Collider = std::move(collider); }
+
+        void SetModel(const std::shared_ptr<Model>& model) { m_Model = model; }
+        std::shared_ptr<Model> GetModel() const { return m_Model.lock(); }
 
         void SetAnimation(uint32_t index);
-        std::shared_ptr<Animator>& GetAnimator() { return m_Animator; }
+        Animator* GetAnimator() { return m_Animator.get(); }
+		void SetAnimator(std::unique_ptr<Animator> animator) { m_Animator = std::move(animator); }
 
         void UpdatePlayer(float deltaTime);
         void UpdateAnimation(float deltaTime);
@@ -52,16 +53,14 @@ namespace Zero
 		bool WasGrounded = false;
 
     private:
-        GameObject(IdType objectID) : m_ObjectID(objectID)
-        {
-        }
+        GameObject(IdType objectID) : m_ObjectID(objectID) {}
 
         IdType m_ObjectID{};
 
-        std::shared_ptr<Model> m_Model{};
-        std::shared_ptr<Animator> m_Animator = nullptr;
+        std::weak_ptr<Model> m_Model{};
+        std::unique_ptr<Animator> m_Animator{};
 
-        std::shared_ptr<Collider> m_Collider{};
+        std::unique_ptr<Collider> m_Collider{};
         Transform m_Transform{};
         RigidBody m_RigidBody{};
 

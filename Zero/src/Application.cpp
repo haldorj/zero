@@ -22,7 +22,7 @@ namespace Zero
 
     void Application::InitGameObjects()
     {
-        m_EditorCamera.SetPosition({10, 10, -5});
+        m_EditorCamera.SetPosition({10, 10, -10});
         m_Fov = m_EditorCamera.GetFOV();
 
         m_ActiveCamera = m_EditorMode
@@ -34,36 +34,42 @@ namespace Zero
             throw std::runtime_error("Active camera is not set");
         }
 
-        const std::array<std::string, 3> modelPaths{
+        const std::array<std::string, 4> modelPaths{
             "assets/models/Prototyping 1.1/GLTF/dummy_platformer.gltf",
             "assets/models/green_rhino2.fbx",
             "assets/models/plane.glb",
+			"assets/models/sphere.glb"
         };
 
+		m_PlayerModel = ModelFactory::CreateModel(modelPaths[0].c_str(), m_RendererType);
+		m_GreenRhinoModel = ModelFactory::CreateModel(modelPaths[1].c_str(), m_RendererType);
+		m_PlaneModel = ModelFactory::CreateModel(modelPaths[2].c_str(), m_RendererType);
+		m_SphereModel = ModelFactory::CreateModel(modelPaths[3].c_str(), m_RendererType);
+
         std::shared_ptr<GameObject> player = std::make_shared<GameObject>(GameObject::Create());
-        player->SetModel(ModelFactory::CreateModel(modelPaths[0].c_str(), m_RendererType));
+        player->SetModel(m_PlayerModel);
         player->GetTransform().Position = {15, 10, 0};
-        player->GetTransform().Scale = glm::vec3{1.0f};
+        player->GetTransform().Scale = glm::vec3{2.0f};
         player->GetRigidBody().Mass = 5;
-        player->SetCollider(std::make_shared<CapsuleCollider>(glm::vec3{0, 1.2, 0}, 0.5f, 1.5f));
+        player->SetCollider(std::make_unique<CapsuleCollider>(glm::vec3{0, 1.2, 0}, 0.5f, 1.5f));
         player->EnableGravity = true;
         player->EnableCollision = true;
 
-        player->GetAnimator() = std::make_shared<Animator>();
-		player->GetAnimator()->LoadAnimations(modelPaths[0], player->GetModel().get());
+        player->SetAnimator(std::make_unique<Animator>());
+		player->GetAnimator()->LoadAnimations(modelPaths[0], m_PlayerModel.get());
         player->SetAnimation(2);
 
         std::shared_ptr<GameObject> greenRhino = std::make_shared<GameObject>(GameObject::Create());
-        greenRhino->SetModel(ModelFactory::CreateModel(modelPaths[1].c_str(), m_RendererType));
+        greenRhino->SetModel(m_GreenRhinoModel);
         greenRhino->GetTransform().Position = {-15, 0, 0};
         greenRhino->GetTransform().Scale = glm::vec3{0.5f};
         greenRhino->GetRigidBody().Mass = 2;
 
         std::shared_ptr<GameObject> plane = std::make_shared<GameObject>(GameObject::Create());
-        plane->SetModel(ModelFactory::CreateModel(modelPaths[2].c_str(), m_RendererType));
+        plane->SetModel(m_PlaneModel);
         plane->GetTransform().Position = {0, 0, 0};
         plane->GetTransform().Scale = glm::vec3{50.f};
-        plane->SetCollider(std::make_shared<PlaneCollider>(plane->GetTransform().GetUpVector(), 500.f));
+        plane->SetCollider(std::make_unique<PlaneCollider>(plane->GetTransform().GetUpVector(), 500.f));
         plane->EnableGravity = false;
         plane->EnableCollision = true;
 
@@ -110,8 +116,6 @@ namespace Zero
 
         constexpr float force = 20;
         const glm::vec3 forceVector = direction * force;
-
-        // m_GameObjects[1]->GetRigidBody().AddImpulse(forceVector);
     }
 
     void Application::SpawnSphere()
@@ -119,11 +123,11 @@ namespace Zero
         const float x = GetRandomFloat(0.5, 3);
 
         const auto sphere = std::make_shared<GameObject>(GameObject::Create());
-        sphere->SetModel(ModelFactory::CreateModel("assets/models/sphere.glb", m_RendererType));
+        sphere->SetModel(m_SphereModel);
         sphere->GetTransform().Position = m_EditorCamera.GetPosition();
         sphere->GetTransform().Scale = glm::vec3{x};
         sphere->GetRigidBody().Mass = x;
-        sphere->SetCollider(std::make_shared<SphereCollider>(glm::vec3{0, 0, 0}, x));
+        sphere->SetCollider(std::make_unique<SphereCollider>(glm::vec3{0, 0, 0}, x));
         sphere->EnableGravity = true;
         sphere->EnableCollision = true;
 
@@ -131,17 +135,16 @@ namespace Zero
         sphere->GetRigidBody().AddImpulse(direction * 50.0f);
 
         m_Scene->AddGameObject(sphere);
-        // m_GameObjects.emplace_back(sphere);
     }
 
     void Application::SpawnSphereAtLocation(const glm::vec3& location, float scale)
     {
         const auto sphere = std::make_shared<GameObject>(GameObject::Create());
-        sphere->SetModel(ModelFactory::CreateModel("assets/models/sphere.glb", m_RendererType));
+        sphere->SetModel(m_SphereModel);
         sphere->GetTransform().Position = location;
         sphere->GetTransform().Scale = glm::vec3{scale};
         sphere->GetRigidBody().Mass = scale;
-        sphere->SetCollider(std::make_shared<SphereCollider>(glm::vec3{0, 0, 0}, scale));
+        sphere->SetCollider(std::make_unique<SphereCollider>(glm::vec3{0, 0, 0}, scale));
         sphere->EnableGravity = false;
         sphere->EnableCollision = true;
 
@@ -182,6 +185,12 @@ namespace Zero
     void Application::Cleanup() const
     {
         m_Scene->Destroy();
+
+        m_SphereModel->DestroyModel();
+        m_PlaneModel->DestroyModel();
+        m_GreenRhinoModel->DestroyModel();
+        m_PlayerModel->DestroyModel();
+
         m_Renderer->Shutdown();
 
         glfwDestroyWindow(m_Window);
@@ -269,8 +278,6 @@ namespace Zero
     {
         m_Renderer->SetClearColor({0.05, 0, 0.32, 1});
         m_Renderer->Draw(m_Scene.get());
-
-        m_FrameCount++;
     }
 
     void Application::UpdateImGui()

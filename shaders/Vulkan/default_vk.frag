@@ -33,9 +33,9 @@ float CalcDirectionalShadowFactor(DirectionalLight light)
 
 	if (projCoords.z <= 1.0f)
 	{
-		float bias = max(0.01f * (1.0f - dot(inNormal, normalize(light.direction))), 0.0005f);
+		float bias = max(0.007f * (1.0f - dot(inNormal, normalize(light.direction))), 0.0007f);
 
-		int sampleRadius = 2;
+		int sampleRadius = 3;
 		vec2 texelSize = 1.0 / textureSize(directionalShadowMap, 0);
 		for(int x = -sampleRadius; x <= sampleRadius; ++x)
 		{

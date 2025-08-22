@@ -34,7 +34,7 @@ namespace Zero {
 			VkPipelineLayout& pipelineLayout,
 			VkSampler& sampler,
 			GPUDrawPushConstants& pushConstants,
-			std::shared_ptr<class Animator> animator) {};
+			class Animator* animator) {};
 
 		virtual void DestroyModel() const {}
 

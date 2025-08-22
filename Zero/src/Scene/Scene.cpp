@@ -27,18 +27,6 @@ namespace Zero {
 	void Scene::Destroy() const
 	{
 		m_Skybox->Destroy();
-		for (auto& gameObj : m_GameObjects)
-		{
-			if (!gameObj)
-			{
-				continue;
-			}
-
-			if (gameObj->GetModel())
-			{
-				gameObj->GetModel()->DestroyModel();
-			}
-		}
 	}
 
 	void Scene::AddPointLight(std::shared_ptr<PointLight> pointLight)

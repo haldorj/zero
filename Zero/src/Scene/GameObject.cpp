@@ -17,16 +17,13 @@ namespace Zero
         {
             return;
         }
-
-        if (m_Model)
-        {
-            m_Model->DestroyModel();
-        }
     }
 
     void GameObject::SetAnimation(uint32_t index)
     {
-        m_Animator->PlayAnimation(index);
+		// Update animator and play the new animation.
+		// Animations are picked by index, so ensure the index is valid.
+        GetAnimator()->PlayAnimation(index);
     }
 
     void GameObject::UpdatePlayer(float deltaTime)
@@ -136,14 +133,14 @@ namespace Zero
             if (verticalVelocity > 0.1f)
             {
                 // Jumping upward
-                if (m_Animator->GetCurrentAnimationIndex() != 0)
-                    m_Animator->PlayAnimation(0, false);
+                if (GetAnimator()->GetCurrentAnimationIndex() != 0)
+                    GetAnimator()->PlayAnimation(0, false);
             }
             else if (verticalVelocity < -0.1f)
             {
 				// Falling down
-                if (m_Animator->GetCurrentAnimationIndex() != 1)
-                    m_Animator->PlayAnimation(1, false);
+                if (GetAnimator()->GetCurrentAnimationIndex() != 1)
+                    GetAnimator()->PlayAnimation(1, false);
             }
         }
         else
@@ -152,22 +149,22 @@ namespace Zero
             if (m_LandingTimer > 0.0f)
             {
                 m_LandingTimer -= deltaTime;
-                if (m_Animator->GetCurrentAnimationIndex() != 4)
-                    m_Animator->PlayAnimation(4);
+                if (GetAnimator()->GetCurrentAnimationIndex() != 4)
+                    GetAnimator()->PlayAnimation(4);
                 // Do not switch to run/idle yet — let landing animation play
             }
             else if (std::abs(m_RigidBody.Velocity.x) > threshold ||
                 std::abs(m_RigidBody.Velocity.z) > threshold)
             {
                 // Run
-                if (m_Animator->GetCurrentAnimationIndex() != 7)
-                    m_Animator->PlayAnimation(7);
+                if (GetAnimator()->GetCurrentAnimationIndex() != 7)
+                    GetAnimator()->PlayAnimation(7);
             }
             else
             {
                 // Idle
-                if (m_Animator->GetCurrentAnimationIndex() != 2)
-                    m_Animator->PlayAnimation(2);
+                if (GetAnimator()->GetCurrentAnimationIndex() != 2)
+                    GetAnimator()->PlayAnimation(2);
             }
         }
 		WasGrounded = IsGrounded;
@@ -175,9 +172,9 @@ namespace Zero
 
     void GameObject::UpdateAnimation(float deltaTime)
     {
-        if (m_Animator)
+        if (GetAnimator())
         {
-            m_Animator->UpdateAnimation(deltaTime);
+            GetAnimator()->UpdateAnimation(deltaTime);
         }
             
     }

@@ -20,7 +20,7 @@ namespace Zero {
             VkPipelineLayout& pipelineLayout, 
             VkSampler& sampler, 
             GPUDrawPushConstants& pushConstants,
-            std::shared_ptr<class Animator> animator) override;
+            class Animator* animator) override;
 
         void DestroyModel() const override;
 

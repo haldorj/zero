@@ -95,9 +95,18 @@ namespace Zero {
 
     void Animator::LoadAnimations(const std::string& animationPath, Model* model)
     {
+        if (!model)
+        {
+            std::cerr << "Animator::LoadAnimations: Model is null!" << std::endl;
+            return;
+        };
+
         Assimp::Importer importer;
         const aiScene* scene = importer.ReadFile(animationPath.c_str(), aiProcess_Triangulate);
         assert(scene && scene->mRootNode);
+
+		m_Animations.clear();
+		m_Animations.reserve(scene->mNumAnimations);
 
         for (int i = 0; i < scene->mNumAnimations; i++)
         {

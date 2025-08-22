@@ -40,9 +40,12 @@ namespace Zero
 
         glfwSwapInterval(0); // vsync
 
+        const GLubyte* version = glGetString(GL_VERSION);
+        std::cout << "OpenGL Version: " << version << "\n";
+
         const GLubyte* renderer = glGetString(GL_RENDERER);
         std::cout << "Chosen GPU: " << "\n";
-        std::cout << "\t" << renderer << "\n";
+        std::cout << "\t" << renderer << "\n\n";
 
         InitShaders();
 		m_Shadowmap = new OpenGLShadowmap;

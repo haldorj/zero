@@ -18,7 +18,7 @@ namespace Zero
     }
 
     void VulkanModel::Draw(VkCommandBuffer& cmd, VkPipelineLayout& pipelineLayout,
-                           VkSampler& sampler, GPUDrawPushConstants& pushConstants, std::shared_ptr<Animator> animator)
+                           VkSampler& sampler, GPUDrawPushConstants& pushConstants, Animator* animator)
     {
         const auto renderer = dynamic_cast<VulkanRenderer*>(Application::Get().GetRenderer());
 

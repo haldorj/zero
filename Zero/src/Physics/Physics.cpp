@@ -62,8 +62,8 @@ namespace Zero {
 				}
 				
 				CollisionPoints points = TestCollision(
-					a->GetCollider().get(), &a->GetTransform(),
-					b->GetCollider().get(), &b->GetTransform()
+					a->GetCollider(), &a->GetTransform(),
+					b->GetCollider(), &b->GetTransform()
 				);
 
 				if (points.HasCollision)
