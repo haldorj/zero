@@ -4,7 +4,7 @@ Zero is a 3D rendering/game project built with C++ with rendering backends for O
 
 The initial motivation for starting the project was to learn the Vulkan API by implementing a Vulkan renderer alongside an OpenGL renderer.
 
-Below is a video showcasing the development of the project, and some of the main features that were implimented.
+Below is a video showcasing the development of the project, and some of the main features that were implemented.
 
 https://github.com/user-attachments/assets/40a32017-76d1-4368-88ec-305903ebf882
 
