@@ -12,8 +12,6 @@ https://github.com/user-attachments/assets/40a32017-76d1-4368-88ec-305903ebf882
 
 Requires the Vulkan SDK (minimum ver. 1.3).
 
-## Project:
-
 Start by cloning the repository with git clone ```--recursive https://github.com/haldorj/zero```.
 
 If the repository was cloned non-recursively previously, use ```git submodule update --init``` to clone the necessary submodules.
