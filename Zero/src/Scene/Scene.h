@@ -38,12 +38,15 @@ namespace Zero {
 		Skybox* GetSkybox() const { return m_Skybox.get(); }
 
 	private:
+		Material m_Material{};
+		std::unique_ptr<Skybox> m_Skybox{};
+
+		// TODO: none of these need to be shared_ptrs.
+		// They can be created on the stack instead.
 		std::vector<std::shared_ptr<GameObject>> m_GameObjects{};
 		std::shared_ptr<DirectionalLight> m_DirectionalLight{};
 		std::vector<std::shared_ptr<PointLight>> m_PointLights{};
 		std::vector<std::shared_ptr<SpotLight>> m_SpotLights{};
-		Material m_Material{};
-		std::unique_ptr<Skybox> m_Skybox{};
 	};
 
 }
