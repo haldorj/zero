@@ -231,10 +231,10 @@ namespace Zero
 
         // Material
         const int specularIntensity = glGetUniformLocation(shader->GetID(), "material.specularIntensity");
-        glUniform1f(specularIntensity, scene->GetMaterial()->GetSpecularIntensity());
+        glUniform1f(specularIntensity, scene->GetMaterial().GetSpecularIntensity());
 
         const int shininess = glGetUniformLocation(shader->GetID(), "material.shininess");
-        glUniform1f(shininess, scene->GetMaterial()->GetShininess());
+        glUniform1f(shininess, scene->GetMaterial().GetShininess());
 
         // Point Lights
         int pointLightCount = static_cast<int>(scene->GetPointLights().size());

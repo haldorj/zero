@@ -24,22 +24,26 @@ namespace Zero {
 		void AddSpotLight(std::shared_ptr<SpotLight> spotLight);
 		void AddGameObject(std::shared_ptr<GameObject> gameObject);
 		void DestroyGameObject(const GameObject::IdType objectID);
-		void SetSkybox(Skybox* skybox) { m_Skybox = skybox; }
+
+		void SetSkybox(Skybox* skybox) 
+		{ 
+			m_Skybox.reset(skybox); 
+		}
 
 		std::vector<std::shared_ptr<GameObject>>& GetGameObjects() { return m_GameObjects; }
 		std::shared_ptr<DirectionalLight>& GetDirectionalLight() { return m_DirectionalLight; }
-		std::shared_ptr<Material>& GetMaterial() { return m_Material; }
+		Material& GetMaterial() { return m_Material; }
 		std::vector<std::shared_ptr<PointLight>>& GetPointLights() { return m_PointLights; }
 		std::vector<std::shared_ptr<SpotLight>>& GetSpotLights() { return m_SpotLights; }
-		Skybox* GetSkybox() const { return m_Skybox; }
+		Skybox* GetSkybox() const { return m_Skybox.get(); }
 
 	private:
 		std::vector<std::shared_ptr<GameObject>> m_GameObjects{};
 		std::shared_ptr<DirectionalLight> m_DirectionalLight{};
 		std::vector<std::shared_ptr<PointLight>> m_PointLights{};
 		std::vector<std::shared_ptr<SpotLight>> m_SpotLights{};
-		std::shared_ptr<Material> m_Material{};
-		Skybox* m_Skybox{ nullptr };
+		Material m_Material{};
+		std::unique_ptr<Skybox> m_Skybox{};
 	};
 
 }

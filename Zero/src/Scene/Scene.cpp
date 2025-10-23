@@ -18,7 +18,7 @@ namespace Zero {
 		m_DirectionalLight.reset(light);
 
 		// Dull
-		m_Material = std::make_shared<Material>(0.25f, 4.0f);
+		m_Material = { 0.25f, 4.0f };
 
 		// Shiny
 		// m_Material = std::make_shared<Material>(1.0f, 32.0f);
