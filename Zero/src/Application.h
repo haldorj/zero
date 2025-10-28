@@ -5,74 +5,22 @@
 
 #include "camera/EditorCamera.h"
 #include "Camera/PerspectiveCamera.h"
-#include "renderer/OpenGLRenderer.h"
-#include "renderer/VulkanRenderer.h"
+
 #include <Scene/Scene.h>
 
 #include <Animation/Animator.h>
 
-#include <Scene/Skybox/OpenGLSkybox.h>
-#include <Scene/Skybox/VulkanSkybox.h>
-
 namespace Zero
 {
+    class Renderer;
+    class Skybox;
+
     enum class RendererAPI : uint8_t
     {
         OpenGL,
         Vulkan,
     };
 
-    class RendererFactory
-    {
-    public:
-        // Reminder: 
-        // If you get the error "attempting to reference a deleted function"
-        // Remember to give new objects a default constructor
-        static Renderer* CreateRenderer(const RendererAPI type)
-        {
-            switch (type)
-            {
-            case RendererAPI::OpenGL:
-                return new OpenGLRenderer();
-            case RendererAPI::Vulkan:
-                return new VulkanRenderer();
-            }
-            return nullptr;
-        }
-    };
-
-    class ModelFactory
-    {
-    public:
-        static std::shared_ptr<Model> CreateModel(const char* path, const RendererAPI type)
-        {
-            switch (type)
-            {
-            case RendererAPI::OpenGL: return std::make_shared<OpenGLModel>(path);
-            case RendererAPI::Vulkan: return std::make_shared<VulkanModel>(path);
-            }
-            return nullptr;
-        }
-    };
-
-	class SkyboxFactory
-	{
-	public:
-		static Skybox* CreateSkybox(const RendererAPI type)
-		{
-			switch (type)
-			{
-			case RendererAPI::OpenGL: return new OpenGLSkybox();
-			case RendererAPI::Vulkan: return new VulkanSkybox();
-			}
-			return nullptr;
-		}
-	};
-
-}
-
-namespace Zero
-{
     class Application
     {
     public:
@@ -129,7 +77,7 @@ namespace Zero
 
         float m_Fov{ 0.0f };
 
-        RendererAPI m_RendererType{ RendererAPI::Vulkan };
+        RendererAPI m_RendererType{ RendererAPI::OpenGL };
 
         bool m_EditorMode{ true };
         bool m_ShowShadowMap{ false };

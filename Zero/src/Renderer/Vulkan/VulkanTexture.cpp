@@ -1,9 +1,12 @@
 #include "VulkanTexture.h"
 #include "vk_initializers.h"
 
-#include <Application.h>
+#include "Application.h"
 #include "VulkanBuffer.h"
 #include "vk_images.h"
+#include "Renderer/VulkanRenderer.h"
+
+#include <stb_image.h>
 
 namespace Zero {
 

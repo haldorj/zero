@@ -1,11 +1,18 @@
 ﻿#include "Application.h"
 
 #include <chrono>
-#include <imgui.h>
 #include <random>
 #include <thread>
-#include <Renderer/Vulkan/vk_types.h>
-#include <Scene/GameObject.h>
+
+#include <imgui.h>
+
+#include "Renderer/Vulkan/vk_types.h"
+#include "renderer/OpenGLRenderer.h"
+#include "renderer/VulkanRenderer.h"
+
+#include "Scene/GameObject.h"
+#include "Scene/Skybox/OpenGLSkybox.h"
+#include "Scene/Skybox/VulkanSkybox.h"
 
 #include "VkBootstrap.h"
 #include "core/core.h"
@@ -19,6 +26,34 @@
 namespace Zero
 {
     Application* Application::s_Instance = nullptr;
+
+    class ModelFactory
+    {
+    public:
+        static std::shared_ptr<Model> CreateModel(const char* path, const RendererAPI type)
+        {
+            switch (type)
+            {
+            case RendererAPI::OpenGL: return std::make_shared<OpenGLModel>(path);
+            case RendererAPI::Vulkan: return std::make_shared<VulkanModel>(path);
+            }
+            return nullptr;
+        }
+    };
+
+    class SkyboxFactory
+    {
+    public:
+        static Skybox* CreateSkybox(const RendererAPI type)
+        {
+            switch (type)
+            {
+            case RendererAPI::OpenGL: return new OpenGLSkybox();
+            case RendererAPI::Vulkan: return new VulkanSkybox();
+            }
+            return nullptr;
+        }
+    };
 
     void Application::InitScene()
     {
@@ -165,7 +200,20 @@ namespace Zero
         m_PhysicsWorld.Init();
 
         // Initialize the renderer
-        m_Renderer = RendererFactory::CreateRenderer(m_RendererType);
+        switch (m_RendererType)
+        {
+        case RendererAPI::OpenGL:
+            m_Renderer = new OpenGLRenderer();
+            break;
+        case RendererAPI::Vulkan:
+            m_Renderer = new VulkanRenderer();
+            break;
+        }
+        if (!m_Renderer)
+        {
+            throw std::runtime_error("Failed to create renderer");
+		}
+
         m_Renderer->Init();
         m_Renderer->InitImGui();
 
@@ -336,13 +384,13 @@ namespace Zero
         }
         if (rendererType == RendererAPI::OpenGL)
         {
-            // OpenGL v. 4.6
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+            // OpenGL ver.
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
             // CORE PROFILE: modern OpenGL
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         }
-        m_Window = glfwCreateWindow(EXTENT_WIDTH, EXTENT_HEIGHT, "ZeroEngine", nullptr, nullptr);
+        m_Window = glfwCreateWindow(EXTENT_WIDTH, EXTENT_HEIGHT, " ", nullptr, nullptr);
         if (!m_Window)
         {
             glfwTerminate();

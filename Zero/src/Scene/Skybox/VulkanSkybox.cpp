@@ -5,6 +5,7 @@
 #include <Renderer/Vulkan/VulkanBuffer.h>
 #include <Renderer/Vulkan/vk_initializers.h>
 #include <Renderer/Vulkan/vk_images.h>
+#include <Renderer/VulkanRenderer.h>
 
 namespace Zero {
 
