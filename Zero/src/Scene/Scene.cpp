@@ -48,21 +48,21 @@ namespace Zero {
 		m_SpotLights.emplace_back(spotLight);
 	}
 
-	void Scene::AddGameObject(std::shared_ptr<GameObject> gameObject)
+	void Scene::AddGameObject(GameObject& gameObject)
 	{
-		m_GameObjects.emplace_back(gameObject);
+		m_GameObjects.emplace_back(std::move(gameObject));
 	}
 
 	void Scene::DestroyGameObject(const GameObject::IdType objectID)
 	{
 		for (auto it = m_GameObjects.begin(); it != m_GameObjects.end(); ++it)
 		{
-			if ((*it)->GetID() != objectID)
+			if ((*it).GetID() != objectID)
 			{
 				continue;
 			}
 				
-			(*it)->Destroy();
+			(*it).Destroy();
 			m_GameObjects.erase(it);
 
 			break;

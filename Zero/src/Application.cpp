@@ -81,32 +81,32 @@ namespace Zero
 		m_PlaneModel = ModelFactory::CreateModel(modelPaths[2].c_str(), m_RendererType);
 		m_SphereModel = ModelFactory::CreateModel(modelPaths[3].c_str(), m_RendererType);
 
-        std::shared_ptr<GameObject> player = std::make_shared<GameObject>(GameObject::Create());
-        player->SetModel(m_PlayerModel);
-        player->GetTransform().Position = {15, 10, 0};
-        player->GetTransform().Scale = glm::vec3{2.0f};
-        player->GetRigidBody().Mass = 5;
-        player->SetCollider(std::make_unique<CapsuleCollider>(glm::vec3{0, 1.2, 0}, 0.5f, 1.5f));
-        player->EnableGravity = true;
-        player->EnableCollision = true;
+        GameObject player = GameObject::Create();
+        player.SetModel(m_PlayerModel);
+        player.GetTransform().Position = {15, 10, 0};
+        player.GetTransform().Scale = glm::vec3{2.0f};
+        player.GetRigidBody().Mass = 5;
+        player.SetCollider(std::make_unique<CapsuleCollider>(glm::vec3{0, 1.2, 0}, 0.5f, 1.5f));
+        player.EnableGravity = true;
+        player.EnableCollision = true;
 
-        player->SetAnimator(std::make_unique<Animator>());
-		player->GetAnimator()->LoadAnimations(modelPaths[0], m_PlayerModel.get());
-        player->SetAnimation(2);
+        player.SetAnimator(std::make_unique<Animator>());
+		player.GetAnimator()->LoadAnimations(modelPaths[0], m_PlayerModel.get());
+        player.SetAnimation(2);
 
-        std::shared_ptr<GameObject> greenRhino = std::make_shared<GameObject>(GameObject::Create());
-        greenRhino->SetModel(m_GreenRhinoModel);
-        greenRhino->GetTransform().Position = {-15, 0, 0};
-        greenRhino->GetTransform().Scale = glm::vec3{0.5f};
-        greenRhino->GetRigidBody().Mass = 2;
+        GameObject greenRhino = GameObject::Create();
+        greenRhino.SetModel(m_GreenRhinoModel);
+        greenRhino.GetTransform().Position = {-15, 0, 0};
+        greenRhino.GetTransform().Scale = glm::vec3{0.5f};
+        greenRhino.GetRigidBody().Mass = 2;
 
-        std::shared_ptr<GameObject> plane = std::make_shared<GameObject>(GameObject::Create());
-        plane->SetModel(m_PlaneModel);
-        plane->GetTransform().Position = {0, 0, 0};
-        plane->GetTransform().Scale = glm::vec3{50.f};
-        plane->SetCollider(std::make_unique<PlaneCollider>(plane->GetTransform().GetUpVector(), 500.f));
-        plane->EnableGravity = false;
-        plane->EnableCollision = true;
+        GameObject plane = GameObject::Create();
+        plane.SetModel(m_PlaneModel);
+        plane.GetTransform().Position = {0, 0, 0};
+        plane.GetTransform().Scale = glm::vec3{50.f};
+        plane.SetCollider(std::make_unique<PlaneCollider>(plane.GetTransform().GetUpVector(), 500.f));
+        plane.EnableGravity = false;
+        plane.EnableCollision = true;
 
         DirectionalLight dirLight = {
             glm::vec3(m_DirectionalLightColor),
@@ -157,34 +157,34 @@ namespace Zero
     {
         const float x = GetRandomFloat(0.5, 3);
 
-        const auto sphere = std::make_shared<GameObject>(GameObject::Create());
-        sphere->SetModel(m_SphereModel);
-        sphere->GetTransform().Position = m_EditorCamera.GetPosition();
-        sphere->GetTransform().Scale = glm::vec3{x};
-        sphere->GetRigidBody().Mass = x;
-        sphere->SetCollider(std::make_unique<SphereCollider>(glm::vec3{0, 0, 0}, x));
-        sphere->EnableGravity = true;
-        sphere->EnableCollision = true;
+        GameObject sphere = GameObject::Create();
+        sphere.SetModel(m_SphereModel);
+        sphere.GetTransform().Position = m_EditorCamera.GetPosition();
+        sphere.GetTransform().Scale = glm::vec3{x};
+        sphere.GetRigidBody().Mass = x;
+        sphere.SetCollider(std::make_unique<SphereCollider>(glm::vec3{0, 0, 0}, x));
+        sphere.EnableGravity = true;
+        sphere.EnableCollision = true;
 
         const glm::vec3 direction = m_EditorCamera.GetForwardVector();
-        sphere->GetRigidBody().AddImpulse(direction * 50.0f);
+        sphere.GetRigidBody().AddImpulse(direction * 50.0f);
 
         m_Scene->AddGameObject(sphere);
     }
 
     void Application::SpawnSphereAtLocation(const glm::vec3& location, float scale)
     {
-        const auto sphere = std::make_shared<GameObject>(GameObject::Create());
-        sphere->SetModel(m_SphereModel);
-        sphere->GetTransform().Position = location;
-        sphere->GetTransform().Scale = glm::vec3{scale};
-        sphere->GetRigidBody().Mass = scale;
-        sphere->SetCollider(std::make_unique<SphereCollider>(glm::vec3{0, 0, 0}, scale));
-        sphere->EnableGravity = false;
-        sphere->EnableCollision = true;
+        auto sphere = GameObject::Create();
+        sphere.SetModel(m_SphereModel);
+        sphere.GetTransform().Position = location;
+        sphere.GetTransform().Scale = glm::vec3{scale};
+        sphere.GetRigidBody().Mass = scale;
+        sphere.SetCollider(std::make_unique<SphereCollider>(glm::vec3{0, 0, 0}, scale));
+        sphere.EnableGravity = false;
+        sphere.EnableCollision = true;
 
         const glm::vec3 direction = m_EditorCamera.GetForwardVector();
-        sphere->GetRigidBody().AddImpulse(direction * 50.0f);
+        sphere.GetRigidBody().AddImpulse(direction * 50.0f);
 
         m_Scene->AddGameObject(sphere);
     }
@@ -297,12 +297,12 @@ namespace Zero
             {
                 
                 m_PlayerCamera.ProcessInput(m_Window, m_DeltaTime);
-                m_PlayerCamera.Update(m_DeltaTime, m_Scene->GetGameObjects()[0]->GetTransform().Position);
+                m_PlayerCamera.Update(m_DeltaTime, m_Scene->GetGameObjects()[0].GetTransform().Position);
             }
             
             if (Loaded)
             {
-                m_Scene->GetGameObjects()[0]->UpdatePlayer(m_DeltaTime);
+                m_Scene->GetGameObjects()[0].UpdatePlayer(m_DeltaTime);
                 m_PhysicsWorld.Step(m_DeltaTime, m_Scene->GetGameObjects());
             }
             
@@ -310,9 +310,9 @@ namespace Zero
                 glm::vec3(m_DirectionalLightColor), m_DirectionalLightColor.a,
                 m_DirectionalLightDirection, m_DirectionalLightIntensity);
 
-            for (const auto& gameObject : m_Scene->GetGameObjects())
+            for (auto& gameObject : m_Scene->GetGameObjects())
             {
-                gameObject->UpdateAnimation(m_DeltaTime);
+                gameObject.UpdateAnimation(m_DeltaTime);
             }
 
             Draw();

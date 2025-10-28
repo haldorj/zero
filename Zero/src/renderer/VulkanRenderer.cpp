@@ -401,12 +401,12 @@ namespace Zero
 
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_TexturedPipeline);
 
-        for (const auto& gameObj : scene->GetGameObjects())
+        for (auto& gameObj : scene->GetGameObjects())
         {
-            pushConstants.ModelMatrix = gameObj->GetTransform().GetMatrix();
+            pushConstants.ModelMatrix = gameObj.GetTransform().GetMatrix();
             pushConstants.CameraPos = Application::Get().GetActiveCamera().GetPosition();
 
-            gameObj->GetModel()->Draw(cmd, m_TexturedPipelineLayout, m_DefaultSamplerLinear, pushConstants, gameObj->GetAnimator());
+            gameObj.GetModel()->Draw(cmd, m_TexturedPipelineLayout, m_DefaultSamplerLinear, pushConstants, gameObj.GetAnimator());
         }
 
         // Debug Quad ////////////

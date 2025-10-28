@@ -22,12 +22,12 @@ namespace Zero {
 
 		void AddPointLight(PointLight pointLight);
 		void AddSpotLight(SpotLight spotLight);
-		void AddGameObject(std::shared_ptr<GameObject> gameObject);
+		void AddGameObject(GameObject& gameObject);
 		void DestroyGameObject(const GameObject::IdType objectID);
 
 		void SetSkybox(Skybox* skybox);
 
-		std::vector<std::shared_ptr<GameObject>>& GetGameObjects() { return m_GameObjects; }
+		std::vector<GameObject>& GetGameObjects() { return m_GameObjects; }
 		DirectionalLight& GetDirectionalLight() { return m_DirectionalLight; }
 		Material& GetMaterial() { return m_Material; }
 		std::vector<PointLight>& GetPointLights() { return m_PointLights; }
@@ -39,7 +39,7 @@ namespace Zero {
 		DirectionalLight m_DirectionalLight{};
 		std::unique_ptr<Skybox> m_Skybox{};
 
-		std::vector<std::shared_ptr<GameObject>> m_GameObjects{};
+		std::vector<GameObject> m_GameObjects{};
 		std::vector<PointLight> m_PointLights{};
 		std::vector<SpotLight> m_SpotLights{};
 	};

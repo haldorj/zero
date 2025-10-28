@@ -15,65 +15,65 @@ namespace Zero {
 		m_Solvers.emplace_back(std::make_shared<ImpulseSolver>());
 	}
 
-	void PhysicsWorld::Step(const float dt, const std::vector<std::shared_ptr<GameObject>>& gameObjects) const
+	void PhysicsWorld::Step(const float dt, std::vector<GameObject>& gameObjects)
 	{
 		ResolveCollisions(dt, gameObjects);
-		for (const auto& obj : gameObjects)
+		for (auto& obj : gameObjects)
 		{
-			if (!obj->EnableGravity) 
+			if (!obj.EnableGravity) 
 			{
 				continue;
 			}
 
-			if (obj->GetTransform().Position.y < 0)
+			if (obj.GetTransform().Position.y < 0)
 			{
-				obj->GetTransform().Position.y = 0.0f;
+				obj.GetTransform().Position.y = 0.0f;
 			}
 
-			obj->GetRigidBody().Force = obj->GetRigidBody().Mass * GRAVITY;
-			obj->GetRigidBody().Velocity += obj->GetRigidBody().Force / obj->GetRigidBody().Mass * dt;
-			obj->GetTransform().Position += obj->GetRigidBody().Velocity * dt;
+			obj.GetRigidBody().Force = obj.GetRigidBody().Mass * GRAVITY;
+			obj.GetRigidBody().Velocity += obj.GetRigidBody().Force / obj.GetRigidBody().Mass * dt;
+			obj.GetTransform().Position += obj.GetRigidBody().Velocity * dt;
 
-			obj->GetRigidBody().Force = glm::vec3(0.0f);
+			obj.GetRigidBody().Force = glm::vec3(0.0f);
 		}
 	}
 	
-	void PhysicsWorld::ResolveCollisions(const float dt, const std::vector<std::shared_ptr<GameObject>>& gameObjects) const
+	void PhysicsWorld::ResolveCollisions(const float dt, std::vector<GameObject>& gameObjects)
 	{
 		std::vector<Collision> collisions;
 
-		for (const auto& a : gameObjects)
+		for (auto& a : gameObjects)
 		{
-			for (const auto& b : gameObjects) 
+			for (auto& b : gameObjects) 
 			{
-				if (a == b)
+				if (a.GetID() == b.GetID())
 				{
 					continue;
 				}
 				
-				if (!a->GetCollider() || !b->GetCollider())
+				if (!a.GetCollider() || !b.GetCollider())
 				{
 					continue;
 				}
 
-				if (!a->EnableCollision || !b->EnableCollision)
+				if (!a.EnableCollision || !b.EnableCollision)
 				{
 					continue;
 				}
 				
 				CollisionPoints points = TestCollision(
-					a->GetCollider(), &a->GetTransform(),
-					b->GetCollider(), &b->GetTransform()
+					a.GetCollider(), &a.GetTransform(),
+					b.GetCollider(), &b.GetTransform()
 				);
 
 				if (points.HasCollision)
 				{
-					collisions.emplace_back(a, b, points);
+					collisions.emplace_back(&a, &b, points);
 				}
 			}
 		}
 
-		for (const auto& solver : m_Solvers)
+		for (auto& solver : m_Solvers)
 		{
 			solver->Solve(collisions, dt);
 		}

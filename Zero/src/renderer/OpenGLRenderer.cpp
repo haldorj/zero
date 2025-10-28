@@ -105,16 +105,16 @@ namespace Zero
 
         for (auto& gameObj : scene->GetGameObjects())
         {
-            if (!gameObj->GetModel())
+            if (!gameObj.GetModel())
             {
                 continue;
             }
 
-            if (gameObj->GetAnimator())
+            if (gameObj.GetAnimator())
             {
                 glUniform1i(glGetUniformLocation(m_ShaderProgram->GetID(), "Animated"), 1);
 
-                const std::vector transforms = gameObj->GetAnimator()->GetFinalBoneMatrices();
+                const std::vector transforms = gameObj.GetAnimator()->GetFinalBoneMatrices();
                 for (int i = 0; i < transforms.size(); ++i)
                 {
                     std::string str = "finalBonesMatrices[" + std::to_string(i) + "]";
@@ -128,8 +128,8 @@ namespace Zero
                 glUniform1i(glGetUniformLocation(m_ShaderProgram->GetID(), "Animated"), 0);
             }
 
-            model = gameObj->GetTransform().GetMatrix();
-            gameObj->GetModel()->Draw(*m_ShaderProgram, model);
+            model = gameObj.GetTransform().GetMatrix();
+            gameObj.GetModel()->Draw(*m_ShaderProgram, model);
         }
 
 		glActiveTexture(GL_TEXTURE0 + 1);

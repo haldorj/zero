@@ -36,8 +36,8 @@ namespace Zero {
 	
 	struct Collision
 	{
-		std::shared_ptr<GameObject> ObjA;
-		std::shared_ptr<GameObject> ObjB;
+		GameObject* ObjA;
+		GameObject* ObjB;
 		CollisionPoints Points;
 	};
 }
