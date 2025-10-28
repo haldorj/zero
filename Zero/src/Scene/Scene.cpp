@@ -1,21 +1,20 @@
 #include "Scene.h"
 
 namespace Zero {
-
 	Scene::Scene()
 	{
 		m_GameObjects.reserve(100);
 		m_PointLights.reserve(MAX_POINT_LIGHTS);
 		m_SpotLights.reserve(MAX_SPOT_LIGHTS);
-		m_DirectionalLight = std::make_shared<DirectionalLight>();
+		m_DirectionalLight = {};
 	}
 
-	Scene::Scene(DirectionalLight* light)
+	Scene::Scene(DirectionalLight light)
 	{
 		m_GameObjects.reserve(100);
 		m_PointLights.reserve(MAX_POINT_LIGHTS);
 		m_SpotLights.reserve(MAX_SPOT_LIGHTS);
-		m_DirectionalLight.reset(light);
+		m_DirectionalLight = light;
 
 		// Dull
 		m_Material = { 0.25f, 4.0f };
@@ -29,7 +28,7 @@ namespace Zero {
 		m_Skybox->Destroy();
 	}
 
-	void Scene::AddPointLight(std::shared_ptr<PointLight> pointLight)
+	void Scene::AddPointLight(PointLight pointLight)
 	{
 		if (m_PointLights.size() >= MAX_POINT_LIGHTS)
 		{
@@ -39,7 +38,7 @@ namespace Zero {
 		m_PointLights.emplace_back(pointLight);
 	}
 
-	void Scene::AddSpotLight(std::shared_ptr<SpotLight> spotLight)
+	void Scene::AddSpotLight(SpotLight spotLight)
 	{
 		if (m_SpotLights.size() >= MAX_SPOT_LIGHTS)
 		{
@@ -70,4 +69,8 @@ namespace Zero {
 		}
 	}
 
+	void Scene::SetSkybox(Skybox* skybox)
+	{
+		m_Skybox.reset(skybox);	
+	}
 }

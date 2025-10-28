@@ -87,13 +87,13 @@ namespace Zero
 
         static float GetRandomFloat(float min, float max);
 
-        void InitGameObjects();
+        void InitScene();
 
         void SpawnSphere();
         void SpawnSphereAtLocation(const glm::vec3& location, float scale);
 
         bool IsEditorMode() const { return m_EditorMode; }
-        bool ShowShadowmap() const { return m_ShowShadowMap; }
+        bool ShowShadowMap() const { return m_ShowShadowMap; }
 
         inline static Application& Get() { return *s_Instance; }
 
@@ -108,7 +108,7 @@ namespace Zero
 
         PhysicsWorld m_PhysicsWorld{};
 
-        std::shared_ptr<Scene> m_Scene{};
+        std::unique_ptr<Scene> m_Scene{};
 
 		std::shared_ptr<Model> m_PlayerModel{};
 		std::shared_ptr<Model> m_GreenRhinoModel{};

@@ -135,7 +135,7 @@ namespace Zero
 		glBindTexture(GL_TEXTURE_2D, m_Shadowmap->GetDepthMapTexture());
 		glUniform1i(glGetUniformLocation(m_ShaderProgram->GetID(), "directionalShadowMap"), 1);
 
-        if (Application::Get().ShowShadowmap())
+        if (Application::Get().ShowShadowMap())
         {
             glViewport(0, 0, m_Width, m_Height);
             glDisable(GL_DEPTH_TEST);
@@ -199,10 +199,10 @@ namespace Zero
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
 
-		auto lightTransform = scene->GetDirectionalLight()->GetLightTransform();
+		auto lightTransform = scene->GetDirectionalLight().GetLightTransform();
 
 		glUniformMatrix4fv(glGetUniformLocation(shader->GetID(), "lightTransform"), 1, GL_FALSE, 
-            glm::value_ptr(scene->GetDirectionalLight()->GetLightTransform()));
+            glm::value_ptr(scene->GetDirectionalLight().GetLightTransform()));
 
         // model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
         view = Application::Get().GetActiveCamera().GetViewMatrix();
@@ -218,16 +218,16 @@ namespace Zero
 
         // Directional Light
         m_UniformDirectionalLight.Color = glGetUniformLocation(shader->GetID(), "directionalLight.base.color");
-        glUniform3fv(m_UniformDirectionalLight.Color, 1, glm::value_ptr(scene->GetDirectionalLight()->GetColor()));
+        glUniform3fv(m_UniformDirectionalLight.Color, 1, glm::value_ptr(scene->GetDirectionalLight().GetColor()));
 
         m_UniformDirectionalLight.AmbientIntensity = glGetUniformLocation(shader->GetID(), "directionalLight.base.ambientIntensity");
-        glUniform1f(m_UniformDirectionalLight.AmbientIntensity, scene->GetDirectionalLight()->GetAmbientIntensity());
+        glUniform1f(m_UniformDirectionalLight.AmbientIntensity, scene->GetDirectionalLight().GetAmbientIntensity());
 
         m_UniformDirectionalLight.DiffuseIntensity = glGetUniformLocation(shader->GetID(), "directionalLight.base.diffuseIntensity");
-        glUniform1f(m_UniformDirectionalLight.DiffuseIntensity, scene->GetDirectionalLight()->GetDiffuseIntensity());
+        glUniform1f(m_UniformDirectionalLight.DiffuseIntensity, scene->GetDirectionalLight().GetDiffuseIntensity());
 
         m_UniformDirectionalLight.Direction = glGetUniformLocation(shader->GetID(), "directionalLight.direction");
-        glUniform3fv(m_UniformDirectionalLight.Direction, 1, glm::value_ptr(scene->GetDirectionalLight()->GetDirection()));
+        glUniform3fv(m_UniformDirectionalLight.Direction, 1, glm::value_ptr(scene->GetDirectionalLight().GetDirection()));
 
         // Material
         const int specularIntensity = glGetUniformLocation(shader->GetID(), "material.specularIntensity");
@@ -247,31 +247,31 @@ namespace Zero
 
             snprintf(locBuff, sizeof(locBuff), "pointLights[%d].base.color", i);
             m_UniformPointLights[i].Color = glGetUniformLocation(shader->GetID(), locBuff);
-            glUniform3fv(m_UniformPointLights[i].Color, 1, glm::value_ptr(scene->GetPointLights()[i]->GetColor()));
+            glUniform3fv(m_UniformPointLights[i].Color, 1, glm::value_ptr(scene->GetPointLights()[i].GetColor()));
 
             snprintf(locBuff, sizeof(locBuff), "pointLights[%d].base.ambientIntensity", i);
             m_UniformPointLights[i].AmbientIntensity = glGetUniformLocation(shader->GetID(), locBuff);
-            glUniform1f(m_UniformPointLights[i].AmbientIntensity, scene->GetPointLights()[i]->GetAmbientIntensity());
+            glUniform1f(m_UniformPointLights[i].AmbientIntensity, scene->GetPointLights()[i].GetAmbientIntensity());
 
             snprintf(locBuff, sizeof(locBuff), "pointLights[%d].base.diffuseIntensity", i);
             m_UniformPointLights[i].DiffuseIntensity = glGetUniformLocation(shader->GetID(), locBuff);
-            glUniform1f(m_UniformPointLights[i].DiffuseIntensity, scene->GetPointLights()[i]->GetDiffuseIntensity());
+            glUniform1f(m_UniformPointLights[i].DiffuseIntensity, scene->GetPointLights()[i].GetDiffuseIntensity());
 
             snprintf(locBuff, sizeof(locBuff), "pointLights[%d].position", i);
             m_UniformPointLights[i].Position = glGetUniformLocation(shader->GetID(), locBuff);
-            glUniform3fv(m_UniformPointLights[i].Position, 1, glm::value_ptr(scene->GetPointLights()[i]->GetPosition()));
+            glUniform3fv(m_UniformPointLights[i].Position, 1, glm::value_ptr(scene->GetPointLights()[i].GetPosition()));
 
             snprintf(locBuff, sizeof(locBuff), "pointLights[%d].constant", i);
             m_UniformPointLights[i].Constant = glGetUniformLocation(shader->GetID(), locBuff);
-            glUniform1f(m_UniformPointLights[i].Constant, scene->GetPointLights()[i]->GetConstant());
+            glUniform1f(m_UniformPointLights[i].Constant, scene->GetPointLights()[i].GetConstant());
 
             snprintf(locBuff, sizeof(locBuff), "pointLights[%d].linear", i);
             m_UniformPointLights[i].Linear = glGetUniformLocation(shader->GetID(), locBuff);
-            glUniform1f(m_UniformPointLights[i].Linear, scene->GetPointLights()[i]->GetLinear());
+            glUniform1f(m_UniformPointLights[i].Linear, scene->GetPointLights()[i].GetLinear());
 
             snprintf(locBuff, sizeof(locBuff), "pointLights[%d].exponent", i);
             m_UniformPointLights[i].Exponent = glGetUniformLocation(shader->GetID(), locBuff);
-            glUniform1f(m_UniformPointLights[i].Exponent, scene->GetPointLights()[i]->GetExponent());
+            glUniform1f(m_UniformPointLights[i].Exponent, scene->GetPointLights()[i].GetExponent());
         }
 
         // Spot Lights
@@ -285,39 +285,39 @@ namespace Zero
 
 			snprintf(locBuff, sizeof(locBuff), "spotLights[%d].base.base.color", i);
 			m_UniformSpotLights[i].Color = glGetUniformLocation(shader->GetID(), locBuff);
-			glUniform3fv(m_UniformSpotLights[i].Color, 1, glm::value_ptr(scene->GetSpotLights()[i]->GetColor()));
+			glUniform3fv(m_UniformSpotLights[i].Color, 1, glm::value_ptr(scene->GetSpotLights()[i].GetColor()));
 
 			snprintf(locBuff, sizeof(locBuff), "spotLights[%d].base.base.ambientIntensity", i);
 			m_UniformSpotLights[i].AmbientIntensity = glGetUniformLocation(shader->GetID(), locBuff);
-			glUniform1f(m_UniformSpotLights[i].AmbientIntensity, scene->GetSpotLights()[i]->GetAmbientIntensity());
+			glUniform1f(m_UniformSpotLights[i].AmbientIntensity, scene->GetSpotLights()[i].GetAmbientIntensity());
 
 			snprintf(locBuff, sizeof(locBuff), "spotLights[%d].base.base.diffuseIntensity", i);
 			m_UniformSpotLights[i].DiffuseIntensity = glGetUniformLocation(shader->GetID(), locBuff);
-			glUniform1f(m_UniformSpotLights[i].DiffuseIntensity, scene->GetSpotLights()[i]->GetDiffuseIntensity());
+			glUniform1f(m_UniformSpotLights[i].DiffuseIntensity, scene->GetSpotLights()[i].GetDiffuseIntensity());
 
 			snprintf(locBuff, sizeof(locBuff), "spotLights[%d].base.position", i);
 			m_UniformSpotLights[i].Position = glGetUniformLocation(shader->GetID(), locBuff);
-			glUniform3fv(m_UniformSpotLights[i].Position, 1, glm::value_ptr(scene->GetSpotLights()[i]->GetPosition()));
+			glUniform3fv(m_UniformSpotLights[i].Position, 1, glm::value_ptr(scene->GetSpotLights()[i].GetPosition()));
 
 			snprintf(locBuff, sizeof(locBuff), "spotLights[%d].base.constant", i);
 			m_UniformSpotLights[i].Constant = glGetUniformLocation(shader->GetID(), locBuff);
-			glUniform1f(m_UniformSpotLights[i].Constant, scene->GetSpotLights()[i]->GetConstant());
+			glUniform1f(m_UniformSpotLights[i].Constant, scene->GetSpotLights()[i].GetConstant());
 
 			snprintf(locBuff, sizeof(locBuff), "spotLights[%d].base.linear", i);
 			m_UniformSpotLights[i].Linear = glGetUniformLocation(shader->GetID(), locBuff);
-			glUniform1f(m_UniformSpotLights[i].Linear, scene->GetSpotLights()[i]->GetLinear());
+			glUniform1f(m_UniformSpotLights[i].Linear, scene->GetSpotLights()[i].GetLinear());
 
 			snprintf(locBuff, sizeof(locBuff), "spotLights[%d].base.exponent", i);
             m_UniformSpotLights[i].Exponent = glGetUniformLocation(shader->GetID(), locBuff);
-            glUniform1f(m_UniformSpotLights[i].Exponent, scene->GetSpotLights()[i]->GetExponent());
+            glUniform1f(m_UniformSpotLights[i].Exponent, scene->GetSpotLights()[i].GetExponent());
 
             snprintf(locBuff, sizeof(locBuff), "spotLights[%d].direction", i);
             m_UniformSpotLights[i].Direction = glGetUniformLocation(shader->GetID(), locBuff);
-            glUniform3fv(m_UniformSpotLights[i].Direction, 1, glm::value_ptr(scene->GetSpotLights()[i]->GetDirection()));
+            glUniform3fv(m_UniformSpotLights[i].Direction, 1, glm::value_ptr(scene->GetSpotLights()[i].GetDirection()));
 
             snprintf(locBuff, sizeof(locBuff), "spotLights[%d].edge", i);
             m_UniformSpotLights[i].Edge = glGetUniformLocation(shader->GetID(), locBuff);
-            glUniform1f(m_UniformSpotLights[i].Edge, scene->GetSpotLights()[i]->GetEdge());
+            glUniform1f(m_UniformSpotLights[i].Edge, scene->GetSpotLights()[i].GetEdge());
         }
 
     }

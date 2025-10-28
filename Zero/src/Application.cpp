@@ -20,7 +20,7 @@ namespace Zero
 {
     Application* Application::s_Instance = nullptr;
 
-    void Application::InitGameObjects()
+    void Application::InitScene()
     {
         m_EditorCamera.SetPosition({10, 10, -10});
         m_Fov = m_EditorCamera.GetFOV();
@@ -73,41 +73,41 @@ namespace Zero
         plane->EnableGravity = false;
         plane->EnableCollision = true;
 
-        DirectionalLight* dirLight = new DirectionalLight({
+        DirectionalLight dirLight = {
             glm::vec3(m_DirectionalLightColor),
             m_DirectionalLightColor.w,
             m_DirectionalLightDirection,
             m_DirectionalLightIntensity 
-            });
+            };
 
-        m_Scene = std::make_shared<Scene>(dirLight);
+        m_Scene = std::make_unique<Scene>(dirLight);
 
         m_Scene->AddGameObject(player);
         m_Scene->AddGameObject(greenRhino);
         m_Scene->AddGameObject(plane);
 
-        m_Scene->AddPointLight(std::make_shared<PointLight>(
+        m_Scene->AddPointLight({
             glm::vec3{ 10, 10, -10 },
             glm::vec3{ 1, 0, 0.5 },
             0.1f, 0.25f,
-            1.0, 0.014, 0.007));
-        m_Scene->AddPointLight(std::make_shared<PointLight>(
+            1.0, 0.014, 0.007 });
+        m_Scene->AddPointLight({
             glm::vec3{ 0, 15, 10 },
             glm::vec3{ 0.5, 1.0, 0.0 },
             0.1f, 0.25f,
-            1.0, 0.014, 0.007));
-        m_Scene->AddPointLight(std::make_shared<PointLight>(
+            1.0, 0.014, 0.007 });
+        m_Scene->AddPointLight({
             glm::vec3{ -10, 10, -10 },
             glm::vec3{ 0, 0, 1 },
             0.1f, 0.25f,
-            1.0, 0.014, 0.007));
+            1.0, 0.014, 0.007 });
 
-        m_Scene->AddSpotLight(std::make_shared<SpotLight>(
-			glm::vec3{ 0, 30, 0 },
-			glm::vec3{ 1, 1, 0 },
-			0.2f, 0.5f,
-			1.0, 0.014, 0.007,
-			glm::vec3{ 0, -1, 0 }, 35.0f));
+        m_Scene->AddSpotLight(SpotLight{
+            glm::vec3{ 0, 30, 0 },
+            glm::vec3{ 1, 1, 0 },
+            0.2f, 0.5f,
+            1.0, 0.014, 0.007,
+            glm::vec3{ 0, -1, 0 }, 35.0f });
 
         SpawnSphereAtLocation({0, 0, 20}, 10.0f);
 
@@ -169,7 +169,7 @@ namespace Zero
         m_Renderer->Init();
         m_Renderer->InitImGui();
 
-        InitGameObjects();
+        InitScene();
 
         m_Scene->SetSkybox(SkyboxFactory::CreateSkybox(m_RendererType));
         m_Scene->GetSkybox()->LoadCubeMap({
@@ -258,7 +258,7 @@ namespace Zero
                 m_PhysicsWorld.Step(m_DeltaTime, m_Scene->GetGameObjects());
             }
             
-            m_Scene->GetDirectionalLight()->Update(
+            m_Scene->GetDirectionalLight().Update(
                 glm::vec3(m_DirectionalLightColor), m_DirectionalLightColor.a,
                 m_DirectionalLightDirection, m_DirectionalLightIntensity);
 

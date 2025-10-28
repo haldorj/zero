@@ -306,12 +306,12 @@ namespace Zero
         cameraUniformData->Proj = projection;
         cameraUniformData->Viewproj = projection * view;
 
-        sceneUniformData->DirectionalLight.Base.Color = scene->GetDirectionalLight()->GetColor();
-        sceneUniformData->DirectionalLight.Base.AmbientIntensity = scene->GetDirectionalLight()->GetAmbientIntensity();
-        sceneUniformData->DirectionalLight.Base.DiffuseIntensity = scene->GetDirectionalLight()->GetDiffuseIntensity();
-        sceneUniformData->DirectionalLight.Direction = scene->GetDirectionalLight()->GetDirection();
+        sceneUniformData->DirectionalLight.Base.Color = scene->GetDirectionalLight().GetColor();
+        sceneUniformData->DirectionalLight.Base.AmbientIntensity = scene->GetDirectionalLight().GetAmbientIntensity();
+        sceneUniformData->DirectionalLight.Base.DiffuseIntensity = scene->GetDirectionalLight().GetDiffuseIntensity();
+        sceneUniformData->DirectionalLight.Direction = scene->GetDirectionalLight().GetDirection();
 
-        sceneUniformData->LightSpaceMatrix = scene->GetDirectionalLight()->GetLightTransform();
+        sceneUniformData->LightSpaceMatrix = scene->GetDirectionalLight().GetLightTransform();
 
         sceneUniformData->Material.SpecularIntensity = scene->GetMaterial().GetSpecularIntensity();
         sceneUniformData->Material.Shininess = scene->GetMaterial().GetShininess();
@@ -321,26 +321,26 @@ namespace Zero
 
         for (int i = 0; i < scene->GetPointLights().size(); i++)
         {
-            sceneUniformData->PointLights[i].Base.Color = scene->GetPointLights()[i]->GetColor();
-            sceneUniformData->PointLights[i].Base.AmbientIntensity = scene->GetPointLights()[i]->GetAmbientIntensity();
-            sceneUniformData->PointLights[i].Base.DiffuseIntensity = scene->GetPointLights()[i]->GetDiffuseIntensity();
-            sceneUniformData->PointLights[i].Position = scene->GetPointLights()[i]->GetPosition();
-            sceneUniformData->PointLights[i].Constant = scene->GetPointLights()[i]->GetConstant();
-            sceneUniformData->PointLights[i].Linear = scene->GetPointLights()[i]->GetLinear();
-            sceneUniformData->PointLights[i].Exponent = scene->GetPointLights()[i]->GetExponent();
+            sceneUniformData->PointLights[i].Base.Color = scene->GetPointLights()[i].GetColor();
+            sceneUniformData->PointLights[i].Base.AmbientIntensity = scene->GetPointLights()[i].GetAmbientIntensity();
+            sceneUniformData->PointLights[i].Base.DiffuseIntensity = scene->GetPointLights()[i].GetDiffuseIntensity();
+            sceneUniformData->PointLights[i].Position = scene->GetPointLights()[i].GetPosition();
+            sceneUniformData->PointLights[i].Constant = scene->GetPointLights()[i].GetConstant();
+            sceneUniformData->PointLights[i].Linear = scene->GetPointLights()[i].GetLinear();
+            sceneUniformData->PointLights[i].Exponent = scene->GetPointLights()[i].GetExponent();
         }
 
         for (int i = 0; i < scene->GetSpotLights().size(); i++)
         {
-            sceneUniformData->SpotLights[i].Base.Base.Color = scene->GetSpotLights()[i]->GetColor();
-            sceneUniformData->SpotLights[i].Base.Base.AmbientIntensity = scene->GetSpotLights()[i]->GetAmbientIntensity();
-            sceneUniformData->SpotLights[i].Base.Base.DiffuseIntensity = scene->GetSpotLights()[i]->GetDiffuseIntensity();
-            sceneUniformData->SpotLights[i].Base.Position = scene->GetSpotLights()[i]->GetPosition();
-            sceneUniformData->SpotLights[i].Base.Constant = scene->GetSpotLights()[i]->GetConstant();
-            sceneUniformData->SpotLights[i].Base.Linear = scene->GetSpotLights()[i]->GetLinear();
-            sceneUniformData->SpotLights[i].Base.Exponent = scene->GetSpotLights()[i]->GetExponent();
-            sceneUniformData->SpotLights[i].Direction = scene->GetSpotLights()[i]->GetDirection();
-            sceneUniformData->SpotLights[i].Edge = scene->GetSpotLights()[i]->GetEdge();
+            sceneUniformData->SpotLights[i].Base.Base.Color = scene->GetSpotLights()[i].GetColor();
+            sceneUniformData->SpotLights[i].Base.Base.AmbientIntensity = scene->GetSpotLights()[i].GetAmbientIntensity();
+            sceneUniformData->SpotLights[i].Base.Base.DiffuseIntensity = scene->GetSpotLights()[i].GetDiffuseIntensity();
+            sceneUniformData->SpotLights[i].Base.Position = scene->GetSpotLights()[i].GetPosition();
+            sceneUniformData->SpotLights[i].Base.Constant = scene->GetSpotLights()[i].GetConstant();
+            sceneUniformData->SpotLights[i].Base.Linear = scene->GetSpotLights()[i].GetLinear();
+            sceneUniformData->SpotLights[i].Base.Exponent = scene->GetSpotLights()[i].GetExponent();
+            sceneUniformData->SpotLights[i].Direction = scene->GetSpotLights()[i].GetDirection();
+            sceneUniformData->SpotLights[i].Edge = scene->GetSpotLights()[i].GetEdge();
         }
 
         //create a descriptor set that binds that buffer and update it
@@ -410,7 +410,7 @@ namespace Zero
         }
 
         // Debug Quad ////////////
-        if (Application::Get().ShowShadowmap())
+        if (Application::Get().ShowShadowMap())
         {
             vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_QuadPipeline);
 

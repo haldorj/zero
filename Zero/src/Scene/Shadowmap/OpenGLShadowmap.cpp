@@ -66,7 +66,7 @@ namespace Zero
 
        m_ShaderProgram->Activate();
 
-	   auto& directionalLight = *(scene->GetDirectionalLight());
+	   auto& directionalLight = scene->GetDirectionalLight();
 
        int viewLoc = glGetUniformLocation(m_ShaderProgram->GetID(), "lightTransform");  
        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(directionalLight.GetLightTransform()));  
